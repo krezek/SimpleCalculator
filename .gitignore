@@ -1,0 +1,15 @@
+﻿################################################################################
+# Diese .gitignore-Datei wurde von Microsoft(R) Visual Studio automatisch erstellt.
+################################################################################
+
+/.vs
+/core/x64/Debug
+/core/core.vcxproj.user
+/SimpleCalculator/x64/Debug
+/SimpleCalculator/SimpleCalculator.vcxproj.user
+/winbase/x64/Debug
+/x64/Debug
+/x64/Release
+/winbase/x64/Release
+/SimpleCalculator/x64/Release
+/core/x64/Release
