@@ -480,7 +480,7 @@ static void OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam)
     {
     case VK_F1:
     {
-        HINSTANCE r = ShellExecute(NULL, L"open", L"https://krezek.github.io/SimplifyCalculator/index.html", NULL, NULL, SW_SHOWNORMAL);
+        HINSTANCE r = ShellExecute(NULL, L"open", L"https://krezek.github.io/SimpleCalculator/index.html", NULL, NULL, SW_SHOWNORMAL);
 
         if (r <= (HINSTANCE)32)
         {

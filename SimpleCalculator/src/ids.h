@@ -15,9 +15,9 @@
 #define cmdGroupSymbols 2 
 #define cmdGroupSymbols_LabelTitle_RESID 301
 #define cmdButtonPi 3 
-#define cmdButtonPi_LabelTitle_RESID 303
+#define cmdButtonPi_LargeImages_RESID 10010
 #define cmdButtonEuler 4 
-#define cmdButtonEuler_LabelTitle_RESID 305
+#define cmdButtonEuler_LargeImages_RESID 10011
 #define cmdGroupFunctions 5 
 #define cmdGroupFunctions_LabelTitle_RESID 201
 #define cmdButtonSin 6 
@@ -41,11 +41,11 @@
 #define cmdGroupObjects 15 
 #define cmdGroupObjects_LabelTitle_RESID 510
 #define cmdButtonFraction 16 
-#define cmdButtonFraction_LabelTitle_RESID 501
+#define cmdButtonFraction_LargeImages_RESID 10001
 #define cmdButtonPower 17 
-#define cmdButtonPower_LabelTitle_RESID 502
+#define cmdButtonPower_LargeImages_RESID 10002
 #define cmdButtonRoot 18 
-#define cmdButtonRoot_LabelTitle_RESID 503
+#define cmdButtonRoot_LargeImages_RESID 10003
 #define cmdQat 19 
 #define cmdFileMenu 20 
 #define IDC_CMD_EXIT 21 

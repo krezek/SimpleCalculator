@@ -25,16 +25,8 @@ BEGIN
     cmdGroupSymbols_LabelTitle_RESID L"Symbols" /* LabelTitle cmdGroupSymbols_LabelTitle_RESID: (null) */
 END
 
-STRINGTABLE 
-BEGIN
-    cmdButtonPi_LabelTitle_RESID L"Pi" /* LabelTitle cmdButtonPi_LabelTitle_RESID: (null) */
-END
-
-STRINGTABLE 
-BEGIN
-    cmdButtonEuler_LabelTitle_RESID L"Euler" /* LabelTitle cmdButtonEuler_LabelTitle_RESID: (null) */
-END
-
+cmdButtonPi_LargeImages_RESID    IMAGE    "res\\pi.png" /* LargeImages cmdButtonPi_LargeImages_RESID: (null) */
+cmdButtonEuler_LargeImages_RESID    IMAGE    "res\\euler.png" /* LargeImages cmdButtonEuler_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
     cmdGroupFunctions_LabelTitle_RESID L"Functions" /* LabelTitle cmdGroupFunctions_LabelTitle_RESID: (null) */
@@ -90,21 +82,9 @@ BEGIN
     cmdGroupObjects_LabelTitle_RESID L"Objects" /* LabelTitle cmdGroupObjects_LabelTitle_RESID: (null) */
 END
 
-STRINGTABLE 
-BEGIN
-    cmdButtonFraction_LabelTitle_RESID L"Fraction" /* LabelTitle cmdButtonFraction_LabelTitle_RESID: (null) */
-END
-
-STRINGTABLE 
-BEGIN
-    cmdButtonPower_LabelTitle_RESID L"Power" /* LabelTitle cmdButtonPower_LabelTitle_RESID: (null) */
-END
-
-STRINGTABLE 
-BEGIN
-    cmdButtonRoot_LabelTitle_RESID L"Root" /* LabelTitle cmdButtonRoot_LabelTitle_RESID: (null) */
-END
-
+cmdButtonFraction_LargeImages_RESID    IMAGE    "res\\divide.png" /* LargeImages cmdButtonFraction_LargeImages_RESID: (null) */
+cmdButtonPower_LargeImages_RESID    IMAGE    "res\\power.png" /* LargeImages cmdButtonPower_LargeImages_RESID: (null) */
+cmdButtonRoot_LargeImages_RESID    IMAGE    "res\\square-root.png" /* LargeImages cmdButtonRoot_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
     IDC_CMD_EXIT_LabelTitle_RESID L"Exit" /* LabelTitle IDC_CMD_EXIT_LabelTitle_RESID: (null) */
