@@ -460,8 +460,7 @@ static void OnCmd(Editor* ed, int cmd)
 	}
 	else if (cmd == cmdButtonPi)
 	{
-	OnChar_Default(ed, L'P');
-	OnChar_Default(ed, L'i');
+	OnChar_Default(ed, L'\u03C0');
 	}
 	else if (cmd == cmdButtonEuler)
 	{
