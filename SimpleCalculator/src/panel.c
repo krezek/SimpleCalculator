@@ -253,7 +253,16 @@ static void OnChar_Return(Panel* p)
 	int rc = parse(&inItems, str->_str);
 	if (rc)
 	{
-		wprintf(L"Parse error ...\n");
+		wchar_t wst[255];
+		swprintf_s(wst, 255, L"Parse error ...");
+
+		GList_free(p->_out_gitems_list);
+		p->_out_gitems_list = GList_init(NULL);
+
+		for (int ix = 0; ix <= wcslen(wst); ++ix)
+		{
+			GList_pushback(p->_out_gitems_list, (GItem*)GItemChar_init(wst[ix]));
+		}
 	}
 	else
 	{
