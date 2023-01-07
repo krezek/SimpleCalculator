@@ -22,6 +22,14 @@ END
 
 STRINGTABLE 
 BEGIN
+    cmdGroupObjects_LabelTitle_RESID L"Objects" /* LabelTitle cmdGroupObjects_LabelTitle_RESID: (null) */
+END
+
+cmdButtonFraction_LargeImages_RESID    IMAGE    "res\\divide.png" /* LargeImages cmdButtonFraction_LargeImages_RESID: (null) */
+cmdButtonPower_LargeImages_RESID    IMAGE    "res\\power.png" /* LargeImages cmdButtonPower_LargeImages_RESID: (null) */
+cmdButtonRoot_LargeImages_RESID    IMAGE    "res\\square-root.png" /* LargeImages cmdButtonRoot_LargeImages_RESID: (null) */
+STRINGTABLE 
+BEGIN
     cmdGroupSymbols_LabelTitle_RESID L"Symbols" /* LabelTitle cmdGroupSymbols_LabelTitle_RESID: (null) */
 END
 
@@ -79,12 +87,19 @@ END
 
 STRINGTABLE 
 BEGIN
-    cmdGroupObjects_LabelTitle_RESID L"Objects" /* LabelTitle cmdGroupObjects_LabelTitle_RESID: (null) */
+    cmdGroupActions_LabelTitle_RESID L"Actions" /* LabelTitle cmdGroupActions_LabelTitle_RESID: (null) */
 END
 
-cmdButtonFraction_LargeImages_RESID    IMAGE    "res\\divide.png" /* LargeImages cmdButtonFraction_LargeImages_RESID: (null) */
-cmdButtonPower_LargeImages_RESID    IMAGE    "res\\power.png" /* LargeImages cmdButtonPower_LargeImages_RESID: (null) */
-cmdButtonRoot_LargeImages_RESID    IMAGE    "res\\square-root.png" /* LargeImages cmdButtonRoot_LargeImages_RESID: (null) */
+STRINGTABLE 
+BEGIN
+    cmdButtonCalc_LabelTitle_RESID L"Calc" /* LabelTitle cmdButtonCalc_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    cmdButtonNew_LabelTitle_RESID L"New" /* LabelTitle cmdButtonNew_LabelTitle_RESID: (null) */
+END
+
 STRINGTABLE 
 BEGIN
     IDC_CMD_EXIT_LabelTitle_RESID L"Exit" /* LabelTitle IDC_CMD_EXIT_LabelTitle_RESID: (null) */
