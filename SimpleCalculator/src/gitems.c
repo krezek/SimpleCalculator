@@ -721,8 +721,8 @@ void GItemRoot_draw(GItem* _this, HDC hdc)
 
 	MoveToEx(hdc, g->_gitem._x0 + g->_root->_width - 5, g->_gitem._y0 + g->_gitem._height - 5, NULL);
 	LineTo(hdc, g->_gitem._x0 + g->_root->_width, g->_gitem._y0 + g->_gitem._height);
-	LineTo(hdc, g->_gitem._x0 + g->_root->_width + ROOT_PADDING, g->_gitem._y0);
-	LineTo(hdc, g->_gitem._x0 + g->_root->_width + g->_expr->_width + ROOT_PADDING, g->_gitem._y0);
+	LineTo(hdc, g->_gitem._x0 + g->_root->_width + ROOT_PADDING, g->_gitem._y0 + 5);
+	LineTo(hdc, g->_gitem._x0 + g->_root->_width + g->_expr->_width + ROOT_PADDING, g->_gitem._y0 + 5);
 
 }
 
