@@ -239,11 +239,11 @@ static int term(Item** pItems, TokensQueue* tokens)
 		if (!tokensQueue_empty(tokens))
 		{
 			Token* tok = tokensQueue_front(tokens);
-			while (accept_tok(tok, OPERATOR, L"*") ||
+			while (accept_tok(tok, OPERATOR, L"\u00D7") ||
 				accept_tok(tok, OPERATOR, L"/"))
 			{
 				tok = tokensQueue_dequeue(tokens);
-				if (_wcsicmp(L"*", tok->_str) == 0)
+				if (_wcsicmp(L"\u00D7", tok->_str) == 0)
 				{
 					Item* l_node = NULL;
 					rs = factor(&l_node, tokens);

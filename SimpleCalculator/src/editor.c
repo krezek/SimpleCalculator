@@ -305,6 +305,9 @@ static void OnChar_Default(Editor* ed, wchar_t ch)
 	}
 	else
 	{
+		if (ch == L'*')
+			ch = L'\u00D7';
+
 		GItemChar* g = GItemChar_init(ch);
 		GNode* node = GNode_init((GItem*)g, ed->_current_glist->_current, ed->_current_glist->_current->_prev);
 		if (ed->_current_glist->_current->_prev)
