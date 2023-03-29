@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{502ffb9e-fc93-48b3-834e-3dbb889e216e}</ProjectGuid>
-    <RootNamespace>SimpleCAS</RootNamespace>
+    <ProjectGuid>{cc63c4e1-2857-4b1b-848a-1fb3390469d6}</ProjectGuid>
+    <RootNamespace>App</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
