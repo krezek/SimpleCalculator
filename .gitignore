@@ -5,3 +5,5 @@
 *.user
 /.vs
 /App/x64
+/winbase/x64
+/x64
