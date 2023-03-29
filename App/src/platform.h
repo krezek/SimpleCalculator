@@ -6,14 +6,16 @@
 #endif
 
 #include <windows.h>
+#include <windowsx.h>
 #include <CommCtrl.h>
+#include <objbase.h>
+#include <UIRibbon.h>
+#include <initguid.h>
+#include <propvarutil.h>
 #include "strsafe.h"
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdarg.h>
-#include <fcntl.h>
-#include <io.h>
 #include <tchar.h>
 #include <string.h>
 #include <assert.h>

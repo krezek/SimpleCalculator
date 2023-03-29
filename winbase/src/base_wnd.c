@@ -1,4 +1,5 @@
 #include "platform.h"
+
 #include <base_wnd.h>
 
 void BaseWindow_SetParent(BaseWindow* _this, HWND hWndParent)
@@ -66,6 +67,30 @@ void BaseWindow_default(BaseWindow* _this)
 
 	_this->_CreateFunc = NULL;
 	_this->_HandleMessageFunc = NULL;
+}
+
+void RedirectIOToConsole()
+{
+	int hConHandle;
+	HANDLE hStdHandle;
+	FILE* fp;
+
+	AllocConsole();
+
+	hStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	hConHandle = _open_osfhandle((intptr_t)hStdHandle, _O_TEXT);
+	fp = _fdopen(hConHandle, "w");
+	freopen_s(&fp, "CONOUT$", "w", stdout);
+
+	hStdHandle = GetStdHandle(STD_INPUT_HANDLE);
+	hConHandle = _open_osfhandle((intptr_t)hStdHandle, _O_TEXT);
+	fp = _fdopen(hConHandle, "r");
+	freopen_s(&fp, "CONIN$", "r", stdin);
+
+	hStdHandle = GetStdHandle(STD_ERROR_HANDLE);
+	hConHandle = _open_osfhandle((intptr_t)hStdHandle, _O_TEXT);
+	fp = _fdopen(hConHandle, "w");
+	freopen_s(&fp, "CONOUT$", "w", stderr);
 }
 
 void ShowError(const wchar_t* lpszFunction)
