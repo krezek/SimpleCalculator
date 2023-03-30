@@ -5,7 +5,8 @@
 static TCHAR szWindowClass[] = _T("DesktopApp");
 static TCHAR szTitle[] = _T("Simple Algebra System");
 
-static LRESULT HandleMessage(BaseWindow* _this, UINT uMsg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK DefaultWindow_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 ATOM MainWindow_RegisterClass()
 {
@@ -13,7 +14,7 @@ ATOM MainWindow_RegisterClass()
 
     wcex.cbSize = sizeof(WNDCLASSEX);
     wcex.style = CS_DBLCLKS;
-    wcex.lpfnWndProc = BaseWindow_Proc;
+    wcex.lpfnWndProc = DefaultWindow_Proc;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = GetModuleHandle(NULL);
@@ -22,12 +23,39 @@ ATOM MainWindow_RegisterClass()
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName = NULL;
     wcex.lpszClassName = szWindowClass;
-    wcex.hIconSm = LoadIcon(wcex.hInstance, NULL);
+    wcex.hIconSm = NULL;
 
     return RegisterClassEx(&wcex);
 }
 
-BOOL Create(BaseWindow* _this)
+LRESULT CALLBACK DefaultWindow_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    MainWindow* pThis;
+
+    if (uMsg == WM_NCCREATE)
+    {
+        CREATESTRUCT* pCreate = (CREATESTRUCT*)lParam;
+        pThis = (MainWindow*)pCreate->lpCreateParams;
+        SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)pThis);
+
+        pThis->_hWnd = hWnd;
+    }
+    else
+    {
+        pThis = (MainWindow*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+    }
+
+    if (pThis)
+    {
+        return pThis->_HandleMessageFunc(pThis, uMsg, wParam, lParam);
+    }
+    else
+    {
+        return DefWindowProc(hWnd, uMsg, wParam, lParam);
+    }
+}
+
+BOOL MainWindow_Create(MainWindow* _this)
 {
     HWND hWnd = CreateWindow(
         szWindowClass,
@@ -51,10 +79,7 @@ MainWindow* MainWindow_init()
     MainWindow* mw = (MainWindow*)malloc(sizeof(MainWindow));
     assert(mw != NULL);
 
-    BaseWindow_default((BaseWindow*)mw);
-
-    mw->_baseWindow._HandleMessageFunc = HandleMessage;
-    mw->_baseWindow._CreateFunc = Create;
+    mw->_HandleMessageFunc = HandleMessage;
 
     return mw;
 }
@@ -64,10 +89,8 @@ void MainWindow_free(MainWindow* mw)
     free(mw);
 }
 
-static LRESULT HandleMessage(BaseWindow* _this, UINT uMsg, WPARAM wParam, LPARAM lParam)
+static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    MainWindow* mw = (MainWindow*)_this;
-
     switch (uMsg)
     {
     case WM_CREATE:

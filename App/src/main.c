@@ -1,6 +1,7 @@
 #include "platform.h"
 
 #include <main_wnd.h>
+#include <winio.h>
 
 int WINAPI WinMain(HINSTANCE hInstance,
     HINSTANCE hPrevInstance,
@@ -26,9 +27,9 @@ int WINAPI WinMain(HINSTANCE hInstance,
         return -1;
     }
 
-    BaseWindow* mainWindow = (BaseWindow*)MainWindow_init();
+    MainWindow* mainWindow = MainWindow_init();
 
-    if (!mainWindow->_CreateFunc(mainWindow))
+    if (!MainWindow_Create(mainWindow))
     {
         ShowError(L"Call to CreateWindow failed!");
 

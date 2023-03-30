@@ -16,6 +16,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <io.h>
 #include <tchar.h>
 #include <string.h>
 #include <assert.h>
