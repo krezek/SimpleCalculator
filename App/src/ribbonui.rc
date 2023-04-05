@@ -27,7 +27,7 @@ END
 
 cmdButtonFraction_LargeImages_RESID    IMAGE    "res\\divide.png" /* LargeImages cmdButtonFraction_LargeImages_RESID: (null) */
 cmdButtonPower_LargeImages_RESID    IMAGE    "res\\power.png" /* LargeImages cmdButtonPower_LargeImages_RESID: (null) */
-cmdButtonRoot_LargeImages_RESID    IMAGE    "res\\square-root.png" /* LargeImages cmdButtonRoot_LargeImages_RESID: (null) */
+cmdButtonRoot_LargeImages_RESID    IMAGE    "res\\root.png" /* LargeImages cmdButtonRoot_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
     cmdGroupSymbols_LabelTitle_RESID L"Symbols" /* LabelTitle cmdGroupSymbols_LabelTitle_RESID: (null) */

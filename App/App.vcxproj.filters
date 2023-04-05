@@ -24,6 +24,12 @@
     <ClCompile Include="src\windbg.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\ribbon.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmdhandler.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\platform.h">
@@ -33,6 +39,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="include\windbg.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ribbon.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

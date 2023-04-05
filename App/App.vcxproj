@@ -80,12 +80,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\cmdhandler.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\main_wnd.c" />
+    <ClCompile Include="src\ribbon.c" />
     <ClCompile Include="src\windbg.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\main_wnd.h" />
+    <ClInclude Include="include\ribbon.h" />
     <ClInclude Include="include\windbg.h" />
     <ClInclude Include="src\platform.h" />
   </ItemGroup>

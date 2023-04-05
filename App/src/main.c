@@ -10,7 +10,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 {
 #ifdef _DEBUG
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-    RedirectIOToConsole();
+    //RedirectIOToConsole();
 #endif
 
     HRESULT hr = CoInitialize(NULL);

@@ -1,6 +1,7 @@
 #include "platform.h"
 
 #include <main_wnd.h>
+#include <ribbon.h>
 
 static TCHAR szWindowClass[] = _T("DesktopApp");
 static TCHAR szTitle[] = _T("Simple Algebra System");
@@ -94,12 +95,14 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
     switch (uMsg)
     {
     case WM_CREATE:
+        CreateRibbon(_this->_hWnd);
         return 0;
 
     case WM_PAINT:
         return 0;
 
     case WM_DESTROY:
+        DestroyRibbon();
         PostQuitMessage(0);
         return 0;
 

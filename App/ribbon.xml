@@ -49,7 +49,7 @@
 	  </Command>
 	  <Command Name="cmdButtonRoot">
 		  <Command.LargeImages>
-			  <Image Id ="21102">res/square-root.png</Image>
+			  <Image Id ="21102">res/root.png</Image>
 		  </Command.LargeImages>
 	  </Command>
 	  
