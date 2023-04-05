@@ -13,47 +13,28 @@
       </Command.LabelTitle>
     </Command>
 
-	<Command Name="cmdTabView"
-            Comment="View tab"
-            Symbol="IDC_CMD_TAB_VIEW"
-            Id="30000" >
+	<Command Name="cmdGroupObjects">
 		<Command.LabelTitle>
-			<String>View</String>
+			<String Id ="21000">Objects</String>
 		</Command.LabelTitle>
 	</Command>
-
-    <Command Name="cmdFontOnlyGroup"
-         Symbol="cmdFontOnlyGroup"
-         Comment="FontOnlyGroup"
-         Id="31000"
-         LabelTitle="Font"/>
-    <Command Name="cmdFontOnly"
-             Symbol="cmdFontOnly"
-             Comment="FontOnly"
-             Id="31100"/>
-
-	  <Command Name="cmdGroupObjects">
-		  <Command.LabelTitle>
-			  <String Id ="21000">Objects</String>
-		  </Command.LabelTitle>
-	  </Command>
-	  <Command Name="cmdButtonFraction">
-		  <Command.LargeImages>
-			  <Image Id ="21100">res/divide.png</Image>
-		  </Command.LargeImages>
-	  </Command>
-	  <Command Name="cmdButtonPower">
-		  <Command.LargeImages>
-			  <Image Id ="21101">res/power.png</Image>
-		  </Command.LargeImages>
-	  </Command>
-	  <Command Name="cmdButtonRoot">
-		  <Command.LargeImages>
-			  <Image Id ="21102">res/root.png</Image>
-		  </Command.LargeImages>
-	  </Command>
+	<Command Name="cmdButtonFraction">
+		<Command.LargeImages>
+			<Image Id ="21100">res/divide.png</Image>
+		</Command.LargeImages>
+	</Command>
+	<Command Name="cmdButtonPower">
+		<Command.LargeImages>
+			<Image Id ="21101">res/power.png</Image>
+		</Command.LargeImages>
+	</Command>
+	<Command Name="cmdButtonRoot">
+		<Command.LargeImages>
+			<Image Id ="21102">res/root.png</Image>
+		</Command.LargeImages>
+	</Command>
 	  
-	  <Command Name="cmdGroupSymbols">
+	<Command Name="cmdGroupSymbols">
       <Command.LabelTitle>
         <String Id ="22000">Symbols</String>
       </Command.LabelTitle>
@@ -196,23 +177,6 @@
 				<Button CommandName="cmdButtonNew" />
 			</Group>
         </Tab>
-		<Tab CommandName="cmdTabView">
-			<Tab.ScalingPolicy>
-				<ScalingPolicy>
-					<ScalingPolicy.IdealSizes>
-						<Scale Group="cmdFontOnlyGroup" Size="Large" />
-					</ScalingPolicy.IdealSizes>
-				</ScalingPolicy>
-			</Tab.ScalingPolicy>
-			<Group CommandName="cmdFontOnlyGroup"
-					SizeDefinition="OneFontControl">
-				<FontControl CommandName="cmdFontOnly"
-							FontType="FontOnly"
-							IsUnderlineButtonVisible="false"
-							IsStrikethroughButtonVisible="false"
-							MinimumFontSize="12"/>
-			</Group>
-		</Tab>
       </Ribbon.Tabs>
       <Ribbon.QuickAccessToolbar>
         <QuickAccessToolbar CommandName="cmdQat" />

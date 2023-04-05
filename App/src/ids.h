@@ -7,11 +7,6 @@
 
 #define IDC_CMD_TAB_START 20000  /* Start tab */ 
 #define IDC_CMD_TAB_START_LabelTitle_RESID 60001
-#define IDC_CMD_TAB_VIEW 30000  /* View tab */ 
-#define IDC_CMD_TAB_VIEW_LabelTitle_RESID 60002
-#define cmdFontOnlyGroup 31000  /* FontOnlyGroup */ 
-#define cmdFontOnlyGroup_LabelTitle_RESID 60003
-#define cmdFontOnly 31100  /* FontOnly */ 
 #define cmdGroupObjects 2 
 #define cmdGroupObjects_LabelTitle_RESID 21000
 #define cmdButtonFraction 3 

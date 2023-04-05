@@ -12,16 +12,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDC_CMD_TAB_VIEW_LabelTitle_RESID L"View" /* LabelTitle IDC_CMD_TAB_VIEW_LabelTitle_RESID: View tab */
-END
-
-STRINGTABLE 
-BEGIN
-    cmdFontOnlyGroup_LabelTitle_RESID L"Font" /* LabelTitle cmdFontOnlyGroup_LabelTitle_RESID: FontOnlyGroup */
-END
-
-STRINGTABLE 
-BEGIN
     cmdGroupObjects_LabelTitle_RESID L"Objects" /* LabelTitle cmdGroupObjects_LabelTitle_RESID: (null) */
 END
 
