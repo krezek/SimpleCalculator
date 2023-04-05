@@ -1,6 +1,7 @@
 #include "platform.h"
 
 #include <main_wnd.h>
+#include <windbg.h>
 #include <ribbon.h>
 
 static TCHAR szWindowClass[] = _T("DesktopApp");
@@ -8,6 +9,9 @@ static TCHAR szTitle[] = _T("Simple Algebra System");
 
 LRESULT CALLBACK DefaultWindow_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+LRESULT OnCreate(MainWindow* mw);
+LRESULT OnDestroy(MainWindow* mw);
 
 ATOM MainWindow_RegisterClass()
 {
@@ -95,18 +99,34 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
     switch (uMsg)
     {
     case WM_CREATE:
-        CreateRibbon(_this->_hWnd);
-        return 0;
+        return OnCreate(_this);
 
     case WM_PAINT:
         return 0;
 
     case WM_DESTROY:
-        DestroyRibbon();
-        PostQuitMessage(0);
-        return 0;
+        return OnDestroy(_this);
 
     default:
         return DefWindowProc(_this->_hWnd, uMsg, wParam, lParam);
     }
+}
+
+LRESULT OnCreate(MainWindow* mw)
+{
+    if (CreateRibbon(mw->_hWnd))
+    {
+        ShowError(L"MainWindow::OnCreate::unable to create ribbon!");
+        return -1;
+    }
+
+    return 0;
+}
+
+LRESULT OnDestroy(MainWindow* mw)
+{
+    DestroyRibbon();
+    PostQuitMessage(0);
+
+    return 0;
 }
