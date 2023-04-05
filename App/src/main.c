@@ -1,7 +1,7 @@
 #include "platform.h"
 
 #include <main_wnd.h>
-#include <winio.h>
+#include <windbg.h>
 
 int WINAPI WinMain(HINSTANCE hInstance,
     HINSTANCE hPrevInstance,

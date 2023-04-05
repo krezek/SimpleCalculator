@@ -82,11 +82,11 @@
   <ItemGroup>
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\main_wnd.c" />
-    <ClCompile Include="src\winio.c" />
+    <ClCompile Include="src\windbg.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\main_wnd.h" />
-    <ClInclude Include="include\winio.h" />
+    <ClInclude Include="include\windbg.h" />
     <ClInclude Include="src\platform.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

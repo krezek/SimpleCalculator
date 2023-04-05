@@ -21,7 +21,7 @@
     <ClCompile Include="src\main_wnd.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\winio.c">
+    <ClCompile Include="src\windbg.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,7 +32,7 @@
     <ClInclude Include="include\main_wnd.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="include\winio.h">
+    <ClInclude Include="include\windbg.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
