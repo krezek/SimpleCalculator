@@ -89,6 +89,12 @@
     <ClInclude Include="include\windbg.h" />
     <ClInclude Include="src\platform.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="ribbon.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\ribbonui.rc" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

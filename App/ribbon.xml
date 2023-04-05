@@ -1,0 +1,222 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<Application xmlns='http://schemas.microsoft.com/windows/2009/Ribbon'>
+  
+  <Application.Commands>
+
+    <Command Name="cmdTabStart"
+             Comment="Start tab"
+             Symbol="IDC_CMD_TAB_START"
+             Id="20000" >
+      <Command.LabelTitle>
+        <String>Start</String>
+      </Command.LabelTitle>
+    </Command>
+
+	<Command Name="cmdTabView"
+            Comment="View tab"
+            Symbol="IDC_CMD_TAB_VIEW"
+            Id="30000" >
+		<Command.LabelTitle>
+			<String>View</String>
+		</Command.LabelTitle>
+	</Command>
+
+    <Command Name="cmdFontOnlyGroup"
+         Symbol="cmdFontOnlyGroup"
+         Comment="FontOnlyGroup"
+         Id="31000"
+         LabelTitle="Font"/>
+    <Command Name="cmdFontOnly"
+             Symbol="cmdFontOnly"
+             Comment="FontOnly"
+             Id="31100"/>
+
+	  <Command Name="cmdGroupObjects">
+		  <Command.LabelTitle>
+			  <String Id ="21000">Objects</String>
+		  </Command.LabelTitle>
+	  </Command>
+	  <Command Name="cmdButtonFraction">
+		  <Command.LargeImages>
+			  <Image Id ="21100">res/divide.png</Image>
+		  </Command.LargeImages>
+	  </Command>
+	  <Command Name="cmdButtonPower">
+		  <Command.LargeImages>
+			  <Image Id ="21101">res/power.png</Image>
+		  </Command.LargeImages>
+	  </Command>
+	  <Command Name="cmdButtonRoot">
+		  <Command.LargeImages>
+			  <Image Id ="21102">res/square-root.png</Image>
+		  </Command.LargeImages>
+	  </Command>
+	  
+	  <Command Name="cmdGroupSymbols">
+      <Command.LabelTitle>
+        <String Id ="22000">Symbols</String>
+      </Command.LabelTitle>
+    </Command>
+    <Command Name="cmdButtonPi">
+		<Command.LargeImages>
+			<Image Id ="22100">res/pi.png</Image>
+		</Command.LargeImages>
+    </Command>
+    <Command Name="cmdButtonEuler">
+		<Command.LargeImages>
+			<Image Id ="22101">res/euler.png</Image>
+		</Command.LargeImages>
+    </Command>
+
+	  <Command Name="cmdGroupFunctions">
+		  <Command.LabelTitle>
+			  <String Id ="23000">Functions</String>
+		  </Command.LabelTitle>
+	  </Command>
+	  <Command Name="cmdButtonSin">
+		  <Command.LabelTitle>
+			  <String Id ="23100">Sin</String>
+		  </Command.LabelTitle>
+	  </Command>
+	  <Command Name="cmdButtonCos">
+		  <Command.LabelTitle>
+			  <String Id ="23101">Cos</String>
+		  </Command.LabelTitle>
+	  </Command>
+	  <Command Name="cmdButtonTan">
+		  <Command.LabelTitle>
+			  <String Id ="23102">Tan</String>
+		  </Command.LabelTitle>
+	  </Command>
+	  <Command Name="cmdButtonLog">
+		  <Command.LabelTitle>
+			  <String Id ="23103">Log</String>
+		  </Command.LabelTitle>
+	  </Command>
+	  <Command Name="cmdButtonExp">
+		  <Command.LabelTitle>
+			  <String Id ="23104">Exp</String>
+		  </Command.LabelTitle>
+	  </Command>
+	  <Command Name="cmdButtonAsin">
+		  <Command.LabelTitle>
+			  <String Id ="23105">Asin</String>
+		  </Command.LabelTitle>
+	  </Command>
+	  <Command Name="cmdButtonAcos">
+		  <Command.LabelTitle>
+			  <String Id ="23106">Acos</String>
+		  </Command.LabelTitle>
+	  </Command>
+	  <Command Name="cmdButtonAtan">
+		  <Command.LabelTitle>
+			  <String Id ="23107">Atan</String>
+		  </Command.LabelTitle>
+	  </Command>
+	  <Command Name="cmdButtonLn">
+		  <Command.LabelTitle>
+			  <String Id ="23108">Ln</String>
+		  </Command.LabelTitle>
+	  </Command>
+
+	  <Command Name="cmdGroupActions">
+		  <Command.LabelTitle>
+			  <String Id ="24000">Actions</String>
+		  </Command.LabelTitle>
+	  </Command>
+	  <Command Name="cmdButtonCalc">
+		  <Command.LabelTitle>
+			  <String Id ="24100">Calc</String>
+		  </Command.LabelTitle>
+	  </Command>
+	  <Command Name="cmdButtonNew">
+		  <Command.LabelTitle>
+			  <String Id ="24101">New</String>
+		  </Command.LabelTitle>
+	  </Command>
+
+    <Command Name="cmdQat"/>
+    <Command Name="cmdFileMenu" />
+    <Command Name="cmdExit" Symbol="IDC_CMD_EXIT">
+      <Command.LabelTitle>
+        <String Id ="100">Exit</String>
+      </Command.LabelTitle>
+      <Command.LargeImages>
+        <Image Id ="102">res/ExitL.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+  </Application.Commands>
+  <Application.Views>
+    <Ribbon>
+      <Ribbon.ApplicationMenu>
+        <ApplicationMenu CommandName="cmdFileMenu">
+          <MenuGroup Class="MajorItems">
+            <Button CommandName="cmdExit" />
+          </MenuGroup>
+        </ApplicationMenu>
+      </Ribbon.ApplicationMenu>
+      <Ribbon.Tabs>
+        <Tab CommandName="cmdTabStart">
+          <Tab.ScalingPolicy>
+            <ScalingPolicy>
+              <ScalingPolicy.IdealSizes>
+				  <Scale Group="cmdGroupObjects" Size="Medium" />
+				  <Scale Group="cmdGroupFunctions" Size="Medium" />
+                <Scale Group="cmdGroupSymbols" Size="Medium" />
+              </ScalingPolicy.IdealSizes>
+            </ScalingPolicy>
+          </Tab.ScalingPolicy>
+			<Group CommandName="cmdGroupObjects"
+					SizeDefinition="ThreeButtons">
+				<Button CommandName="cmdButtonFraction" />
+				<Button CommandName="cmdButtonPower" />
+				<Button CommandName="cmdButtonRoot" />
+			</Group>
+			<Group CommandName="cmdGroupSymbols"
+                 SizeDefinition="TwoButtons">
+				<Button CommandName="cmdButtonPi" />
+				<Button CommandName="cmdButtonEuler" />
+			</Group>
+			<Group CommandName="cmdGroupFunctions"
+					SizeDefinition="NineButtons">
+				<Button CommandName="cmdButtonSin" />
+				<Button CommandName="cmdButtonCos" />
+				<Button CommandName="cmdButtonTan" />
+				<Button CommandName="cmdButtonLog" />
+				<Button CommandName="cmdButtonExp" />
+				<Button CommandName="cmdButtonAsin" />
+				<Button CommandName="cmdButtonAcos" />
+				<Button CommandName="cmdButtonAtan" />
+				<Button CommandName="cmdButtonLn" />
+			</Group>
+			<Group CommandName="cmdGroupActions"
+					SizeDefinition="TwoButtons">
+				<Button CommandName="cmdButtonCalc" />
+				<Button CommandName="cmdButtonNew" />
+			</Group>
+        </Tab>
+		<Tab CommandName="cmdTabView">
+			<Tab.ScalingPolicy>
+				<ScalingPolicy>
+					<ScalingPolicy.IdealSizes>
+						<Scale Group="cmdFontOnlyGroup" Size="Large" />
+					</ScalingPolicy.IdealSizes>
+				</ScalingPolicy>
+			</Tab.ScalingPolicy>
+			<Group CommandName="cmdFontOnlyGroup"
+					SizeDefinition="OneFontControl">
+				<FontControl CommandName="cmdFontOnly"
+							FontType="FontOnly"
+							IsUnderlineButtonVisible="false"
+							IsStrikethroughButtonVisible="false"
+							MinimumFontSize="12"/>
+			</Group>
+		</Tab>
+      </Ribbon.Tabs>
+      <Ribbon.QuickAccessToolbar>
+        <QuickAccessToolbar CommandName="cmdQat" />
+      </Ribbon.QuickAccessToolbar>
+    </Ribbon>
+  </Application.Views>
+</Application>
