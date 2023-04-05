@@ -101,9 +101,6 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
     case WM_CREATE:
         return OnCreate(_this);
 
-    case WM_PAINT:
-        return 0;
-
     case WM_DESTROY:
         return OnDestroy(_this);
 

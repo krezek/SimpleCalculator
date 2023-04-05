@@ -91,11 +91,15 @@
     <ClInclude Include="include\ribbon.h" />
     <ClInclude Include="include\windbg.h" />
     <ClInclude Include="src\platform.h" />
+    <ClInclude Include="src\resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <Xml Include="res1.xml" />
     <Xml Include="ribbon.xml" />
+    <Xml Include="src\res1.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="src\resource.rc" />
     <ResourceCompile Include="src\ribbonui.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
