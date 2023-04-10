@@ -6,15 +6,21 @@
 #include <panel.h>
 
 #define SCROLLBAR_WIDE 20
+#define INITIAL_FONTSIZE 16
+#define WM_SETFONTSIZE WM_USER + 1
 
 static TCHAR szWindowClass[] = _T("DesktopApp");
 static TCHAR szTitle[] = _T("Simple Computer Algebra System");
+
+HFONT g_math_font;
 
 LRESULT CALLBACK DefaultWindow_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 LRESULT OnCreate(MainWindow* mw);
 LRESULT OnDestroy(MainWindow* mw);
+LRESULT OnMouseWheel(MainWindow* mw, WPARAM wParam);
+LRESULT OnSetFontSize(MainWindow* mw, int fsize);
 LRESULT OnSize(MainWindow* mw);
 LRESULT OnPaint(MainWindow* mw);
 LRESULT OnRibbonHeightChanged(MainWindow* mw);
@@ -120,12 +126,18 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
         _this->_client_height = HIWORD(lParam);
         return OnSize(_this);
 
+    case WM_SETFONTSIZE:
+        return OnSetFontSize(_this, (int)(wParam));
+
     case WM_RIBBON_HEIGHT_CHANGED:
         _this->_ribbon_height = (int)wParam;
         return OnRibbonHeightChanged(_this);
 
     case WM_PAINT:
         return OnPaint(_this);
+
+    case WM_MOUSEWHEEL:
+        return OnMouseWheel(_this, wParam);
 
     default:
         return DefWindowProc(_this->_hWnd, uMsg, wParam, lParam);
@@ -134,6 +146,20 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
 
 LRESULT OnCreate(MainWindow* mw)
 {
+    // Create Font
+    HDC hdc = GetDC(mw->_hWnd);
+    int lfHeight = -MulDiv(INITIAL_FONTSIZE, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+    g_math_font = CreateFont(lfHeight, 0, 0, 0, FALSE,
+        FALSE, 0, 0, 0, 0, 0, 0, 0, L"Cambria");
+    if (!g_math_font)
+    {
+        ShowError(_T("MainWindow::OnCreate::unable to create math font"));
+        return -1;
+    }
+
+    ReleaseDC(mw->_hWnd, hdc);
+
+    // Create Ribbon
     if (CreateRibbon(mw->_hWnd))
     {
         ShowError(_T("MainWindow::OnCreate::unable to create ribbon!"));
@@ -238,8 +264,69 @@ LRESULT OnCreate(MainWindow* mw)
 
 LRESULT OnDestroy(MainWindow* mw)
 {
+    DeleteFont(g_math_font);
     DestroyRibbon();
     PostQuitMessage(0);
+
+    return 0;
+}
+
+LRESULT OnMouseWheel(MainWindow* mw, WPARAM wParam)
+{
+    int zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+
+    if (GetKeyState(VK_CONTROL) < 0)
+    {
+        static int fsize = INITIAL_FONTSIZE;
+
+        if (zDelta < 0)
+        {
+            if (fsize > 12)
+            {
+                --fsize;
+            }
+            
+            PostMessage(mw->_hWnd, WM_SETFONTSIZE, MAKEWPARAM(fsize, 0), 0);
+        }
+        else
+        {
+            if (fsize < 72)
+            {
+                ++fsize;
+            }
+
+            PostMessage(mw->_hWnd, WM_SETFONTSIZE, MAKEWPARAM(fsize, 0), 0);
+        }
+    }
+    else
+    {
+        if (zDelta < 0)
+            PostMessage(mw->_hWnd, WM_VSCROLL, MAKEWPARAM(SB_LINEDOWN, 0), 0);
+        else
+            PostMessage(mw->_hWnd, WM_VSCROLL, MAKEWPARAM(SB_LINEUP, 0), 0);
+    }
+    
+
+    return 0;
+}
+
+LRESULT OnSetFontSize(MainWindow* mw, int fsize)
+{
+    printf("fsize=%d\n", fsize);
+
+    if (g_math_font)
+        DeleteFont(g_math_font);
+
+    // Create Font
+    HDC hdc = GetDC(mw->_hWnd);
+    int lfHeight = -MulDiv(INITIAL_FONTSIZE, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+    g_math_font = CreateFont(lfHeight, 0, 0, 0, FALSE,
+        FALSE, 0, 0, 0, 0, 0, 0, 0, L"Cambria");
+    if (!g_math_font)
+    {
+        ShowError(_T("MainWindow::OnCreate::unable to create math font"));
+        return -1;
+    }
 
     return 0;
 }
