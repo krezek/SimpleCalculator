@@ -3,6 +3,7 @@
 #include <main_wnd.h>
 #include <winutil.h>
 #include <ribbon.h>
+#include <panel.h>
 
 static TCHAR szWindowClass[] = _T("DesktopApp");
 static TCHAR szTitle[] = _T("Simple Computer Algebra System");
@@ -86,11 +87,14 @@ MainWindow* MainWindow_init()
 
     mw->_HandleMessageFunc = HandleMessage;
 
+    mw->_panelList = PanelList_init();
+
     return mw;
 }
 
 void MainWindow_free(MainWindow* mw)
 {
+    PanelList_free(mw->_panelList);
     free(mw);
 }
 

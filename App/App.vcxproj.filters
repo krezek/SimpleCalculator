@@ -30,6 +30,9 @@
     <ClCompile Include="src\cmdhandler.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\panel.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\platform.h">
@@ -48,6 +51,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="include\panel.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

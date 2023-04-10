@@ -1,6 +1,7 @@
 #ifndef _MAIN_WND_H_
 #define _MAIN_WND_H_
 
+typedef struct _PanelList PanelList;
 typedef struct _MainWindow MainWindow;
 
 typedef LRESULT(*HandleMessageFunc) (MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -8,6 +9,7 @@ typedef LRESULT(*HandleMessageFunc) (MainWindow* _this, UINT uMsg, WPARAM wParam
 typedef struct _MainWindow
 {
 	HWND _hWnd;
+	PanelList* _panelList;
 
 	HandleMessageFunc _HandleMessageFunc;
 } MainWindow;
