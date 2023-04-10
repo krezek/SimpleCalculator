@@ -15,7 +15,37 @@ Panel* Panel_init()
 
 void Panel_free(Panel* p)
 {
+	free(p);
+}
 
+void Panel_Paint(Panel* p, HDC hdc, int x0, int y0)
+{
+	RECT rc;
+	rc.left = x0 + p->_x0;
+	rc.top = y0 + p->_y0;
+	rc.right = rc.left + p->_width;
+	rc.bottom = rc.top + p->_height;
+
+	FillRect(hdc, &rc, (HBRUSH)(COLOR_WINDOWFRAME));
+	SelectObject(hdc, GetStockObject(DC_PEN));
+
+	{
+		SetDCPenColor(hdc, RGB(255, 0, 0));
+		MoveToEx(hdc, x0 + p->_x0, y0 + p->_y0, NULL);
+		LineTo(hdc, x0 + p->_x0, y0 + p->_y0 + p->_height);
+		LineTo(hdc, x0 + p->_x0 + 10, y0 + p->_y0 + p->_height);
+		LineTo(hdc, x0 + p->_x0, y0 + p->_y0 + p->_height - x0 - p->_x0);
+		MoveToEx(hdc, x0 + p->_x0, y0 + p->_y0, NULL);
+		LineTo(hdc, x0 + p->_x0 + 10, y0 + p->_y0);
+	}
+
+	{
+		SetDCPenColor(hdc, RGB(255, 0, 0));
+		MoveToEx(hdc, x0 + p->_x0 + p->_width - 10, y0 + p->_y0, NULL);
+		LineTo(hdc, x0 + p->_x0 + p->_width, y0 + p->_y0);
+		LineTo(hdc, x0 + p->_x0 + p->_width, y0 + p->_y0 + p->_height);
+		LineTo(hdc, x0 + p->_x0 + p->_width - 10, y0 + p->_y0 + p->_height);
+	}
 }
 
 PanelNode* PanelNode_init(Panel* p, PanelNode* nxt, PanelNode* prv)
@@ -151,7 +181,7 @@ int PanelList_GetViewportHeight(PanelList* pl)
 	return y;
 }
 
-void PanelList_Paint(PanelList* pl, HDC hdc, RECT* rcPaint)
+void PanelList_Paint(PanelList* pl, HDC hdc, RECT* rcPaint, int x0, int y0)
 {
 	if (pl)
 	{
@@ -163,14 +193,14 @@ void PanelList_Paint(PanelList* pl, HDC hdc, RECT* rcPaint)
 				Panel* p = pn->_panel;
 				RECT rc, pRect;
 
-				pRect.left = p->_x0;
-				pRect.top = p->_y0;
+				pRect.left = x0 + p->_x0;
+				pRect.top = y0 + p->_y0;
 				pRect.right = pRect.left + p->_width;
 				pRect.bottom = pRect.top + p->_height;
 
 				if (IntersectRect(&rc, rcPaint, &pRect))
 				{
-					//p->_OnPaintFunc(pn->_panel, hdc);
+					Panel_Paint(pn->_panel, hdc, x0, y0);
 				}
 
 				pn = pn->_next;

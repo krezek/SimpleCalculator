@@ -92,6 +92,8 @@ MainWindow* MainWindow_init()
 
     mw->_HandleMessageFunc = HandleMessage;
 
+    mw->_x_current_pos = mw->_y_current_pos = 0;
+
     mw->_panelList = PanelList_init();
 
     return mw;
@@ -225,6 +227,12 @@ LRESULT OnCreate(MainWindow* mw)
         return -1;
     }
 
+    // for example
+    mw->_y_current_pos = mw->_ribbon_height;
+    PanelList_AddNewPanel(mw->_panelList);
+    PanelList_AddNewPanel(mw->_panelList);
+    PanelList_AddNewPanel(mw->_panelList);
+
     return 0;
 }
 
@@ -298,7 +306,7 @@ LRESULT OnPaint(MainWindow* mw)
 
     FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW));
 
-    PanelList_Paint(mw->_panelList, hdc, &ps.rcPaint);
+    PanelList_Paint(mw->_panelList, hdc, &ps.rcPaint, mw->_x_current_pos, mw->_y_current_pos);
 
     EndPaint(mw->_hWnd, &ps);
 

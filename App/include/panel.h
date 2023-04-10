@@ -28,6 +28,6 @@ void PanelList_free(PanelList* pl);
 void PanelList_AddNewPanel(PanelList* pl);
 int PanelList_GetViewportWidth(PanelList* pl);
 int PanelList_GetViewportHeight(PanelList* pl);
-void PanelList_Paint(PanelList* pl, HDC hdc, RECT* rcPaint);
+void PanelList_Paint(PanelList* pl, HDC hdc, RECT* rcPaint, int x0, int y0);
 
 #endif /* _PANEL_H_ */

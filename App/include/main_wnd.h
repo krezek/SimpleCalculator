@@ -14,6 +14,7 @@ typedef struct _MainWindow
 	
 	int _ribbon_height, _statusbar_height;
 	int _client_width, _client_height;
+	int _x_current_pos, _y_current_pos;
 	PanelList* _panelList;
 
 	HandleMessageFunc _HandleMessageFunc;
