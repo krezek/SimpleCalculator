@@ -255,9 +255,9 @@ LRESULT OnCreate(MainWindow* mw)
 
     // for example
     mw->_y_current_pos = mw->_ribbon_height;
-    PanelList_AddNewPanel(mw->_panelList);
-    PanelList_AddNewPanel(mw->_panelList);
-    PanelList_AddNewPanel(mw->_panelList);
+    PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
+    PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
+    PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
 
     return 0;
 }
@@ -282,18 +282,14 @@ LRESULT OnMouseWheel(MainWindow* mw, WPARAM wParam)
         if (zDelta < 0)
         {
             if (fsize > 12)
-            {
                 --fsize;
-            }
             
             PostMessage(mw->_hWnd, WM_SETFONTSIZE, MAKEWPARAM(fsize, 0), 0);
         }
         else
         {
             if (fsize < 72)
-            {
                 ++fsize;
-            }
 
             PostMessage(mw->_hWnd, WM_SETFONTSIZE, MAKEWPARAM(fsize, 0), 0);
         }
@@ -306,14 +302,11 @@ LRESULT OnMouseWheel(MainWindow* mw, WPARAM wParam)
             PostMessage(mw->_hWnd, WM_VSCROLL, MAKEWPARAM(SB_LINEUP, 0), 0);
     }
     
-
     return 0;
 }
 
 LRESULT OnSetFontSize(MainWindow* mw, int fsize)
 {
-    printf("fsize=%d\n", fsize);
-
     if (g_math_font)
         DeleteFont(g_math_font);
 

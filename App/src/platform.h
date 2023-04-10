@@ -5,6 +5,8 @@
 #define _CRTDBG_MAP_ALLOC
 #endif
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <windows.h>
 #include <windowsx.h>
 #include <CommCtrl.h>

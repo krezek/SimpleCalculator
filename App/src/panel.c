@@ -5,16 +5,28 @@
 #define PANEL_LIST_MARGIN_H 10
 #define PANEL_LIST_MARGIN_V 10
 
-Panel* Panel_init()
+Panel* Panel_init(const wchar_t* inStr, const wchar_t* outStr)
 {
 	Panel* p = (Panel*)malloc(sizeof(Panel));
 	assert(p != NULL);
+
+	p->_inStr = (wchar_t*)malloc((wcslen(inStr) + 1) * sizeof(wchar_t));
+	assert(p->_inStr != NULL);
+
+	p->_outStr = (wchar_t*)malloc((wcslen(outStr) + 1) * sizeof(wchar_t));
+	assert(p->_outStr != NULL);
+
+	wcscpy(p->_inStr, inStr);
+	wcscpy(p->_outStr, outStr);
 
 	return p;
 }
 
 void Panel_free(Panel* p)
 {
+	free(p->_outStr);
+	free(p->_inStr);
+
 	free(p);
 }
 
@@ -118,7 +130,7 @@ void PanelList_pushpack(PanelList* pl, Panel* p)
 	}
 }
 
-void PanelList_AddNewPanel(PanelList* pl)
+void PanelList_AddNewPanel(PanelList* pl, const wchar_t* inStr, const wchar_t* outStr)
 {
 	int x = PANEL_LIST_MARGIN_V;
 	int y = (pl->_rear) ? 
@@ -128,7 +140,7 @@ void PanelList_AddNewPanel(PanelList* pl)
 	int width = 200;
 	int height = 100;
 
-	Panel* p = Panel_init();
+	Panel* p = Panel_init(inStr, outStr);
 	p->_x0 = x;
 	p->_y0 = y;
 	p->_width = width;
