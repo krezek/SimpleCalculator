@@ -84,13 +84,13 @@
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\main_wnd.c" />
     <ClCompile Include="src\ribbon.c" />
-    <ClCompile Include="src\windbg.c" />
+    <ClCompile Include="src\winutil.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ids.h" />
     <ClInclude Include="include\main_wnd.h" />
     <ClInclude Include="include\ribbon.h" />
-    <ClInclude Include="include\windbg.h" />
+    <ClInclude Include="include\winutil.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\platform.h" />
   </ItemGroup>

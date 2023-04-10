@@ -1,11 +1,11 @@
 #include "platform.h"
 
 #include <main_wnd.h>
-#include <windbg.h>
+#include <winutil.h>
 #include <ribbon.h>
 
 static TCHAR szWindowClass[] = _T("DesktopApp");
-static TCHAR szTitle[] = _T("Simple Algebra System");
+static TCHAR szTitle[] = _T("Simple Computer Algebra System");
 
 LRESULT CALLBACK DefaultWindow_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM lParam);

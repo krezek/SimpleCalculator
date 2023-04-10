@@ -1,5 +1,5 @@
 #include "platform.h"
-#include <windbg.h>
+#include <winutil.h>
 
 void RedirectIOToConsole()
 {
