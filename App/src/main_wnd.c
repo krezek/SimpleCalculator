@@ -144,11 +144,74 @@ LRESULT OnCreate(MainWindow* mw)
         return -1;
     }
 
+    // Get StatusBar height
     RECT rc;
-
     SendMessage(mw->_hWndStatusBar, WM_SIZE, 0, 0);
     GetWindowRect(mw->_hWndStatusBar, &rc);
     mw->_statusbar_height = rc.bottom - rc.top;
+
+    mw->_hWndVScrollBar = CreateWindowEx(
+        0,
+        L"SCROLLBAR",
+        (PTSTR)NULL,
+        WS_CHILD | WS_VISIBLE | SBS_VERT,
+        0,
+        0,
+        0,
+        0,
+        mw->_hWnd,
+        (HMENU)NULL,
+        (HINSTANCE)GetWindowLongPtr(mw->_hWnd, GWLP_HINSTANCE),
+        (PVOID)NULL
+    );
+
+    if (!mw->_hWndVScrollBar)
+    {
+        ShowError(_T("MainWindow::OnCreate::Unable to Create V ScrollBar"));
+        return -1;
+    }
+
+    mw->_hWndHScrollBar = CreateWindowEx(
+        0,
+        L"SCROLLBAR",
+        (PTSTR)NULL,
+        WS_CHILD | WS_VISIBLE | SBS_HORZ,
+        0,
+        0,
+        0,
+        0,
+        mw->_hWnd,
+        (HMENU)NULL,
+        (HINSTANCE)GetWindowLongPtr(mw->_hWnd, GWLP_HINSTANCE),
+        (PVOID)NULL
+    );
+    
+    if (!mw->_hWndHScrollBar)
+    {
+        ShowError(_T("MainWindow::OnCreate::Unable to Create H ScrollBar"));
+        return -1;
+    }
+
+    mw->_hWndCorner = CreateWindowEx(
+        0,
+        L"BUTTON",
+        (PTSTR)NULL,
+        WS_CHILD | WS_VISIBLE | WS_DISABLED,
+        0,
+        0,
+        0,
+        0,
+        mw->_hWnd,
+        (HMENU)NULL,
+        (HINSTANCE)GetWindowLongPtr(mw->_hWnd, GWLP_HINSTANCE),
+        (PVOID)NULL
+    );
+
+    if (!mw->_hWndCorner)
+    {
+        ShowError(_T("MainWindow::OnCreate::Unable to Create Corner Button"));
+        return -1;
+    }
 
     return 0;
 }

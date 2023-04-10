@@ -9,9 +9,9 @@ typedef LRESULT(*HandleMessageFunc) (MainWindow* _this, UINT uMsg, WPARAM wParam
 typedef struct _MainWindow
 {
 	HWND _hWnd;
-	HWND _hWndVScrollBar, _hWndHScrollBar, _hWndCorner;
 	HWND _hWndStatusBar;
-
+	HWND _hWndVScrollBar, _hWndHScrollBar, _hWndCorner;
+	
 	int _ribbon_height, _statusbar_height;
 	PanelList* _panelList;
 
