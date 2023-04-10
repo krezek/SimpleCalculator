@@ -13,7 +13,7 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
 
 LRESULT OnCreate(MainWindow* mw);
 LRESULT OnDestroy(MainWindow* mw);
-LRESULT OnRibbonHeightChanged(MainWindow* mw, int h);
+LRESULT OnRibbonHeightChanged(MainWindow* mw);
 
 ATOM MainWindow_RegisterClass()
 {
@@ -110,7 +110,8 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
         return OnDestroy(_this);
 
     case WM_RIBBON_HEIGHT_CHANGED:
-        return OnRibbonHeightChanged(_this, (int)wParam);
+        _this->_ribbon_height = (int)wParam;
+        return OnRibbonHeightChanged(_this);
 
     default:
         return DefWindowProc(_this->_hWnd, uMsg, wParam, lParam);
@@ -125,6 +126,30 @@ LRESULT OnCreate(MainWindow* mw)
         return -1;
     }
 
+    mw->_hWndStatusBar = CreateWindowEx(
+        0,
+        STATUSCLASSNAME,
+        (PCTSTR)NULL,
+        SBARS_SIZEGRIP |
+        WS_CHILD | WS_VISIBLE,
+        0, 0, 0, 0,
+        mw->_hWnd,
+        NULL,
+        (HINSTANCE)GetWindowLongPtr(mw->_hWnd, GWLP_HINSTANCE),
+        NULL);
+
+    if (!mw->_hWndStatusBar)
+    {
+        ShowError(_T("MainWindow::OnCreate::Unable to Create Statusbar"));
+        return -1;
+    }
+
+    RECT rc;
+
+    SendMessage(mw->_hWndStatusBar, WM_SIZE, 0, 0);
+    GetWindowRect(mw->_hWndStatusBar, &rc);
+    mw->_statusbar_height = rc.bottom - rc.top;
+
     return 0;
 }
 
@@ -136,8 +161,8 @@ LRESULT OnDestroy(MainWindow* mw)
     return 0;
 }
 
-LRESULT OnRibbonHeightChanged(MainWindow* mw, int h)
+LRESULT OnRibbonHeightChanged(MainWindow* mw)
 {
-    printf("Ribbon height changed %d\n", h);
+    printf("Ribbon height changed %d\n", mw->_ribbon_height);
     return 0;
 }

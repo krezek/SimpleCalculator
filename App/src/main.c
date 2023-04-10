@@ -47,7 +47,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
         DispatchMessage(&msg);
     }
 
-    MainWindow_free((MainWindow*)mainWindow);
+    MainWindow_free(mainWindow);
 
     CoUninitialize();
 
