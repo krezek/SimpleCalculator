@@ -25,7 +25,7 @@ void RedirectIOToConsole()
 	freopen_s(&fp, "CONOUT$", "w", stderr);
 }
 
-void ShowError(const wchar_t* lpszFunction)
+void ShowError(LPCTSTR lpszFunction)
 {
 	// Retrieve the system error message for the last-error code
 

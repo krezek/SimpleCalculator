@@ -16,13 +16,13 @@ int WINAPI WinMain(HINSTANCE hInstance,
     HRESULT hr = CoInitialize(NULL);
     if (FAILED(hr))
     {
-        ShowError(L"WinMain:CoInitialize");
+        ShowError(_T("WinMain:CoInitialize"));
         return -1;
     }
 
     if (!MainWindow_RegisterClass())
     {
-        ShowError(L"Call to RegisterClass failed!");
+        ShowError(_T("Call to RegisterClass failed!"));
 
         return -1;
     }
@@ -31,7 +31,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
     if (!MainWindow_Create(mainWindow))
     {
-        ShowError(L"Call to CreateWindow failed!");
+        ShowError(_T("Call to CreateWindow failed!"));
 
         return -1;
     }

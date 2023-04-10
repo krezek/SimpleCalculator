@@ -117,7 +117,7 @@ LRESULT OnCreate(MainWindow* mw)
 {
     if (CreateRibbon(mw->_hWnd))
     {
-        ShowError(L"MainWindow::OnCreate::unable to create ribbon!");
+        ShowError(_T("MainWindow::OnCreate::unable to create ribbon!"));
         return -1;
     }
 

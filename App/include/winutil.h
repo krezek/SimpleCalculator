@@ -2,6 +2,6 @@
 #define _WINUTIL_H_
 
 void RedirectIOToConsole();
-void ShowError(const wchar_t* lpszFunction);
+void ShowError(LPCTSTR lpszFunction);
 
 #endif /* _WINUTIL_H_ */
