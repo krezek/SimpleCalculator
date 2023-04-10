@@ -13,6 +13,7 @@ typedef struct _MainWindow
 	HWND _hWndVScrollBar, _hWndHScrollBar, _hWndCorner;
 	
 	int _ribbon_height, _statusbar_height;
+	int _client_width, _client_height;
 	PanelList* _panelList;
 
 	HandleMessageFunc _HandleMessageFunc;
