@@ -13,6 +13,7 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
 
 LRESULT OnCreate(MainWindow* mw);
 LRESULT OnDestroy(MainWindow* mw);
+LRESULT OnRibbonHeightChanged(MainWindow* mw, int h);
 
 ATOM MainWindow_RegisterClass()
 {
@@ -108,6 +109,9 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
     case WM_DESTROY:
         return OnDestroy(_this);
 
+    case WM_RIBBON_HEIGHT_CHANGED:
+        return OnRibbonHeightChanged(_this, (int)wParam);
+
     default:
         return DefWindowProc(_this->_hWnd, uMsg, wParam, lParam);
     }
@@ -129,5 +133,11 @@ LRESULT OnDestroy(MainWindow* mw)
     DestroyRibbon();
     PostQuitMessage(0);
 
+    return 0;
+}
+
+LRESULT OnRibbonHeightChanged(MainWindow* mw, int h)
+{
+    printf("Ribbon height changed %d\n", h);
     return 0;
 }
