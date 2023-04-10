@@ -5,6 +5,8 @@
 #include <ribbon.h>
 #include <panel.h>
 
+#define SCROLLBAR_WIDE 20
+
 static TCHAR szWindowClass[] = _T("DesktopApp");
 static TCHAR szTitle[] = _T("Simple Computer Algebra System");
 
@@ -237,11 +239,50 @@ LRESULT OnSize(MainWindow* mw)
 
     printf("size changed (%d, %d)\n", mw->_client_width, mw->_client_height);
 
+    SendMessage(mw->_hWndStatusBar, WM_SIZE, 0, 0);
+
+    MoveWindow(mw->_hWndVScrollBar,
+        mw->_client_width - SCROLLBAR_WIDE,
+        mw->_ribbon_height,
+        SCROLLBAR_WIDE,
+        mw->_client_height - mw->_statusbar_height - mw->_ribbon_height - SCROLLBAR_WIDE,
+        TRUE);
+    InvalidateRect(mw->_hWndVScrollBar, NULL, TRUE);
+
+    MoveWindow(mw->_hWndHScrollBar,
+        0,
+        mw->_client_height - mw->_statusbar_height - SCROLLBAR_WIDE,
+        mw->_client_width - SCROLLBAR_WIDE,
+        SCROLLBAR_WIDE,
+        TRUE);
+    InvalidateRect(mw->_hWndHScrollBar, NULL, TRUE);
+
+    MoveWindow(mw->_hWndCorner,
+        mw->_client_width - SCROLLBAR_WIDE,
+        mw->_client_height - mw->_statusbar_height - SCROLLBAR_WIDE,
+        SCROLLBAR_WIDE,
+        SCROLLBAR_WIDE,
+        TRUE);
+    InvalidateRect(mw->_hWndCorner, NULL, TRUE);
+
     return 0;
 }
 
 LRESULT OnRibbonHeightChanged(MainWindow* mw)
 {
+    if (!IsWindowVisible(mw->_hWnd))
+        return 0;
+
     printf("Ribbon height changed %d\n", mw->_ribbon_height);
+
+    // Update Vertical ScrollBar when ribbon height changed
+    MoveWindow(mw->_hWndVScrollBar,
+        mw->_client_width - SCROLLBAR_WIDE,
+        mw->_ribbon_height,
+        SCROLLBAR_WIDE,
+        mw->_client_height - mw->_statusbar_height - mw->_ribbon_height - SCROLLBAR_WIDE,
+        TRUE);
+    InvalidateRect(mw->_hWndVScrollBar, NULL, TRUE);
+
     return 0;
 }

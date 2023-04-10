@@ -19,6 +19,7 @@ IUIFramework* _pFramework = NULL;
 IUICommandHandler* _pCommandHandler = NULL;
 
 LONG _cRef = 1;
+int _initialized = 0;
 UINT _uRibbonHeight = 0;
 
 extern IUICommandHandlerVtbl myCommand_Vtbl;
@@ -87,7 +88,10 @@ HRESULT STDMETHODCALLTYPE OnViewChanged(IUIApplication* This, UINT32 viewId,
 
                 if (_hFrameWnd)
                 {
-                    PostMessage(_hFrameWnd, WM_RIBBON_HEIGHT_CHANGED, _uRibbonHeight, 0);
+                    if(!_initialized)
+                        SendMessage(_hFrameWnd, WM_RIBBON_HEIGHT_CHANGED, _uRibbonHeight, 0);
+                    else
+                        PostMessage(_hFrameWnd, WM_RIBBON_HEIGHT_CHANGED, _uRibbonHeight, 0);
                 }
             }
         }
@@ -186,6 +190,8 @@ int CreateRibbon(HWND hWnd)
     }
 
     _pApplication->lpVtbl->Release(_pApplication);
+
+    _initialized = 1;
 
     return 0;
 }
