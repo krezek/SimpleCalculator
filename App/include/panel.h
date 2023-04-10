@@ -25,5 +25,7 @@ void Panel_free(Panel* p);
 
 PanelList* PanelList_init();
 void PanelList_free(PanelList* pl);
+int PanelList_GetViewportWidth(PanelList* pl);
+int PanelList_GetViewportHeight(PanelList* pl);
 
 #endif /* _PANEL_H_ */

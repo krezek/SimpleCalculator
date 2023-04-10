@@ -2,6 +2,9 @@
 
 #include <panel.h>
 
+#define PANEL_LIST_MARGIN_H 10
+#define PANEL_LIST_MARGIN_V 10
+
 Panel* Panel_init()
 {
 	Panel* p = (Panel*)malloc(sizeof(Panel));
@@ -85,3 +88,44 @@ void PanelList_pushpack(PanelList* pl, Panel* p)
 	}
 }
 
+int PanelList_GetViewportWidth(PanelList* pl)
+{
+	int w = 0;
+
+	if (pl)
+	{
+		if (pl->_front)
+		{
+			PanelNode* pn = pl->_front;
+			while (pn)
+			{
+				w = max(w, pn->_panel->_width);
+				pn = pn->_next;
+			}
+		}
+	}
+
+	w += PANEL_LIST_MARGIN_V * 2;
+
+	return w;
+}
+
+int PanelList_GetViewportHeight(PanelList* pl)
+{
+	int y = PANEL_LIST_MARGIN_H;
+
+	if (pl)
+	{
+		if (pl->_front)
+		{
+			PanelNode* pn = pl->_front;
+			while (pn)
+			{
+				y += pn->_panel->_height + PANEL_LIST_MARGIN_H;
+				pn = pn->_next;
+			}
+		}
+	}
+
+	return y;
+}
