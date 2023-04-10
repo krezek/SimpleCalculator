@@ -125,7 +125,37 @@ int PanelList_GetViewportHeight(PanelList* pl)
 				pn = pn->_next;
 			}
 		}
+		else
+			y += PANEL_LIST_MARGIN_H;
 	}
 
 	return y;
+}
+
+void PanelList_Paint(PanelList* pl, HDC hdc, RECT* rcPaint)
+{
+	if (pl)
+	{
+		if (pl->_front)
+		{
+			PanelNode* pn = pl->_front;
+			while (pn)
+			{
+				Panel* p = pn->_panel;
+				RECT rc, pRect;
+
+				pRect.left = p->_x0;
+				pRect.top = p->_y0;
+				pRect.right = pRect.left + p->_width;
+				pRect.bottom = pRect.top + p->_height;
+
+				if (IntersectRect(&rc, rcPaint, &pRect))
+				{
+					//p->_OnPaintFunc(pn->_panel, hdc);
+				}
+
+				pn = pn->_next;
+			}
+		}
+	}
 }

@@ -16,6 +16,7 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
 LRESULT OnCreate(MainWindow* mw);
 LRESULT OnDestroy(MainWindow* mw);
 LRESULT OnSize(MainWindow* mw);
+LRESULT OnPaint(MainWindow* mw);
 LRESULT OnRibbonHeightChanged(MainWindow* mw);
 
 ATOM MainWindow_RegisterClass()
@@ -120,6 +121,9 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
     case WM_RIBBON_HEIGHT_CHANGED:
         _this->_ribbon_height = (int)wParam;
         return OnRibbonHeightChanged(_this);
+
+    case WM_PAINT:
+        return OnPaint(_this);
 
     default:
         return DefWindowProc(_this->_hWnd, uMsg, wParam, lParam);
@@ -283,6 +287,20 @@ LRESULT OnRibbonHeightChanged(MainWindow* mw)
         mw->_client_height - mw->_statusbar_height - mw->_ribbon_height - SCROLLBAR_WIDE,
         TRUE);
     InvalidateRect(mw->_hWndVScrollBar, NULL, TRUE);
+
+    return 0;
+}
+
+LRESULT OnPaint(MainWindow* mw)
+{
+    PAINTSTRUCT ps;
+    HDC hdc = BeginPaint(mw->_hWnd, &ps);
+
+    FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW));
+
+    PanelList_Paint(mw->_panelList, hdc, &ps.rcPaint);
+
+    EndPaint(mw->_hWnd, &ps);
 
     return 0;
 }
