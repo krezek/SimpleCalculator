@@ -88,6 +88,25 @@ void PanelList_pushpack(PanelList* pl, Panel* p)
 	}
 }
 
+void PanelList_AddNewPanel(PanelList* pl)
+{
+	int x = PANEL_LIST_MARGIN_V;
+	int y = (pl->_rear) ? 
+		(pl->_rear->_panel->_y0 + pl->_rear->_panel->_height + PANEL_LIST_MARGIN_H) : 
+		PANEL_LIST_MARGIN_H;
+	// these value (width, height) must be calculated
+	int width = 200;
+	int height = 100;
+
+	Panel* p = Panel_init();
+	p->_x0 = x;
+	p->_y0 = y;
+	p->_width = width;
+	p->_height = height;
+
+	PanelList_pushpack(pl, p);
+}
+
 int PanelList_GetViewportWidth(PanelList* pl)
 {
 	int w = 0;
