@@ -31,7 +31,7 @@ Panel* Panel_init(const wchar_t* inStr, const wchar_t* outStr)
 
 	GList_pushback(p->_in_gitems_list, (GItem*)GItemChar_init(0));
 
-	p->_editor->_OnInitFunc(p->_editor, p->_in_gitems_list);
+	Editor_OnInit(p->_editor, p->_in_gitems_list);
 
 	return p;
 }

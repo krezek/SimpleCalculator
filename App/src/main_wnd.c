@@ -4,6 +4,7 @@
 #include <winutil.h>
 #include <ribbon.h>
 #include <panel.h>
+#include <editor.h>
 
 #define SCROLLBAR_WIDE 20
 #define INITIAL_FONTSIZE 16
@@ -670,7 +671,7 @@ LRESULT OnMousLButtonDown(MainWindow* mw, int x, int y)
     if (p)
     {
         mw->_selected_panel = p;
-        mw->_selected_panel->_editor->_OnUpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
+        Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
     }
 
     return 0;
@@ -679,7 +680,7 @@ LRESULT OnMousLButtonDown(MainWindow* mw, int x, int y)
 LRESULT OnSetFocus(MainWindow* mw)
 {
     if(mw->_selected_panel)
-        mw->_selected_panel->_editor->_OnSetFocusFunc(mw->_selected_panel->_editor, mw->_hWnd);
+        Editor_OnSetFocus(mw->_selected_panel->_editor, mw->_hWnd);
 
     return 0;
 }
@@ -687,7 +688,7 @@ LRESULT OnSetFocus(MainWindow* mw)
 LRESULT OnKillFocus(MainWindow* mw)
 {
     if(mw->_selected_panel)
-        mw->_selected_panel->_editor->_OnKillFocusFunc(mw->_selected_panel->_editor);
+        Editor_OnKillFocus(mw->_selected_panel->_editor);
 
     return 0;
 }
@@ -731,13 +732,13 @@ LRESULT OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam)
 
     case VK_LEFT:       // Left arrow 
     {
-        mw->_selected_panel->_editor->_OnKey_LeftArrowFunc(mw->_selected_panel->_editor, mw->_hWnd);
+        Editor_OnKey_LeftArrow(mw->_selected_panel->_editor, mw->_hWnd);
         break;
     }
 
     case VK_RIGHT:      // Right arrow
     {
-        mw->_selected_panel->_editor->_OnKey_RightArrowFunc(mw->_selected_panel->_editor, mw->_hWnd);
+        Editor_OnKey_RightArrow(mw->_selected_panel->_editor, mw->_hWnd);
         break;
     }
     case VK_UP:         // Up arrow 
@@ -748,7 +749,7 @@ LRESULT OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam)
 
     case VK_DELETE:     // Delete 
     {
-        mw->_selected_panel->_editor->_OnChar_DeleteFunc(mw->_selected_panel->_editor);
+        Editor_OnChar_Delete(mw->_selected_panel->_editor);
     }
     break;
     }
@@ -764,6 +765,12 @@ LRESULT OnChar(MainWindow* mw, WPARAM wParam, LPARAM lParam)
     {
     case 0x08:          // Backspace 
     {
+        Editor_OnChar_Backspace(mw->_selected_panel->_editor);
+        PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
+            mw->_ribbon_height - mw->_y_current_pos);
+        InvalidateRect(mw->_hWnd, NULL, TRUE);
+        Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
+
         break;
     }
 
@@ -789,16 +796,17 @@ LRESULT OnChar(MainWindow* mw, WPARAM wParam, LPARAM lParam)
 
     default:
     {
-        mw->_selected_panel->_editor->_OnChar_DefaultFunc(mw->_selected_panel->_editor, (wchar_t)wParam, mw->_hWnd);
-
+        Editor_OnChar_Default(mw->_selected_panel->_editor, (wchar_t)wParam, mw->_hWnd);
         PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
             mw->_ribbon_height - mw->_y_current_pos);
         InvalidateRect(mw->_hWnd, NULL, TRUE);
+        Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
 
-        mw->_selected_panel->_editor->_OnUpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
         break;
     }
     }
 
     ShowCaret(mw->_hWnd);
+
+    return 0;
 }
