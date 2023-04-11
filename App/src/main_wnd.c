@@ -24,6 +24,9 @@ LRESULT OnSetFontSize(MainWindow* mw, int fsize);
 LRESULT OnSize(MainWindow* mw);
 LRESULT OnPaint(MainWindow* mw);
 LRESULT OnRibbonHeightChanged(MainWindow* mw);
+void SetScrollbarInfo(MainWindow* mw);
+LRESULT OnVScroll(MainWindow* mw, WPARAM wParam);
+LRESULT OnHScroll(MainWindow* mw, WPARAM wParam);
 
 ATOM MainWindow_RegisterClass()
 {
@@ -138,6 +141,12 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
 
     case WM_MOUSEWHEEL:
         return OnMouseWheel(_this, wParam);
+
+    case WM_VSCROLL:
+        return OnVScroll(_this, wParam);
+
+    case WM_HSCROLL:
+        return OnHScroll(_this, wParam);
 
     default:
         return DefWindowProc(_this->_hWnd, uMsg, wParam, lParam);
@@ -254,7 +263,9 @@ LRESULT OnCreate(MainWindow* mw)
     }
 
     // for example
-    mw->_y_current_pos = mw->_ribbon_height;
+    PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
+    PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
+    PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
     PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
     PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
     PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
@@ -340,7 +351,7 @@ LRESULT OnSize(MainWindow* mw)
         mw->_client_height - mw->_statusbar_height - mw->_ribbon_height - SCROLLBAR_WIDE,
         TRUE);
     InvalidateRect(mw->_hWndVScrollBar, NULL, TRUE);
-
+    
     MoveWindow(mw->_hWndHScrollBar,
         0,
         mw->_client_height - mw->_statusbar_height - SCROLLBAR_WIDE,
@@ -356,6 +367,9 @@ LRESULT OnSize(MainWindow* mw)
         SCROLLBAR_WIDE,
         TRUE);
     InvalidateRect(mw->_hWndCorner, NULL, TRUE);
+
+    SetScrollbarInfo(mw);
+    InvalidateRect(mw->_hWnd, NULL, TRUE);
 
     return 0;
 }
@@ -376,6 +390,9 @@ LRESULT OnRibbonHeightChanged(MainWindow* mw)
         TRUE);
     InvalidateRect(mw->_hWndVScrollBar, NULL, TRUE);
 
+    SetScrollbarInfo(mw);
+    InvalidateRect(mw->_hWnd, NULL, TRUE);
+
     return 0;
 }
 
@@ -386,9 +403,180 @@ LRESULT OnPaint(MainWindow* mw)
 
     FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW));
 
-    PanelList_Paint(mw->_panelList, hdc, &ps.rcPaint, mw->_x_current_pos, mw->_y_current_pos);
+    PanelList_Paint(mw->_panelList, 
+        hdc, 
+        &ps.rcPaint, 
+        - mw->_x_current_pos, 
+        mw->_ribbon_height - mw->_y_current_pos);
 
     EndPaint(mw->_hWnd, &ps);
+
+    return 0;
+}
+
+void SetScrollbarInfo(MainWindow* mw)
+{
+    SCROLLINFO siv, sih;
+
+    int v = PanelList_GetViewportHeight(mw->_panelList) -
+        mw->_client_height + mw->_ribbon_height + mw->_statusbar_height + SCROLLBAR_WIDE;
+    v = v > 0 ? v : 0;
+
+    mw->_yMaxScroll = v;
+    siv.cbSize = sizeof(siv);
+    siv.fMask = SIF_RANGE | SIF_POS;
+    siv.nMin = 0;
+    siv.nMax = mw->_yMaxScroll;
+    siv.nPos = mw->_y_current_pos;
+    SetScrollInfo(mw->_hWndVScrollBar, SB_CTL, &siv, TRUE);
+
+    int h = PanelList_GetViewportWidth(mw->_panelList) -
+        mw->_client_width + SCROLLBAR_WIDE;
+    h = h > 0 ? h : 0;
+
+    mw->_xMaxScroll = h;
+    sih.cbSize = sizeof(sih);
+    sih.fMask = SIF_RANGE | SIF_POS;
+    sih.nMin = 0;
+    sih.nMax = mw->_xMaxScroll;
+    sih.nPos = mw->_x_current_pos;
+    SetScrollInfo(mw->_hWndHScrollBar, SB_CTL, &sih, TRUE);
+}
+
+LRESULT OnVScroll(MainWindow* mw, WPARAM wParam)
+{
+    int xDelta = 0;
+    int yNewPos;
+    int yDelta;
+
+    switch (LOWORD(wParam))
+    {
+    case SB_PAGEUP:
+        yNewPos = mw->_y_current_pos - 60;
+        break;
+
+    case SB_PAGEDOWN:
+        yNewPos = mw->_y_current_pos + 60;
+        break;
+
+    case SB_LINEUP:
+        yNewPos = mw->_y_current_pos - 20;
+        break;
+
+    case SB_LINEDOWN:
+        yNewPos = mw->_y_current_pos + 20;
+        break;
+
+    case SB_THUMBPOSITION:
+        yNewPos = HIWORD(wParam);
+        break;
+
+    default:
+        yNewPos = mw->_y_current_pos;
+    }
+
+    yNewPos = max(0, yNewPos);
+    yNewPos = min(mw->_yMaxScroll, yNewPos);
+
+    // If the current position does not change, do not scroll.
+    if (yNewPos == mw->_y_current_pos)
+        return 0;
+
+    // Determine the amount scrolled (in pixels). 
+    yDelta = yNewPos - mw->_y_current_pos;
+
+    // Reset the current scroll position. 
+    mw->_y_current_pos = yNewPos;
+
+    //mw->_panels->_OnPosChangedFunc(mw->_panels);
+    //mw->_panels->_selected_panel->_editor->_OnUpdateCaret(mw->_panels->_selected_panel->_editor);
+
+    RECT rc;
+    rc.left = 0;
+    rc.top = mw->_ribbon_height;
+    rc.right = mw->_client_width - SCROLLBAR_WIDE;
+    rc.bottom = mw->_client_height - mw->_statusbar_height - SCROLLBAR_WIDE;
+
+    ScrollWindowEx(mw->_hWnd, -xDelta, -yDelta, &rc,
+        &rc, (HRGN)NULL, (RECT*)NULL,
+        SW_INVALIDATE);
+    UpdateWindow(mw->_hWnd);
+
+    // Reset the scroll bar. 
+    SCROLLINFO si;
+    si.cbSize = sizeof(si);
+    si.fMask = SIF_POS;
+    si.nPos = mw->_y_current_pos;
+    SetScrollInfo(mw->_hWndVScrollBar, SB_CTL, &si, TRUE);
+
+    return 0;
+}
+
+LRESULT OnHScroll(MainWindow* mw, WPARAM wParam)
+{
+    int xDelta;
+    int xNewPos;
+    int yDelta = 0;
+
+    switch (LOWORD(wParam))
+    {
+    case SB_PAGEUP:
+        xNewPos = mw->_x_current_pos - 60;
+        break;
+
+    case SB_PAGEDOWN:
+        xNewPos = mw->_x_current_pos + 60;
+        break;
+
+    case SB_LINEUP:
+        xNewPos = mw->_x_current_pos - 20;
+        break;
+
+    case SB_LINEDOWN:
+        xNewPos = mw->_x_current_pos + 20;
+        break;
+
+    case SB_THUMBPOSITION:
+        xNewPos = HIWORD(wParam);
+        break;
+
+    default:
+        xNewPos = mw->_x_current_pos;
+    }
+
+    xNewPos = max(0, xNewPos);
+    xNewPos = min(mw->_xMaxScroll, xNewPos);
+
+    // If the current position does not change, do not scroll.
+    if (xNewPos == mw->_x_current_pos)
+        return 0;
+
+    // Determine the amount scrolled (in pixels). 
+    xDelta = xNewPos - mw->_x_current_pos;
+
+    // Reset the current scroll position. 
+    mw->_x_current_pos = xNewPos;
+
+    //mw->_panels->_OnPosChangedFunc(mw->_panels);
+    //mw->_panels->_selected_panel->_editor->_OnUpdateCaret(mw->_panels->_selected_panel->_editor);
+
+    RECT rc;
+    rc.left = 0;
+    rc.top = mw->_ribbon_height;
+    rc.right = mw->_client_width - SCROLLBAR_WIDE;
+    rc.bottom = mw->_client_height - mw->_statusbar_height - SCROLLBAR_WIDE;
+
+    ScrollWindowEx(mw->_hWnd, -xDelta, -yDelta, &rc,
+        &rc, (HRGN)NULL, (RECT*)NULL,
+        SW_INVALIDATE);
+    UpdateWindow(mw->_hWnd);
+
+    // Reset the scroll bar. 
+    SCROLLINFO si;
+    si.cbSize = sizeof(si);
+    si.fMask = SIF_POS;
+    si.nPos = mw->_x_current_pos;
+    SetScrollInfo(mw->_hWndHScrollBar, SB_CTL, &si, TRUE);
 
     return 0;
 }

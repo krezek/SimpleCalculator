@@ -137,7 +137,7 @@ void PanelList_AddNewPanel(PanelList* pl, const wchar_t* inStr, const wchar_t* o
 		(pl->_rear->_panel->_y0 + pl->_rear->_panel->_height + PANEL_LIST_MARGIN_H) : 
 		PANEL_LIST_MARGIN_H;
 	// these value (width, height) must be calculated
-	int width = 200;
+	int width = 1000;
 	int height = 100;
 
 	Panel* p = Panel_init(inStr, outStr);
