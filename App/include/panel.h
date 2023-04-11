@@ -1,11 +1,16 @@
 #ifndef _PANEL_H_
 #define _PANEL_H_
 
+#include <gitems.h>
+
 typedef struct _Panel
 {
 	int _x0, _y0, _width, _height;
 	wchar_t* _inStr, * _outStr;
 	SIZE _inStrSize, _outStrSize, _paddingSize;
+
+	GList* _in_gitems_list;
+	GList* _out_gitems_list;
 } Panel;
 
 typedef struct _PanelNode
@@ -31,6 +36,6 @@ void PanelList_AddNewPanel(PanelList* pl, const wchar_t* inStr, const wchar_t* o
 int PanelList_GetViewportWidth(PanelList* pl);
 int PanelList_GetViewportHeight(PanelList* pl);
 void PanelList_Paint(PanelList* pl, HDC hdc, RECT* rcPaint, int x0, int y0);
-void PanelList_fontChangedEvent(PanelList* pl, HWND hWnd);
+void PanelList_PropertyChangedEvent(PanelList* pl, HWND hWnd, int x0, int y0);
 
 #endif /* _PANEL_H_ */

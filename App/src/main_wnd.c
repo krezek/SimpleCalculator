@@ -275,7 +275,8 @@ LRESULT OnCreate(MainWindow* mw)
     PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
     PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
     PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
-    PanelList_fontChangedEvent(mw->_panelList, mw->_hWnd);
+    PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
+        mw->_ribbon_height - mw->_y_current_pos);
 
     return 0;
 }
@@ -344,7 +345,8 @@ LRESULT OnSetFontSize(MainWindow* mw, int fsize)
 
     Graphics_fontList_init(g_math_font);
 
-    PanelList_fontChangedEvent(mw->_panelList, mw->_hWnd);
+    PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd , - mw->_x_current_pos,
+        mw->_ribbon_height - mw->_y_current_pos);
 
     SetScrollbarInfo(mw);
     InvalidateRect(mw->_hWnd, NULL, TRUE);
@@ -505,7 +507,10 @@ LRESULT OnVScroll(MainWindow* mw, WPARAM wParam)
     // Reset the current scroll position. 
     mw->_y_current_pos = yNewPos;
 
-    //mw->_panels->_OnPosChangedFunc(mw->_panels);
+    PanelList_PropertyChangedEvent(mw->_panelList, 
+        mw->_hWnd, 
+        - mw->_x_current_pos, 
+        mw->_ribbon_height - mw->_y_current_pos);
     //mw->_panels->_selected_panel->_editor->_OnUpdateCaret(mw->_panels->_selected_panel->_editor);
 
     RECT rc;
@@ -574,7 +579,10 @@ LRESULT OnHScroll(MainWindow* mw, WPARAM wParam)
     // Reset the current scroll position. 
     mw->_x_current_pos = xNewPos;
 
-    //mw->_panels->_OnPosChangedFunc(mw->_panels);
+    PanelList_PropertyChangedEvent(mw->_panelList,
+        mw->_hWnd,
+        -mw->_x_current_pos,
+        mw->_ribbon_height - mw->_y_current_pos);
     //mw->_panels->_selected_panel->_editor->_OnUpdateCaret(mw->_panels->_selected_panel->_editor);
 
     RECT rc;

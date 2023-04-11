@@ -1,5 +1,6 @@
 #include "platform.h"
 
+#include <gitems.h>
 #include <panel.h>
 
 #define PANEL_LIST_MARGIN_H 10
@@ -23,11 +24,30 @@ Panel* Panel_init(const wchar_t* inStr, const wchar_t* outStr)
 	wcscpy(p->_inStr, inStr);
 	wcscpy(p->_outStr, outStr);
 
+	p->_in_gitems_list = GList_init(NULL);
+	p->_out_gitems_list = GList_init(NULL);
+
+	// for test purpose
+	GList* num = GList_init(NULL);
+	GList_pushback(num, (GItem*)GItemChar_init(L'1'));
+	GList* den = GList_init(NULL);
+	GList_pushback(den, (GItem*)GItemChar_init(L'2'));
+	GList_pushback(p->_in_gitems_list, (GItem*)GItemFraction_init(num, den));
+
+	GList* num2 = GList_init(NULL);
+	GList_pushback(num2, (GItem*)GItemChar_init(L'3'));
+	GList* den2 = GList_init(NULL);
+	GList_pushback(den2, (GItem*)GItemChar_init(L'4'));
+	GList_pushback(p->_out_gitems_list, (GItem*)GItemFraction_init(num2, den2));
+
 	return p;
 }
 
 void Panel_free(Panel* p)
 {
+	GList_free(p->_in_gitems_list);
+	GList_free(p->_out_gitems_list);
+
 	free(p->_outStr);
 	free(p->_inStr);
 
@@ -66,28 +86,71 @@ void Panel_Paint(Panel* p, HDC hdc, int x0, int y0)
 
 	{
 		SetTextColor(hdc, RGB(255, 0, 0));
-		TextOut(hdc, x0 + p->_x0 + PANEL_MARGIN_V, y0 + p->_y0 + PANEL_MARGIN_H
-			, p->_inStr, (int)wcslen(p->_inStr));
-		TextOut(hdc, x0 + p->_x0 + PANEL_MARGIN_V, y0 + p->_y0 + 2 * PANEL_MARGIN_H + p->_inStrSize.cy
-			, p->_outStr, (int)wcslen(p->_outStr));
+		TextOut(hdc, 
+			x0 + p->_x0 + PANEL_MARGIN_V, 
+			y0 + p->_y0 + PANEL_MARGIN_H + 
+			max(p->_inStrSize.cy, p->_in_gitems_list->_height) / 2 - p->_inStrSize.cy / 2,
+			p->_inStr, 
+			(int)wcslen(p->_inStr));
+		TextOut(hdc, 
+			x0 + p->_x0 + PANEL_MARGIN_V, 
+			y0 + p->_y0 + 2 * PANEL_MARGIN_H + 
+			max(p->_inStrSize.cy, p->_in_gitems_list->_height) + 
+			max(p->_outStrSize.cy, p->_out_gitems_list->_height) / 2 - p->_outStrSize.cy / 2,
+			p->_outStr, 
+			(int)wcslen(p->_outStr));
+	}
+
+	SetTextColor(hdc, RGB(0, 0, 0)); 
+	SetDCPenColor(hdc, RGB(0, 0, 0));
+
+	if (p->_in_gitems_list)
+	{
+		GList_draw(p->_in_gitems_list, hdc);
+	}
+
+	if (p->_out_gitems_list)
+	{
+		GList_draw(p->_out_gitems_list, hdc);
 	}
 
 	SelectObject(hdc, hOldFont);
 }
 
-void Panel_fontChangedEvent(Panel* p, HWND hWnd)
+void Panel_PropertyChangedEvent(Panel* p, HWND hWnd, int x0, int y0)
 {
 	HDC hdc = GetDC(hWnd);
 	SelectObject(hdc, g_math_font);
+	SelectObject(hdc, GetStockObject(DC_PEN));
 
 	GetTextExtentPoint(hdc, p->_inStr, (int)wcslen(p->_inStr), &p->_inStrSize);
 	GetTextExtentPoint(hdc, p->_outStr, (int)wcslen(p->_outStr), &p->_outStrSize);
 	GetTextExtentPoint(hdc, L"W", 1, &p->_paddingSize);
 
+	GList_calcFontId(p->_in_gitems_list, 0);
+	GList_calcWidth(p->_in_gitems_list, hdc);
+	GList_calcHeight(p->_in_gitems_list, hdc);
+	GList_calcBaseLineY(p->_in_gitems_list, hdc);
+	GList_calcXY(p->_in_gitems_list, hdc,
+		x0 + p->_x0 + PANEL_MARGIN_V + p->_inStrSize.cx + p->_paddingSize.cx,
+		y0 + p->_y0 + PANEL_MARGIN_H + p->_in_gitems_list->_baseLineY);
+
+	GList_calcFontId(p->_out_gitems_list, 0);
+	GList_calcWidth(p->_out_gitems_list, hdc);
+	GList_calcHeight(p->_out_gitems_list, hdc);
+	GList_calcBaseLineY(p->_out_gitems_list, hdc);
+	GList_calcXY(p->_out_gitems_list, hdc,
+		x0 + p->_x0 + PANEL_MARGIN_V + p->_inStrSize.cx + p->_paddingSize.cx,
+		y0 + p->_y0 + PANEL_MARGIN_H * 2 + p->_out_gitems_list->_baseLineY + p->_in_gitems_list->_height);
+
 	ReleaseDC(hWnd, hdc);
 
-	p->_width = max(p->_inStrSize.cx, p->_outStrSize.cx) + p->_paddingSize.cx + 2 * PANEL_LIST_MARGIN_V;
-	p->_height = p->_inStrSize.cy + p->_outStrSize.cy + 3 * PANEL_MARGIN_H;
+	p->_width = max(p->_inStrSize.cx, p->_outStrSize.cx) + 
+		p->_paddingSize.cx + 2 * PANEL_LIST_MARGIN_V +
+		max(p->_in_gitems_list->_width, p->_out_gitems_list->_width);
+	p->_height = max(p->_inStrSize.cy, p->_in_gitems_list->_height) +
+		max(p->_outStrSize.cy,p->_out_gitems_list->_height) + 
+		3 * PANEL_MARGIN_H;
 }
 
 PanelNode* PanelNode_init(Panel* p, PanelNode* nxt, PanelNode* prv)
@@ -238,7 +301,7 @@ void PanelList_Paint(PanelList* pl, HDC hdc, RECT* rcPaint, int x0, int y0)
 	}
 }
 
-void PanelList_fontChangedEvent(PanelList* pl, HWND hWnd)
+void PanelList_PropertyChangedEvent(PanelList* pl, HWND hWnd, int x0, int y0)
 {
 	int x = PANEL_LIST_MARGIN_V;
 	int y = PANEL_LIST_MARGIN_H;
@@ -253,7 +316,7 @@ void PanelList_fontChangedEvent(PanelList* pl, HWND hWnd)
 				pn->_panel->_x0 = x;
 				pn->_panel->_y0 = y;
 
-				Panel_fontChangedEvent(pn->_panel, hWnd);
+				Panel_PropertyChangedEvent(pn->_panel, hWnd, x0, y0);
 
 				y += pn->_panel->_height + PANEL_LIST_MARGIN_H;
 
