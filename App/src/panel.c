@@ -4,6 +4,10 @@
 
 #define PANEL_LIST_MARGIN_H 10
 #define PANEL_LIST_MARGIN_V 10
+#define PANEL_MARGIN_H 5
+#define PANEL_MARGIN_V 5
+
+extern HFONT g_math_font;
 
 Panel* Panel_init(const wchar_t* inStr, const wchar_t* outStr)
 {
@@ -39,6 +43,7 @@ void Panel_Paint(Panel* p, HDC hdc, int x0, int y0)
 	rc.bottom = rc.top + p->_height;
 
 	FillRect(hdc, &rc, (HBRUSH)(COLOR_WINDOWFRAME));
+	HFONT hOldFont = SelectObject(hdc, g_math_font);
 	SelectObject(hdc, GetStockObject(DC_PEN));
 
 	{
@@ -58,6 +63,31 @@ void Panel_Paint(Panel* p, HDC hdc, int x0, int y0)
 		LineTo(hdc, x0 + p->_x0 + p->_width, y0 + p->_y0 + p->_height);
 		LineTo(hdc, x0 + p->_x0 + p->_width - 10, y0 + p->_y0 + p->_height);
 	}
+
+	{
+		SetTextColor(hdc, RGB(255, 0, 0));
+		TextOut(hdc, x0 + p->_x0 + PANEL_MARGIN_V, y0 + p->_y0 + PANEL_MARGIN_H
+			, p->_inStr, (int)wcslen(p->_inStr));
+		TextOut(hdc, x0 + p->_x0 + PANEL_MARGIN_V, y0 + p->_y0 + 2 * PANEL_MARGIN_H + p->_inStrSize.cy
+			, p->_outStr, (int)wcslen(p->_outStr));
+	}
+
+	SelectObject(hdc, hOldFont);
+}
+
+void Panel_fontChangedEvent(Panel* p, HWND hWnd)
+{
+	HDC hdc = GetDC(hWnd);
+	SelectObject(hdc, g_math_font);
+
+	GetTextExtentPoint(hdc, p->_inStr, (int)wcslen(p->_inStr), &p->_inStrSize);
+	GetTextExtentPoint(hdc, p->_outStr, (int)wcslen(p->_outStr), &p->_outStrSize);
+	GetTextExtentPoint(hdc, L"W", 1, &p->_paddingSize);
+
+	ReleaseDC(hWnd, hdc);
+
+	p->_width = max(p->_inStrSize.cx, p->_outStrSize.cx) + p->_paddingSize.cx + 2 * PANEL_LIST_MARGIN_V;
+	p->_height = p->_inStrSize.cy + p->_outStrSize.cy + 3 * PANEL_MARGIN_H;
 }
 
 PanelNode* PanelNode_init(Panel* p, PanelNode* nxt, PanelNode* prv)
@@ -132,20 +162,7 @@ void PanelList_pushpack(PanelList* pl, Panel* p)
 
 void PanelList_AddNewPanel(PanelList* pl, const wchar_t* inStr, const wchar_t* outStr)
 {
-	int x = PANEL_LIST_MARGIN_V;
-	int y = (pl->_rear) ? 
-		(pl->_rear->_panel->_y0 + pl->_rear->_panel->_height + PANEL_LIST_MARGIN_H) : 
-		PANEL_LIST_MARGIN_H;
-	// these value (width, height) must be calculated
-	int width = 1000;
-	int height = 100;
-
 	Panel* p = Panel_init(inStr, outStr);
-	p->_x0 = x;
-	p->_y0 = y;
-	p->_width = width;
-	p->_height = height;
-
 	PanelList_pushpack(pl, p);
 }
 
@@ -214,6 +231,31 @@ void PanelList_Paint(PanelList* pl, HDC hdc, RECT* rcPaint, int x0, int y0)
 				{
 					Panel_Paint(pn->_panel, hdc, x0, y0);
 				}
+
+				pn = pn->_next;
+			}
+		}
+	}
+}
+
+void PanelList_fontChangedEvent(PanelList* pl, HWND hWnd)
+{
+	int x = PANEL_LIST_MARGIN_V;
+	int y = PANEL_LIST_MARGIN_H;
+
+	if (pl)
+	{
+		if (pl->_front)
+		{
+			PanelNode* pn = pl->_front;
+			while (pn)
+			{
+				pn->_panel->_x0 = x;
+				pn->_panel->_y0 = y;
+
+				Panel_fontChangedEvent(pn->_panel, hWnd);
+
+				y += pn->_panel->_height + PANEL_LIST_MARGIN_H;
 
 				pn = pn->_next;
 			}

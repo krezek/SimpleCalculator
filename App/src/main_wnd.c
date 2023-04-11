@@ -269,6 +269,7 @@ LRESULT OnCreate(MainWindow* mw)
     PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
     PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
     PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
+    PanelList_fontChangedEvent(mw->_panelList, mw->_hWnd);
 
     return 0;
 }
@@ -323,7 +324,7 @@ LRESULT OnSetFontSize(MainWindow* mw, int fsize)
 
     // Create Font
     HDC hdc = GetDC(mw->_hWnd);
-    int lfHeight = -MulDiv(INITIAL_FONTSIZE, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+    int lfHeight = -MulDiv(fsize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
     g_math_font = CreateFont(lfHeight, 0, 0, 0, FALSE,
         FALSE, 0, 0, 0, 0, 0, 0, 0, L"Cambria");
     if (!g_math_font)
@@ -331,6 +332,11 @@ LRESULT OnSetFontSize(MainWindow* mw, int fsize)
         ShowError(_T("MainWindow::OnCreate::unable to create math font"));
         return -1;
     }
+
+    PanelList_fontChangedEvent(mw->_panelList, mw->_hWnd);
+
+    SetScrollbarInfo(mw);
+    InvalidateRect(mw->_hWnd, NULL, TRUE);
 
     return 0;
 }
