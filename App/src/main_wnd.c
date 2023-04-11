@@ -13,6 +13,7 @@ static TCHAR szWindowClass[] = _T("DesktopApp");
 static TCHAR szTitle[] = _T("Simple Computer Algebra System");
 
 HFONT g_math_font;
+HFONT g_fontList[5];
 
 LRESULT CALLBACK DefaultWindow_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -27,6 +28,9 @@ LRESULT OnRibbonHeightChanged(MainWindow* mw);
 void SetScrollbarInfo(MainWindow* mw);
 LRESULT OnVScroll(MainWindow* mw, WPARAM wParam);
 LRESULT OnHScroll(MainWindow* mw, WPARAM wParam);
+
+void Graphics_fontList_init(HANDLE hFont);
+void Graphics_fontList_free();
 
 ATOM MainWindow_RegisterClass()
 {
@@ -168,6 +172,8 @@ LRESULT OnCreate(MainWindow* mw)
 
     ReleaseDC(mw->_hWnd, hdc);
 
+    Graphics_fontList_init(g_math_font);
+
     // Create Ribbon
     if (CreateRibbon(mw->_hWnd))
     {
@@ -276,6 +282,7 @@ LRESULT OnCreate(MainWindow* mw)
 
 LRESULT OnDestroy(MainWindow* mw)
 {
+    Graphics_fontList_free();
     DeleteFont(g_math_font);
     DestroyRibbon();
     PostQuitMessage(0);
@@ -322,6 +329,8 @@ LRESULT OnSetFontSize(MainWindow* mw, int fsize)
     if (g_math_font)
         DeleteFont(g_math_font);
 
+    Graphics_fontList_free();
+
     // Create Font
     HDC hdc = GetDC(mw->_hWnd);
     int lfHeight = -MulDiv(fsize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
@@ -332,6 +341,8 @@ LRESULT OnSetFontSize(MainWindow* mw, int fsize)
         ShowError(_T("MainWindow::OnCreate::unable to create math font"));
         return -1;
     }
+
+    Graphics_fontList_init(g_math_font);
 
     PanelList_fontChangedEvent(mw->_panelList, mw->_hWnd);
 
@@ -585,4 +596,27 @@ LRESULT OnHScroll(MainWindow* mw, WPARAM wParam)
     SetScrollInfo(mw->_hWndHScrollBar, SB_CTL, &si, TRUE);
 
     return 0;
+}
+
+void Graphics_fontList_init(HANDLE hFont)
+{
+    g_fontList[0] = hFont;
+
+    for (int ix = 1; ix < sizeof(g_fontList) / sizeof(g_fontList[0]); ++ix)
+    {
+        LOGFONT logFont;
+        GetObject(hFont, sizeof(LOGFONT), &logFont);
+        logFont.lfHeight = (logFont.lfHeight + ix * 5 < 0) ? logFont.lfHeight + ix * 5 : -3;
+
+        g_fontList[ix] = CreateFontIndirect(&logFont);
+    }
+}
+
+void Graphics_fontList_free()
+{
+    for (int ix = 1; ix < sizeof(g_fontList) / sizeof(g_fontList[0]); ++ix)
+    {
+
+        DeleteObject(g_fontList[ix]);
+    }
 }
