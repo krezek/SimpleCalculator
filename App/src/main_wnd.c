@@ -393,8 +393,6 @@ LRESULT OnSize(MainWindow* mw)
     if (!IsWindowVisible(mw->_hWnd))
         return 0;
 
-    printf("size changed (%d, %d)\n", mw->_client_width, mw->_client_height);
-
     SendMessage(mw->_hWndStatusBar, WM_SIZE, 0, 0);
 
     MoveWindow(mw->_hWndVScrollBar,
@@ -431,8 +429,6 @@ LRESULT OnRibbonHeightChanged(MainWindow* mw)
 {
     if (!IsWindowVisible(mw->_hWnd))
         return 0;
-
-    printf("Ribbon height changed %d\n", mw->_ribbon_height);
 
     // Update Vertical ScrollBar when ribbon height changed
     MoveWindow(mw->_hWndVScrollBar,
@@ -545,7 +541,7 @@ LRESULT OnVScroll(MainWindow* mw, WPARAM wParam)
         mw->_hWnd, 
         - mw->_x_current_pos, 
         mw->_ribbon_height - mw->_y_current_pos);
-    //mw->_panels->_selected_panel->_editor->_OnUpdateCaret(mw->_panels->_selected_panel->_editor);
+    Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
 
     RECT rc;
     rc.left = 0;
@@ -617,7 +613,7 @@ LRESULT OnHScroll(MainWindow* mw, WPARAM wParam)
         mw->_hWnd,
         -mw->_x_current_pos,
         mw->_ribbon_height - mw->_y_current_pos);
-    //mw->_panels->_selected_panel->_editor->_OnUpdateCaret(mw->_panels->_selected_panel->_editor);
+    Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
 
     RECT rc;
     rc.left = 0;
