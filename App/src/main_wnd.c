@@ -440,6 +440,9 @@ LRESULT OnRibbonHeightChanged(MainWindow* mw)
     InvalidateRect(mw->_hWndVScrollBar, NULL, TRUE);
 
     SetScrollbarInfo(mw);
+    PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
+        mw->_ribbon_height - mw->_y_current_pos);
+    Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
     InvalidateRect(mw->_hWnd, NULL, TRUE);
 
     return 0;
