@@ -27,6 +27,9 @@ Panel* Panel_init(const wchar_t* inStr, const wchar_t* outStr)
 	p->_in_gitems_list = GList_init(NULL);
 	p->_out_gitems_list = GList_init(NULL);
 
+	p->_editor = Editor_init();
+	
+
 	// for test purpose
 	GList* num = GList_init(NULL);
 	GList_pushback(num, (GItem*)GItemChar_init(L'1'));
@@ -40,11 +43,15 @@ Panel* Panel_init(const wchar_t* inStr, const wchar_t* outStr)
 	GList_pushback(den2, (GItem*)GItemChar_init(L'4'));
 	GList_pushback(p->_out_gitems_list, (GItem*)GItemFraction_init(num2, den2));
 
+	p->_editor->_OnInitFunc(p->_editor, p->_in_gitems_list);
+
 	return p;
 }
 
 void Panel_free(Panel* p)
 {
+	Editor_free(p->_editor);
+
 	GList_free(p->_in_gitems_list);
 	GList_free(p->_out_gitems_list);
 
@@ -52,6 +59,19 @@ void Panel_free(Panel* p)
 	free(p->_inStr);
 
 	free(p);
+}
+
+RECT Panel_GetRect(Panel* p)
+{
+	RECT rc;
+
+	rc.left = p->_x0;
+	rc.top = p->_y0;
+
+	rc.right = rc.left + p->_width;
+	rc.bottom = rc.top + p->_height;
+
+	return rc;
 }
 
 void Panel_Paint(Panel* p, HDC hdc, int x0, int y0)
@@ -324,4 +344,30 @@ void PanelList_PropertyChangedEvent(PanelList* pl, HWND hWnd, int x0, int y0)
 			}
 		}
 	}
+}
+
+Panel* PanelList_GetPanelFromPoint(PanelList* pl, int px, int py)
+{
+	if (pl)
+	{
+		if (pl->_front)
+		{
+			PanelNode* pn = pl->_front;
+			while (pn)
+			{
+				POINT pt;
+				pt.x = px;
+				pt.y = py;
+
+				RECT rc = Panel_GetRect(pn->_panel);
+
+				if (PtInRect(&rc, pt))
+					return pn->_panel;
+
+				pn = pn->_next;
+			}
+		}
+	}
+
+	return NULL;
 }

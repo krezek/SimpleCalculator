@@ -1,6 +1,8 @@
 #ifndef _MAIN_WND_H_
 #define _MAIN_WND_H_
 
+#include <panel.h>
+
 typedef struct _PanelList PanelList;
 typedef struct _MainWindow MainWindow;
 
@@ -17,6 +19,7 @@ typedef struct _MainWindow
 	int _x_current_pos, _y_current_pos;
 	int _xMaxScroll, _yMaxScroll;
 	PanelList* _panelList;
+	Panel* _selected_panel;
 
 	HandleMessageFunc _HandleMessageFunc;
 } MainWindow;

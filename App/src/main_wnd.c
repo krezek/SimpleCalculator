@@ -28,6 +28,9 @@ LRESULT OnRibbonHeightChanged(MainWindow* mw);
 void SetScrollbarInfo(MainWindow* mw);
 LRESULT OnVScroll(MainWindow* mw, WPARAM wParam);
 LRESULT OnHScroll(MainWindow* mw, WPARAM wParam);
+LRESULT OnMousLButtonDown(MainWindow* mw, int x, int y);
+LRESULT OnSetFocus(MainWindow* mw);
+LRESULT OnKillFocus(MainWindow* mw);
 
 void Graphics_fontList_init(HANDLE hFont);
 void Graphics_fontList_free();
@@ -108,6 +111,7 @@ MainWindow* MainWindow_init()
     mw->_x_current_pos = mw->_y_current_pos = 0;
 
     mw->_panelList = PanelList_init();
+    mw->_selected_panel = NULL;
 
     return mw;
 }
@@ -151,6 +155,15 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
 
     case WM_HSCROLL:
         return OnHScroll(_this, wParam);
+
+    case WM_LBUTTONDOWN:
+        return OnMousLButtonDown(_this, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+
+    case WM_SETFOCUS:
+        return OnSetFocus(_this);
+
+    case WM_KILLFOCUS:
+        return OnKillFocus(_this);
 
     default:
         return DefWindowProc(_this->_hWnd, uMsg, wParam, lParam);
@@ -277,6 +290,8 @@ LRESULT OnCreate(MainWindow* mw)
     PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
     PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
         mw->_ribbon_height - mw->_y_current_pos);
+
+    mw->_selected_panel = mw->_panelList->_front->_panel;
 
     return 0;
 }
@@ -627,4 +642,34 @@ void Graphics_fontList_free()
 
         DeleteObject(g_fontList[ix]);
     }
+}
+
+LRESULT OnMousLButtonDown(MainWindow* mw, int x, int y)
+{
+    Panel* p = PanelList_GetPanelFromPoint(mw->_panelList, 
+        x + mw->_x_current_pos, 
+        y - mw->_ribbon_height + mw->_y_current_pos);
+    if (p)
+    {
+        mw->_selected_panel = p;
+        mw->_selected_panel->_editor->_OnUpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
+    }
+
+    return 0;
+}
+
+LRESULT OnSetFocus(MainWindow* mw)
+{
+    if(mw->_selected_panel)
+        mw->_selected_panel->_editor->_OnSetFocusFunc(mw->_selected_panel->_editor, mw->_hWnd);
+
+    return 0;
+}
+
+LRESULT OnKillFocus(MainWindow* mw)
+{
+    if(mw->_selected_panel)
+        mw->_selected_panel->_editor->_OnKillFocusFunc(mw->_selected_panel->_editor);
+
+    return 0;
 }

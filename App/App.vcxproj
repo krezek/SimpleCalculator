@@ -81,6 +81,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\cmdhandler.c" />
+    <ClCompile Include="src\editor.c" />
     <ClCompile Include="src\gitems.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\main_wnd.c" />
@@ -90,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ids.h" />
+    <ClInclude Include="include\editor.h" />
     <ClInclude Include="include\gitems.h" />
     <ClInclude Include="include\main_wnd.h" />
     <ClInclude Include="include\panel.h" />

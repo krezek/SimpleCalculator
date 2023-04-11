@@ -36,6 +36,9 @@
     <ClCompile Include="src\gitems.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\editor.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\platform.h">
@@ -60,6 +63,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="include\gitems.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="include\editor.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
