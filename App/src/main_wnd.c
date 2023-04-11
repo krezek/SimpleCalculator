@@ -31,6 +31,8 @@ LRESULT OnHScroll(MainWindow* mw, WPARAM wParam);
 LRESULT OnMousLButtonDown(MainWindow* mw, int x, int y);
 LRESULT OnSetFocus(MainWindow* mw);
 LRESULT OnKillFocus(MainWindow* mw);
+LRESULT OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam);
+LRESULT OnChar(MainWindow* mw, WPARAM wParam, LPARAM lParam);
 
 void Graphics_fontList_init(HANDLE hFont);
 void Graphics_fontList_free();
@@ -164,6 +166,22 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
 
     case WM_KILLFOCUS:
         return OnKillFocus(_this);
+
+    case WM_KEYDOWN:
+        return OnKeyDown(_this, wParam, lParam);
+
+    case WM_CHAR:
+    {
+        static int x = 2;
+        if (wParam == L'^')
+        {
+            --x;
+            if (x) return 0;
+            x = 2;
+        }
+
+        return OnChar(_this, wParam, lParam);
+    }
 
     default:
         return DefWindowProc(_this->_hWnd, uMsg, wParam, lParam);
@@ -672,4 +690,115 @@ LRESULT OnKillFocus(MainWindow* mw)
         mw->_selected_panel->_editor->_OnKillFocusFunc(mw->_selected_panel->_editor);
 
     return 0;
+}
+
+LRESULT OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam)
+{
+    switch (wParam)
+    {
+    case VK_F1:
+    {
+        HINSTANCE r = ShellExecute(NULL, L"open", L"https://krezek.github.io/SimpleCalculator/index.html", NULL, NULL, SW_SHOWNORMAL);
+
+        if (r <= (HINSTANCE)32)
+        {
+            ShowError(L"Could not open help file.");
+        }
+    }
+    break;
+
+    case VK_RETURN:
+        if (GetKeyState(VK_SHIFT) < 0)
+        {
+        }
+        else
+        {
+        }
+
+        break;
+
+    case VK_HOME:       // Home 
+        break;
+
+    case VK_END:        // End 
+        break;
+
+    case VK_PRIOR:      // Page Up 
+        break;
+
+    case VK_NEXT:       // Page Down 
+        break;
+
+    case VK_LEFT:       // Left arrow 
+    {
+        mw->_selected_panel->_editor->_OnKey_LeftArrowFunc(mw->_selected_panel->_editor, mw->_hWnd);
+        break;
+    }
+
+    case VK_RIGHT:      // Right arrow
+    {
+        mw->_selected_panel->_editor->_OnKey_RightArrowFunc(mw->_selected_panel->_editor, mw->_hWnd);
+        break;
+    }
+    case VK_UP:         // Up arrow 
+        break;
+
+    case VK_DOWN:       // Down arrow 
+        break;
+
+    case VK_DELETE:     // Delete 
+    {
+        mw->_selected_panel->_editor->_OnChar_DeleteFunc(mw->_selected_panel->_editor);
+    }
+    break;
+    }
+
+    return 0;
+}
+
+LRESULT OnChar(MainWindow* mw, WPARAM wParam, LPARAM lParam)
+{
+    HideCaret(mw->_hWnd);
+
+    switch (wParam)
+    {
+    case 0x08:          // Backspace 
+    {
+        break;
+    }
+
+    case 0x09:          // Tab 
+    {
+        // Todo: Implement Tab navigation
+        if (GetKeyState(VK_SHIFT) < 0)
+        {
+        }
+        else
+        {
+        }
+    }
+    break;
+
+    case 0x0D:          // Carriage return 
+        break;
+
+    case 0x1B:        // Escape 
+    case 0x0A:        // Linefeed 
+        MessageBeep((UINT)-1);
+        break;
+
+    default:
+    {
+        mw->_selected_panel->_editor->_OnChar_DefaultFunc(mw->_selected_panel->_editor, (wchar_t)wParam, mw->_hWnd);
+
+        PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
+            mw->_ribbon_height - mw->_y_current_pos);
+        InvalidateRect(mw->_hWnd, NULL, TRUE);
+
+        mw->_selected_panel->_editor->_OnUpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
+        break;
+    }
+    }
+
+    ShowCaret(mw->_hWnd);
 }

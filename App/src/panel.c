@@ -28,20 +28,8 @@ Panel* Panel_init(const wchar_t* inStr, const wchar_t* outStr)
 	p->_out_gitems_list = GList_init(NULL);
 
 	p->_editor = Editor_init();
-	
 
-	// for test purpose
-	GList* num = GList_init(NULL);
-	GList_pushback(num, (GItem*)GItemChar_init(L'1'));
-	GList* den = GList_init(NULL);
-	GList_pushback(den, (GItem*)GItemChar_init(L'2'));
-	GList_pushback(p->_in_gitems_list, (GItem*)GItemFraction_init(num, den));
-
-	GList* num2 = GList_init(NULL);
-	GList_pushback(num2, (GItem*)GItemChar_init(L'3'));
-	GList* den2 = GList_init(NULL);
-	GList_pushback(den2, (GItem*)GItemChar_init(L'4'));
-	GList_pushback(p->_out_gitems_list, (GItem*)GItemFraction_init(num2, den2));
+	GList_pushback(p->_in_gitems_list, (GItem*)GItemChar_init(0));
 
 	p->_editor->_OnInitFunc(p->_editor, p->_in_gitems_list);
 
