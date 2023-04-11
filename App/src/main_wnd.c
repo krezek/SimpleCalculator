@@ -300,12 +300,6 @@ LRESULT OnCreate(MainWindow* mw)
         return -1;
     }
 
-    // for example
-    PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
-    PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
-    PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
-    PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
-    PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
     PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
     PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
         mw->_ribbon_height - mw->_y_current_pos);
