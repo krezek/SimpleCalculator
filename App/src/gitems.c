@@ -18,13 +18,16 @@ GNode* GNode_init(GItem* pGItem, GNode* n, GNode* p)
 
 void GNode_free(GNode* pn)
 {
-	// call free function for each GItem object
-	pn->_pGItem->_freeFunc(pn->_pGItem);
+	if (pn->_pGItem)
+	{
+		// call free function for each GItem object
+		pn->_pGItem->_freeFunc(pn->_pGItem);
 
-	// deallocate GItem object
-	free(pn->_pGItem);
-	pn->_pGItem = NULL;
-
+		// deallocate GItem object
+		free(pn->_pGItem);
+		pn->_pGItem = NULL;
+	}
+	
 	free(pn);
 }
 
