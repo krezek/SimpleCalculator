@@ -1,7 +1,20 @@
 #include "platform.h"
 
-#include "parser.h"
-#include "lexer.h"
+#include <math_parser.h>
+#include <lexer.h>
+
+MParser* MParser_init()
+{
+	MParser* mp = (MParser*)malloc(sizeof(MParser));
+	assert(mp != NULL);
+
+	return mp;
+}
+
+void MParser_free(MParser* mp)
+{
+	free(mp);
+}
 
 ///////////////////////// Stack //////////////////////////
 
@@ -56,21 +69,21 @@ static void* stack_pop(StackNode** root)
 //    primary : func "(" expr ")" | "(" expr ")" | number | literal | symbol .
 //    func : "Sigma" | "Integrate" | "Derivative" | CommFunc
 
-static int list(Parser* pp, void** pItems, TokensQueue* tokens);
-static int equ(Parser* pp, void** pItems, TokensQueue* tokens);
-static int expr(Parser* pp, void** pItems, TokensQueue* tokens);
-static int term(Parser* pp, void** pItems, TokensQueue* tokens);
-static int factor(Parser* pp, void** pItems, TokensQueue* tokens);
-static int factorial(Parser* pp, void** pItems, TokensQueue* tokens);
-static int power(Parser* pp, void** pItems, TokensQueue* tokens);
-static int subscript(Parser* pp, void** pItems, TokensQueue* tokens);
-static int primary(Parser* pp, void** pItems, TokensQueue* tokens);
-static int func(Parser* pp, void** pItems, TokensQueue* tokens);
-static int number(Parser* pp, void** pItems, TokensQueue* tokens);
-static int literal(Parser* pp, void** pItems, TokensQueue* tokens);
-static int symbol(Parser* pp, void** pItems, TokensQueue* tokens);
+static int list(MParser* pp, void** pItems, TokensQueue* tokens);
+static int equ(MParser* pp, void** pItems, TokensQueue* tokens);
+static int expr(MParser* pp, void** pItems, TokensQueue* tokens);
+static int term(MParser* pp, void** pItems, TokensQueue* tokens);
+static int factor(MParser* pp, void** pItems, TokensQueue* tokens);
+static int factorial(MParser* pp, void** pItems, TokensQueue* tokens);
+static int power(MParser* pp, void** pItems, TokensQueue* tokens);
+static int subscript(MParser* pp, void** pItems, TokensQueue* tokens);
+static int primary(MParser* pp, void** pItems, TokensQueue* tokens);
+static int func(MParser* pp, void** pItems, TokensQueue* tokens);
+static int number(MParser* pp, void** pItems, TokensQueue* tokens);
+static int literal(MParser* pp, void** pItems, TokensQueue* tokens);
+static int symbol(MParser* pp, void** pItems, TokensQueue* tokens);
 
-int Parser_do(Parser* pp, void** pItems, const wchar_t* s)
+int MParser_do(MParser* pp, void** pItems, const wchar_t* s)
 {
 	void* nodes = NULL;
 	int rs = 0;
@@ -103,7 +116,7 @@ int Parser_do(Parser* pp, void** pItems, const wchar_t* s)
 }
 
 //    list : equ {(",") equ} .
-static int list(Parser* pp, void** pItems, TokensQueue* tokens)
+static int list(MParser* pp, void** pItems, TokensQueue* tokens)
 {
 	int rs;
 	void* node = NULL;
@@ -138,7 +151,7 @@ static int list(Parser* pp, void** pItems, TokensQueue* tokens)
 }
 
 //    equ : expr {("=") expr} .
-static int equ(Parser* pp, void** pItems, TokensQueue* tokens)
+static int equ(MParser* pp, void** pItems, TokensQueue* tokens)
 {
 	int rs;
 	void* node = NULL;
@@ -172,7 +185,7 @@ static int equ(Parser* pp, void** pItems, TokensQueue* tokens)
 }
 
 //    expr : term {("+"|"-") term} .
-static int expr(Parser* pp, void** pItems, TokensQueue* tokens)
+static int expr(MParser* pp, void** pItems, TokensQueue* tokens)
 {
 	int rs;
 	void* node = NULL;
@@ -224,7 +237,7 @@ static int expr(Parser* pp, void** pItems, TokensQueue* tokens)
 }
 
 //    term : factor {("*"|"/"|"%") factor} .
-static int term(Parser* pp, void** pItems, TokensQueue* tokens)
+static int term(MParser* pp, void** pItems, TokensQueue* tokens)
 {
 	int rs;
 	void* node = NULL;
@@ -276,7 +289,7 @@ static int term(Parser* pp, void** pItems, TokensQueue* tokens)
 }
 
 //    factor: "-" factorial | "+" factorial | factorial .
-static int factor(Parser* pp, void** pItems, TokensQueue* tokens)
+static int factor(MParser* pp, void** pItems, TokensQueue* tokens)
 {
 	void* node = NULL;
 	Token* signToken = NULL;
@@ -307,7 +320,7 @@ static int factor(Parser* pp, void** pItems, TokensQueue* tokens)
 }
 
 //    factorial : power "!" | power
-static int factorial(Parser* pp, void** pItems, TokensQueue* tokens)
+static int factorial(MParser* pp, void** pItems, TokensQueue* tokens)
 {
 	void* node = NULL;
 	int rs;
@@ -334,7 +347,7 @@ static int factorial(Parser* pp, void** pItems, TokensQueue* tokens)
 }
 
 //    power : subscript { "^" subscript } .
-static int power(Parser* pp, void** pItems, TokensQueue* tokens)
+static int power(MParser* pp, void** pItems, TokensQueue* tokens)
 {
 	void* node = NULL;
 	int rs;
@@ -383,7 +396,7 @@ static int power(Parser* pp, void** pItems, TokensQueue* tokens)
 }
 
 //    subscript : primary { "_" primary } .
-static int subscript(Parser* pp, void** pItems, TokensQueue* tokens)
+static int subscript(MParser* pp, void** pItems, TokensQueue* tokens)
 {
 	void* node = NULL;
 	int rs;
@@ -432,7 +445,7 @@ static int subscript(Parser* pp, void** pItems, TokensQueue* tokens)
 }
 
 //    primary : func "(" expr ")" | "(" expr ")" | number | literal | symbol.
-static int primary(Parser* pp, void** pItems, TokensQueue* tokens)
+static int primary(MParser* pp, void** pItems, TokensQueue* tokens)
 {
 	void* node = NULL;
 	int rs = -1;
@@ -505,7 +518,7 @@ static int primary(Parser* pp, void** pItems, TokensQueue* tokens)
 }
 
 //    func : "Sigma" | "Integrate" | "Derivative" | CommFunc
-static int func(Parser* pp, void** pItems, TokensQueue* tokens)
+static int func(MParser* pp, void** pItems, TokensQueue* tokens)
 {
 	void* node = NULL;
 	int rs = -1;
@@ -723,7 +736,7 @@ static int func(Parser* pp, void** pItems, TokensQueue* tokens)
 }
 
 //    number .
-static int number(Parser* pp, void** pItems, TokensQueue* tokens)
+static int number(MParser* pp, void** pItems, TokensQueue* tokens)
 {
 	void* node = NULL;
 	int rs = -1;
@@ -737,7 +750,7 @@ static int number(Parser* pp, void** pItems, TokensQueue* tokens)
 }
 
 //    symbol .
-static int symbol(Parser* pp, void** pItems, TokensQueue* tokens)
+static int symbol(MParser* pp, void** pItems, TokensQueue* tokens)
 {
 	void* node = NULL;
 	int rs = -1;
@@ -751,7 +764,7 @@ static int symbol(Parser* pp, void** pItems, TokensQueue* tokens)
 }
 
 //    literal .
-static int literal(Parser* pp, void** pItems, TokensQueue* tokens)
+static int literal(MParser* pp, void** pItems, TokensQueue* tokens)
 {
 	void* node = NULL;
 	int rs = -1;

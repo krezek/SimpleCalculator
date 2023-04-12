@@ -12,13 +12,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\lexer.h" />
-    <ClInclude Include="include\parser.h" />
+    <ClInclude Include="include\math_parser.h" />
     <ClInclude Include="include\strg.h" />
     <ClInclude Include="src\platform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\lexer.c" />
-    <ClCompile Include="src\parser.c" />
+    <ClCompile Include="src\math_parser.c" />
     <ClCompile Include="src\strg.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

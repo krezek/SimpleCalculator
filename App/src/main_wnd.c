@@ -38,6 +38,8 @@ LRESULT OnChar(MainWindow* mw, WPARAM wParam, LPARAM lParam);
 void Graphics_fontList_init(HANDLE hFont);
 void Graphics_fontList_free();
 
+extern void parse_test();
+
 ATOM MainWindow_RegisterClass()
 {
     WNDCLASSEX wcex;
@@ -704,6 +706,7 @@ LRESULT OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam)
     case VK_RETURN:
         if (GetKeyState(VK_SHIFT) < 0)
         {
+            parse_test();
         }
         else
         {

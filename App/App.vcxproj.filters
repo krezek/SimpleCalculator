@@ -39,6 +39,9 @@
     <ClCompile Include="src\editor.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\parse_helper.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\platform.h">

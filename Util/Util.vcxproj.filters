@@ -18,7 +18,7 @@
     <ClInclude Include="include\lexer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="include\parser.h">
+    <ClInclude Include="include\math_parser.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="include\strg.h">
@@ -32,7 +32,7 @@
     <ClCompile Include="src\lexer.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\parser.c">
+    <ClCompile Include="src\math_parser.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\strg.c">

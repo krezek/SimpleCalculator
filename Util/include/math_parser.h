@@ -1,5 +1,5 @@
-#ifndef _PARSER_H_
-#define _PARSER_H_
+#ifndef _MATH_PARSER_H_
+#define _MATH_PARSER_H_
 
 #include <wchar.h>
 
@@ -26,7 +26,7 @@ typedef void* (*PNumberFunc) (const wchar_t* s);
 typedef void* (*PSymbolFunc) (const wchar_t c);
 typedef void* (*PLiteralFunc) (const wchar_t* s);
 
-typedef struct _Parser
+typedef struct _MParser
 {
 	PListFunc _listFunc;
 	PEquFunc _equFunc;
@@ -48,9 +48,12 @@ typedef struct _Parser
 	PNumberFunc _numberFunc;
 	PSymbolFunc _symbolFunc;
 	PLiteralFunc _literalFunc;
-} Parser;
+} MParser;
 
-int Parser_do(Parser* pp, void** pgItems, const wchar_t* s);
+MParser* MParser_init();
+void MParser_free(MParser* mp);
 
-#endif /* _PARSER_H_ */
+int MParser_do(MParser* pp, void** pgItems, const wchar_t* s);
+
+#endif /* _MATH_PARSER_H_ */
 

@@ -1,7 +1,7 @@
 #ifndef _G_ITEMS_H_
 #define _G_ITEMS_H_
 
-//#include <strg.h>
+#include <strg.h>
 
 #define FRACTION_PADDING 10
 #define ROOT_PADDING 10
@@ -13,7 +13,7 @@ typedef struct _GList GList;
 typedef enum {GITEM_CHAR, GITEM_POWER, GITEM_FRACTION, GITEM_ROOT} GItemType;
 
 typedef void (*freeFunc) (GItem* _this);
-//typedef void (*_toStringFunc) (GItem* _this, String* str);
+typedef void (*_toStringFunc) (GItem* _this, String* str);
 typedef void (*fontIdFunc) (GItem* _this, int id);
 typedef int (*widthFunc) (GItem* _this, HDC hdc);
 typedef int (*heightFunc) (GItem* _this, HDC hdc);
@@ -57,7 +57,7 @@ typedef struct _GItem
 	baseLineYFunc _baseLineYFunc;
 	calcXYFunc _calcXYFunc;
 	drawFunc _drawFunc;
-	//_toStringFunc _toStringFunc;
+	_toStringFunc _toStringFunc;
 } GItem;
 
 typedef struct
@@ -97,7 +97,7 @@ GList* GList_init(GList* parent);
 void GList_free(GList* gll);
 void GList_pushback(GList* gll, GItem* pGItem);
 
-//void GList_toString(GList* gll, String* str);
+void GList_toString(GList* gll, String* str);
 
 void GList_calcFontId(GList* gll, int id);
 void GList_calcWidth(GList* gll, HDC hdc);

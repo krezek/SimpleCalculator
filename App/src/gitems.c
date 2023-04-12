@@ -78,7 +78,7 @@ void GList_pushback(GList* gll, GItem* pGItem)
 	}
 }
 
-/*void GList_toString(GList* gll, String* str)
+void GList_toString(GList* gll, String* str)
 {
 	if (gll)
 	{
@@ -93,7 +93,7 @@ void GList_pushback(GList* gll, GItem* pGItem)
 			}
 		}
 	}
-}*/
+}
 
 void GList_calcFontId(GList* gll, int id)
 {
@@ -217,14 +217,14 @@ void GItemChar_free(GItem* _this)
 	GItemChar* g = (GItemChar*)_this;
 }
 
-/*void GItemChar_toString(GItem* _this, String* str)
+void GItemChar_toString(GItem* _this, String* str)
 {
 	GItemChar* g = (GItemChar*)_this;
 	wchar_t gstr[] = {g->_ch, 0};
 
 	if(g->_ch)
 		String_cat(str, gstr);
-}*/
+}
 
 void GItemChar_fontId(GItem* _this, int id)
 {
@@ -309,7 +309,7 @@ GItemChar* GItemChar_init(const wchar_t ch)
 	g->_gitem._type = GITEM_CHAR;
 
 	g->_gitem._freeFunc = GItemChar_free;
-	//g->_gitem._toStringFunc = GItemChar_toString;
+	g->_gitem._toStringFunc = GItemChar_toString;
 	g->_gitem._fontIdFunc = GItemChar_fontId;
 	g->_gitem._widthFunc = GItemChar_width;
 	g->_gitem._heightFunc = GItemChar_height;
@@ -329,7 +329,7 @@ void GItemPower_free(GItem* _this)
 	GList_free(g->_exponent);
 }
 
-/*void GItemPower_toString(GItem* _this, String* str)
+void GItemPower_toString(GItem* _this, String* str)
 {
 	GItemPower* g = (GItemPower*)_this;
 	wchar_t gstr1[] = { L'^', L'(', 0};
@@ -338,7 +338,7 @@ void GItemPower_free(GItem* _this)
 	String_cat(str, gstr1);
 	GList_toString(g->_exponent, str);
 	String_cat(str, gstr2);
-}*/
+}
 
 void GItemPower_fontId(GItem* _this, int id)
 {
@@ -444,7 +444,7 @@ GItemPower* GItemPower_init(GList* exponent)
 	g->_gitem._type = GITEM_POWER;
 
 	g->_gitem._freeFunc = GItemPower_free;
-	//g->_gitem._toStringFunc = GItemPower_toString;
+	g->_gitem._toStringFunc = GItemPower_toString;
 	g->_gitem._fontIdFunc = GItemPower_fontId;
 	g->_gitem._widthFunc = GItemPower_width;
 	g->_gitem._heightFunc = GItemPower_height;
@@ -468,7 +468,7 @@ void GItemFraction_free(GItem* _this)
 	g->_denominator = NULL;
 }
 
-/*void GItemFraction_toString(GItem* _this, String* str)
+void GItemFraction_toString(GItem* _this, String* str)
 {
 	GItemFraction* g = (GItemFraction*)_this;
 	wchar_t gstr1[] = { L'(', 0 };
@@ -485,7 +485,7 @@ void GItemFraction_free(GItem* _this)
 	String_cat(str, gstr2);
 	String_cat(str, gstr2);
 
-}*/
+}
 
 void GItemFraction_fontId(GItem* _this, int id)
 {
@@ -577,7 +577,7 @@ GItemFraction* GItemFraction_init(GList* num, GList* den)
 	g->_gitem._type = GITEM_FRACTION;
 
 	g->_gitem._freeFunc = GItemFraction_free;
-	//g->_gitem._toStringFunc = GItemFraction_toString;
+	g->_gitem._toStringFunc = GItemFraction_toString;
 	g->_gitem._fontIdFunc = GItemFraction_fontId;
 	g->_gitem._widthFunc = GItemFraction_width;
 	g->_gitem._heightFunc = GItemFraction_height;
@@ -599,7 +599,7 @@ void GItemRoot_free(GItem* _this)
 	GList_free(g->_root);
 }
 
-/*void GItemRoot_toString(GItem* _this, String* str)
+void GItemRoot_toString(GItem* _this, String* str)
 {
 	GItemRoot* g = (GItemRoot*)_this;
 	wchar_t gstr1[] = { L'R', L'o', L'o', L't', L'(', 0 };
@@ -621,7 +621,7 @@ void GItemRoot_free(GItem* _this)
 	}
 	
 	String_cat(str, gstr3);
-}*/
+}
 
 void GItemRoot_fontId(GItem* _this, int id)
 {
@@ -734,7 +734,7 @@ GItemRoot* GItemRoot_init(GList* expr, GList* root)
 	g->_gitem._type = GITEM_ROOT;
 
 	g->_gitem._freeFunc = GItemRoot_free;
-	//g->_gitem._toStringFunc = GItemRoot_toString;
+	g->_gitem._toStringFunc = GItemRoot_toString;
 	g->_gitem._fontIdFunc = GItemRoot_fontId;
 	g->_gitem._widthFunc = GItemRoot_width;
 	g->_gitem._heightFunc = GItemRoot_height;
