@@ -18,6 +18,12 @@
     <ClCompile Include="src\simplify.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\items.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parse_helper.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\simplify.h">
@@ -25,6 +31,9 @@
     </ClInclude>
     <ClInclude Include="src\platform.h">
       <Filter>Quelldateien</Filter>
+    </ClInclude>
+    <ClInclude Include="include\items.h">
+      <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,7 +5,6 @@
 #include <ribbon.h>
 #include <panel.h>
 #include <editor.h>
-#include <math_parser.h>
 #include <simplify.h>
 
 #define SCROLLBAR_WIDE 20
@@ -714,17 +713,22 @@ LRESULT OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam)
 
             const wchar_t* outStr = do_simplify(inStr->_str);
 
-            GList* gl = NULL;
-            parse_test(&gl, outStr);
-            if (gl)
+            if (outStr)
             {
-                GList_free(mw->_selected_panel->_out_gitems_list);
-                mw->_selected_panel->_out_gitems_list = gl;
+                GList* gl = NULL;
+                parse_test(&gl, outStr);
+                if (gl)
+                {
+                    GList_free(mw->_selected_panel->_out_gitems_list);
+                    mw->_selected_panel->_out_gitems_list = gl;
 
-                PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
-                    mw->_ribbon_height - mw->_y_current_pos);
-                InvalidateRect(mw->_hWnd, NULL, TRUE);
-                Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
+                    PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
+                        mw->_ribbon_height - mw->_y_current_pos);
+                    InvalidateRect(mw->_hWnd, NULL, TRUE);
+                    Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
+
+                    free(outStr);
+                }
             }
 
             String_free(inStr);

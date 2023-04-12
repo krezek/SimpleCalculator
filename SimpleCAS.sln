@@ -12,6 +12,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Util", "Util\Util.vcxproj", "{84E8F67A-AA08-438D-879D-6FC52A92BB31}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Simplify", "Simplify\Simplify.vcxproj", "{5DD03C0A-A1D2-4472-8BFE-C4279488AC8D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{84E8F67A-AA08-438D-879D-6FC52A92BB31} = {84E8F67A-AA08-438D-879D-6FC52A92BB31}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
