@@ -98,17 +98,7 @@ int MParser_do(MParser* pp, void** pItems, const wchar_t* s)
 	//tokensQueue_print(q);
 
 	rs = list(pp, &nodes, q);
-	if (rs)
-	{
-		if (nodes)
-		{
-			//ItemTree_free(&nodes);
-		}
-	}
-	else
-	{
-		*pItems = nodes;
-	}
+	*pItems = nodes;
 
 	tokensQueue_free(q);
 

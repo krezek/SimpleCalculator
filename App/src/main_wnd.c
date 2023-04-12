@@ -38,7 +38,7 @@ LRESULT OnChar(MainWindow* mw, WPARAM wParam, LPARAM lParam);
 void Graphics_fontList_init(HANDLE hFont);
 void Graphics_fontList_free();
 
-extern void parse_test();
+extern void parse_test(GList** ppGl, const wchar_t* s);
 
 ATOM MainWindow_RegisterClass()
 {
@@ -706,7 +706,18 @@ LRESULT OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam)
     case VK_RETURN:
         if (GetKeyState(VK_SHIFT) < 0)
         {
-            parse_test();
+            GList* gl = NULL;
+            parse_test(&gl, L"Cos(pi/2)^2+Sin(pi/2)^2");
+            if (gl)
+            {
+                GList_free(mw->_selected_panel->_out_gitems_list);
+                mw->_selected_panel->_out_gitems_list = gl;
+
+                PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
+                    mw->_ribbon_height - mw->_y_current_pos);
+                InvalidateRect(mw->_hWnd, NULL, TRUE);
+                Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
+            }
         }
         else
         {

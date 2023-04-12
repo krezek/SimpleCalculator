@@ -213,7 +213,7 @@ static void* literal (const wchar_t* s)
 }
 
 
-void parse_test()
+void parse_test(GList** ppGl, const wchar_t* s)
 {
 	MParser* mp = MParser_init();
 
@@ -238,16 +238,14 @@ void parse_test()
 	mp->_symbolFunc = symbol;
 	mp->_literalFunc = literal;
 
-	GList* gl = NULL;
+	GList* i = NULL;
+	int rs = MParser_do(mp, &i, s);
+	if (rs)
+	{
+		GList_free(i);
+	}
+	else
+		*ppGl = i;
 
-	MParser_do(mp, &gl, L"(10/20)+(-10)^3-2! + 5^2 - Cos(pi) + sqrt(100-2)");
-
-	String* str = String_init();
-	GList_toString(gl, str);
-
-	printf("STR:%S\n", str->_str);
-
-	GList_free(gl);
-	String_free(str);
 	MParser_free(mp);
 }
