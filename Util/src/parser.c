@@ -7,11 +7,11 @@
 
 typedef struct _StackNode
 {
-	Item* _data;
+	void* _data;
 	struct _StackNode* _next;
 } StackNode;
 
-static StackNode* stackNode_init(Item* d)
+static StackNode* stackNode_init(void* d)
 {
 	StackNode* stackNode = (StackNode*)malloc(sizeof(StackNode));
 	stackNode->_data = d;
@@ -24,20 +24,20 @@ static int stack_isEmpty(StackNode* root)
 	return !root;
 }
 
-static void stack_push(StackNode** root, Item* data)
+static void stack_push(StackNode** root, void* data)
 {
 	StackNode* stackNode = stackNode_init(data);
 	stackNode->_next = *root;
 	*root = stackNode;
 }
 
-static Item* stack_pop(StackNode** root)
+static void* stack_pop(StackNode** root)
 {
 	if (stack_isEmpty(*root))
 		return NULL;
 	StackNode* temp = *root;
 	*root = (*root)->_next;
-	Item* popped = temp->_data;
+	void* popped = temp->_data;
 	free(temp);
 
 	return popped;
@@ -56,23 +56,23 @@ static Item* stack_pop(StackNode** root)
 //    primary : func "(" expr ")" | "(" expr ")" | number | literal | symbol .
 //    func : "Sigma" | "Integrate" | "Derivative" | CommFunc
 
-static int list(Item** pItems, TokensQueue* tokens);
-static int equ(Item** pItems, TokensQueue* tokens);
-static int expr(Item** pItems, TokensQueue* tokens);
-static int term(Item** pItems, TokensQueue* tokens);
-static int factor(Item** pItems, TokensQueue* tokens);
-static int factorial(Item** pItems, TokensQueue* tokens);
-static int power(Item** pItems, TokensQueue* tokens);
-static int subscript(Item** pItems, TokensQueue* tokens);
-static int primary(Item** pItems, TokensQueue* tokens);
-static int func(Item** pItems, TokensQueue* tokens);
-static int number(Item** pItems, TokensQueue* tokens);
-static int literal(Item** pItems, TokensQueue* tokens);
-static int symbol(Item** pItems, TokensQueue* tokens);
+static int list(Parser* pp, void** pItems, TokensQueue* tokens);
+static int equ(Parser* pp, void** pItems, TokensQueue* tokens);
+static int expr(Parser* pp, void** pItems, TokensQueue* tokens);
+static int term(Parser* pp, void** pItems, TokensQueue* tokens);
+static int factor(Parser* pp, void** pItems, TokensQueue* tokens);
+static int factorial(Parser* pp, void** pItems, TokensQueue* tokens);
+static int power(Parser* pp, void** pItems, TokensQueue* tokens);
+static int subscript(Parser* pp, void** pItems, TokensQueue* tokens);
+static int primary(Parser* pp, void** pItems, TokensQueue* tokens);
+static int func(Parser* pp, void** pItems, TokensQueue* tokens);
+static int number(Parser* pp, void** pItems, TokensQueue* tokens);
+static int literal(Parser* pp, void** pItems, TokensQueue* tokens);
+static int symbol(Parser* pp, void** pItems, TokensQueue* tokens);
 
-int parse(Item** pItems, const wchar_t* s)
+int Parser_do(Parser* pp, void** pItems, const wchar_t* s)
 {
-	Item* nodes = NULL;
+	void* nodes = NULL;
 	int rs = 0;
 	TokensQueue* q = tokensQueue_init();
 
@@ -84,18 +84,17 @@ int parse(Item** pItems, const wchar_t* s)
 	
 	//tokensQueue_print(q);
 
-	rs = list(&nodes, q);
+	rs = list(pp, &nodes, q);
 	if (rs)
 	{
 		if (nodes)
 		{
-			ItemTree_free(&nodes);
+			//ItemTree_free(&nodes);
 		}
 	}
 	else
 	{
 		*pItems = nodes;
-		apply_rewrite_rules(pItems);
 	}
 
 	tokensQueue_free(q);
@@ -104,12 +103,12 @@ int parse(Item** pItems, const wchar_t* s)
 }
 
 //    list : equ {(",") equ} .
-static int list(Item** pItems, TokensQueue* tokens)
+static int list(Parser* pp, void** pItems, TokensQueue* tokens)
 {
 	int rs;
-	Item* node = NULL;
+	void* node = NULL;
 
-	rs = equ(&node, tokens);
+	rs = equ(pp, &node, tokens);
 
 	if (!rs)
 	{
@@ -121,9 +120,9 @@ static int list(Item** pItems, TokensQueue* tokens)
 				tok = tokensQueue_dequeue(tokens);
 				token_free(tok);
 
-				Item* r_node = NULL;
-				rs = equ(&r_node, tokens);
-				node = (Item*)ItemList_init(node, r_node);
+				void* r_node = NULL;
+				rs = equ(pp, &r_node, tokens);
+				node = pp->_listFunc(node, r_node);
 				if (rs)
 					break;
 				
@@ -139,12 +138,12 @@ static int list(Item** pItems, TokensQueue* tokens)
 }
 
 //    equ : expr {("=") expr} .
-static int equ(Item** pItems, TokensQueue* tokens)
+static int equ(Parser* pp, void** pItems, TokensQueue* tokens)
 {
 	int rs;
-	Item* node = NULL;
+	void* node = NULL;
 
-	rs = expr(&node, tokens);
+	rs = expr(pp, &node, tokens);
 
 	if (!rs)
 	{
@@ -159,9 +158,9 @@ static int equ(Item** pItems, TokensQueue* tokens)
 				accept_tok(tok, OPERATOR, L"\u2265"))
 			{
 				tok = tokensQueue_dequeue(tokens);
-				Item* r_node = NULL;
-				rs = expr(&r_node, tokens);
-				node = (Item*)ItemEqu_init(node, r_node, tok->_str[0]);
+				void* r_node = NULL;
+				rs = expr(pp, &r_node, tokens);
+				node = pp->_equFunc(node, r_node, tok->_str[0]);
 				token_free(tok);
 			}
 		}
@@ -173,12 +172,12 @@ static int equ(Item** pItems, TokensQueue* tokens)
 }
 
 //    expr : term {("+"|"-") term} .
-static int expr(Item** pItems, TokensQueue* tokens)
+static int expr(Parser* pp, void** pItems, TokensQueue* tokens)
 {
 	int rs;
-	Item* node = NULL;
+	void* node = NULL;
 
-	rs = term(&node, tokens);
+	rs = term(pp, &node, tokens);
 
 	if (!rs)
 	{
@@ -191,9 +190,9 @@ static int expr(Item** pItems, TokensQueue* tokens)
 				tok = tokensQueue_dequeue(tokens);
 				if (_wcsicmp(L"+", tok->_str) == 0)
 				{
-					Item* l_node = NULL;
-					rs = term(&l_node, tokens);
-					node = (Item*)ItemAdd_init(node, l_node);
+					void* l_node = NULL;
+					rs = term(pp, &l_node, tokens);
+					node = pp->_addFunc(node, l_node);
 					if (rs)
 					{
 						token_free(tok);
@@ -202,9 +201,9 @@ static int expr(Item** pItems, TokensQueue* tokens)
 				}
 				else if (_wcsicmp(L"-", tok->_str) == 0)
 				{
-					Item* l_node = NULL;
-					rs = term(&l_node, tokens);
-					node = (Item*)ItemSub_init(node, l_node);
+					void* l_node = NULL;
+					rs = term(pp, &l_node, tokens);
+					node = pp->_subFunc(node, l_node);
 					if (rs)
 					{
 						token_free(tok);
@@ -225,27 +224,27 @@ static int expr(Item** pItems, TokensQueue* tokens)
 }
 
 //    term : factor {("*"|"/"|"%") factor} .
-static int term(Item** pItems, TokensQueue* tokens)
+static int term(Parser* pp, void** pItems, TokensQueue* tokens)
 {
 	int rs;
-	Item* node = NULL;
+	void* node = NULL;
 
-	rs = factor(&node, tokens);
+	rs = factor(pp, &node, tokens);
 
 	if (!rs)
 	{
 		if (!tokensQueue_empty(tokens))
 		{
 			Token* tok = tokensQueue_front(tokens);
-			while (accept_tok(tok, OPERATOR, L"\u00D7") ||
+			while (accept_tok(tok, OPERATOR, L"*") ||
 				accept_tok(tok, OPERATOR, L"/"))
 			{
 				tok = tokensQueue_dequeue(tokens);
-				if (_wcsicmp(L"\u00D7", tok->_str) == 0)
+				if (_wcsicmp(L"*", tok->_str) == 0)
 				{
-					Item* l_node = NULL;
-					rs = factor(&l_node, tokens);
-					node = (Item*)ItemMult_init(node, l_node);
+					void* l_node = NULL;
+					rs = factor(pp, &l_node, tokens);
+					node = pp->_multFunc(node, l_node);
 					if (rs)
 					{
 						token_free(tok);
@@ -254,9 +253,9 @@ static int term(Item** pItems, TokensQueue* tokens)
 				}
 				else if (_wcsicmp(L"/", tok->_str) == 0)
 				{
-					Item* l_node = NULL;
-					rs = factor(&l_node, tokens);
-					node = (Item*)ItemFrac_init(node, l_node);
+					void* l_node = NULL;
+					rs = factor(pp, &l_node, tokens);
+					node = pp->_fracFunc(node, l_node);
 					if (rs)
 					{
 						token_free(tok);
@@ -277,9 +276,9 @@ static int term(Item** pItems, TokensQueue* tokens)
 }
 
 //    factor: "-" factorial | "+" factorial | factorial .
-static int factor(Item** pItems, TokensQueue* tokens)
+static int factor(Parser* pp, void** pItems, TokensQueue* tokens)
 {
-	Item* node = NULL;
+	void* node = NULL;
 	Token* signToken = NULL;
 	Token* tok = NULL;
 	int rs;
@@ -294,11 +293,11 @@ static int factor(Item** pItems, TokensQueue* tokens)
 		}
 	}
 
-	rs = factorial(&node, tokens);
+	rs = factorial(pp, &node, tokens);
 
 	if (signToken)
 	{
-		node = (Item*)ItemSign_init(node, signToken->_str[0]);
+		node = pp->_signFunc(node, signToken->_str[0]);
 		token_free(signToken);
 	}
 	
@@ -308,12 +307,12 @@ static int factor(Item** pItems, TokensQueue* tokens)
 }
 
 //    factorial : power "!" | power
-static int factorial(Item** pItems, TokensQueue* tokens)
+static int factorial(Parser* pp, void** pItems, TokensQueue* tokens)
 {
-	Item* node = NULL;
+	void* node = NULL;
 	int rs;
 
-	rs = power(&node, tokens);
+	rs = power(pp, &node, tokens);
 
 	if (!rs)
 	{
@@ -323,7 +322,7 @@ static int factorial(Item** pItems, TokensQueue* tokens)
 			if (accept_tok(tok, OPERATOR, L"!"))
 			{
 				tok = tokensQueue_dequeue(tokens);
-				node = (Item*)ItemFactorial_init(node);
+				node = pp->_factorialFunc(node);
 				token_free(tok);
 			}
 		}
@@ -335,13 +334,13 @@ static int factorial(Item** pItems, TokensQueue* tokens)
 }
 
 //    power : subscript { "^" subscript } .
-static int power(Item** pItems, TokensQueue* tokens)
+static int power(Parser* pp, void** pItems, TokensQueue* tokens)
 {
-	Item* node = NULL;
+	void* node = NULL;
 	int rs;
 	StackNode* root = NULL;
 
-	rs = subscript(&node, tokens);
+	rs = subscript(pp, &node, tokens);
 
 	if (!rs)
 	{
@@ -354,8 +353,8 @@ static int power(Item** pItems, TokensQueue* tokens)
 			{
 				tok = tokensQueue_dequeue(tokens);
 
-				Item* l_node = NULL;
-				rs = subscript(&l_node, tokens);
+				void* l_node = NULL;
+				rs = subscript(pp, &l_node, tokens);
 				stack_push(&root, l_node);
 				if (rs)
 				{
@@ -373,8 +372,8 @@ static int power(Item** pItems, TokensQueue* tokens)
 
 		while (!stack_isEmpty(root))
 		{
-			Item* tmp = stack_pop(&root);
-			node = (Item*)ItemPow_init(tmp, node);
+			void* tmp = stack_pop(&root);
+			node = pp->_powerFunc(tmp, node);
 		}
 	}
 
@@ -384,13 +383,13 @@ static int power(Item** pItems, TokensQueue* tokens)
 }
 
 //    subscript : primary { "_" primary } .
-static int subscript(Item** pItems, TokensQueue* tokens)
+static int subscript(Parser* pp, void** pItems, TokensQueue* tokens)
 {
-	Item* node = NULL;
+	void* node = NULL;
 	int rs;
 	StackNode* root = NULL;
 
-	rs = primary(&node, tokens);
+	rs = primary(pp, &node, tokens);
 
 	if (!rs)
 	{
@@ -403,8 +402,8 @@ static int subscript(Item** pItems, TokensQueue* tokens)
 			{
 				tok = tokensQueue_dequeue(tokens);
 
-				Item* l_node = NULL;
-				rs = primary(&l_node, tokens);
+				void* l_node = NULL;
+				rs = primary(pp, &l_node, tokens);
 				stack_push(&root, l_node);
 				if (rs)
 				{
@@ -422,8 +421,8 @@ static int subscript(Item** pItems, TokensQueue* tokens)
 
 		while (!stack_isEmpty(root))
 		{
-			Item* tmp = stack_pop(&root);
-			node = (Item*)ItemSubscript_init(tmp, node);
+			void* tmp = stack_pop(&root);
+			node = pp->_subscriptFunc(tmp, node);
 		}
 	}
 	
@@ -433,9 +432,9 @@ static int subscript(Item** pItems, TokensQueue* tokens)
 }
 
 //    primary : func "(" expr ")" | "(" expr ")" | number | literal | symbol.
-static int primary(Item** pItems, TokensQueue* tokens)
+static int primary(Parser* pp, void** pItems, TokensQueue* tokens)
 {
-	Item* node = NULL;
+	void* node = NULL;
 	int rs = -1;
 
 	if (!tokensQueue_empty(tokens))
@@ -446,7 +445,7 @@ static int primary(Item** pItems, TokensQueue* tokens)
 		if (tok->_typ == LITERAL && ntok && 
 			(accept_tok(ntok, PARENTHESE, L"(") || accept_tok(ntok, PARENTHESE, L"[") || accept_tok(ntok, PARENTHESE, L"{")))
 		{
-			rs = func(&node, tokens);
+			rs = func(pp, &node, tokens);
 			*pItems = node;
 			return rs;
 		}
@@ -455,7 +454,7 @@ static int primary(Item** pItems, TokensQueue* tokens)
 			tok = tokensQueue_dequeue(tokens);
 			token_free(tok);
 
-			rs = expr(&node, tokens);
+			rs = expr(pp, &node, tokens);
 			*pItems = node;
 
 			if (tokensQueue_empty(tokens)) // expect ")"
@@ -471,7 +470,7 @@ static int primary(Item** pItems, TokensQueue* tokens)
 				return -1;
 			}
 
-			*pItems = (Item*)ItemParentheses_init(*pItems);
+			*pItems = pp->_parenthesesFunc(*pItems);
 
 			tok = tokensQueue_dequeue(tokens);
 			token_free(tok);
@@ -480,19 +479,19 @@ static int primary(Item** pItems, TokensQueue* tokens)
 		}
 		else if (tok->_typ == NUMBER) // Number
 		{
-			rs = number(&node, tokens);
+			rs = number(pp, &node, tokens);
 			*pItems = node;
 			return rs;
 		}
 		else if (tok->_typ == LITERAL) // Literal
 		{
-			rs = literal(&node, tokens);
+			rs = literal(pp, &node, tokens);
 			*pItems = node;
 			return rs;
 		}
 		else if (tok->_typ == SYMBOL) // SYMBOL
 		{
-			rs = symbol(&node, tokens);
+			rs = symbol(pp, &node, tokens);
 			*pItems = node;
 			return rs;
 		}
@@ -506,9 +505,9 @@ static int primary(Item** pItems, TokensQueue* tokens)
 }
 
 //    func : "Sigma" | "Integrate" | "Derivative" | CommFunc
-static int func(Item** pItems, TokensQueue* tokens)
+static int func(Parser* pp, void** pItems, TokensQueue* tokens)
 {
-	Item* node = NULL;
+	void* node = NULL;
 	int rs = -1;
 
 	Token* tok_func_name = tokensQueue_dequeue(tokens); // Function name
@@ -518,11 +517,11 @@ static int func(Item** pItems, TokensQueue* tokens)
 
 	if (accept_tok(tok_func_name, LITERAL, L"Sigma"))
 	{
-		rs = expr(&node, tokens);
+		rs = expr(pp, &node, tokens);
 		if (!rs)
 		{
-			Item* bNode = NULL;
-			Item* tNode = NULL;
+			void* bNode = NULL;
+			void* tNode = NULL;
 
 			Token* bTok = tokensQueue_front(tokens);
 			if (accept_tok(bTok, OPERATOR, L";"))
@@ -530,7 +529,7 @@ static int func(Item** pItems, TokensQueue* tokens)
 				bTok = tokensQueue_dequeue(tokens);
 				token_free(bTok);
 
-				rs = list(&bNode, tokens);
+				rs = list(pp, &bNode, tokens);
 
 				if (!rs)
 				{
@@ -540,24 +539,24 @@ static int func(Item** pItems, TokensQueue* tokens)
 						tTok = tokensQueue_dequeue(tokens);
 						token_free(tTok);
 
-						rs = list(&tNode, tokens);
+						rs = list(pp, &tNode, tokens);
 					}
 				}
 			}
 
-			node = (Item*)ItemSigma_init(node, bNode, tNode);
+			node = pp->_sigmaFunc(node, bNode, tNode);
 		}
 
 		*pItems = node;
 	}
 	else if (accept_tok(tok_func_name, LITERAL, L"Integrate"))
 	{
-		rs = expr(&node, tokens);
+		rs = expr(pp, &node, tokens);
 		if (!rs)
 		{
-			Item* rNode = NULL;
-			Item* bNode = NULL;
-			Item* tNode = NULL;
+			void* rNode = NULL;
+			void* bNode = NULL;
+			void* tNode = NULL;
 
 			Token* rTok = tokensQueue_front(tokens);
 
@@ -566,7 +565,7 @@ static int func(Item** pItems, TokensQueue* tokens)
 				rTok = tokensQueue_dequeue(tokens);
 				token_free(rTok);
 
-				rs = literal(&rNode, tokens);
+				rs = literal(pp, &rNode, tokens);
 
 				if (!rs)
 				{
@@ -577,7 +576,7 @@ static int func(Item** pItems, TokensQueue* tokens)
 						bTok = tokensQueue_dequeue(tokens);
 						token_free(bTok);
 
-						rs = list(&bNode, tokens);
+						rs = list(pp, &bNode, tokens);
 
 						if (!rs)
 						{
@@ -587,24 +586,24 @@ static int func(Item** pItems, TokensQueue* tokens)
 								tTok = tokensQueue_dequeue(tokens);
 								token_free(tTok);
 
-								rs = list(&tNode, tokens);
+								rs = list(pp, &tNode, tokens);
 							}
 						}
 					}
 				}
 			}
 
-			node = (Item*)ItemIntegrate_init(node, rNode, bNode, tNode);
+			node = pp->_integrateFunc(node, rNode, bNode, tNode);
 		}
 
 		*pItems = node;
 	}
 	else if (accept_tok(tok_func_name, LITERAL, L"Derivative"))
 	{
-		rs = expr(&node, tokens);
+		rs = expr(pp, &node, tokens);
 		if (!rs)
 		{
-			Item* rNode = NULL;
+			void* rNode = NULL;
 			//Item* tNode = NULL;
 
 			Token* rTok = tokensQueue_front(tokens);
@@ -613,11 +612,11 @@ static int func(Item** pItems, TokensQueue* tokens)
 				rTok = tokensQueue_dequeue(tokens);
 				token_free(rTok);
 
-				rs = literal(&rNode, tokens);
-				rNode = (Item*)ItemFrac_init(
-					(Item*)ItemLiteral_init(L"d"),
-					rNode
-				);
+				rs = literal(pp, &rNode, tokens);
+				//rNode = (Item*)ItemFrac_init(
+				//	(Item*)ItemLiteral_init(L"d"),
+				//	rNode
+				//);
 
 				/*if (!rs)
 				{
@@ -632,18 +631,18 @@ static int func(Item** pItems, TokensQueue* tokens)
 				}*/
 			}
 
-			node = (Item*)ItemDerivative_init(node, rNode);
+			node = pp->_derivativeFunc(node, rNode);
 		}
 
 		*pItems = node;
 	}
 	else if (accept_tok(tok_func_name, LITERAL, L"Limit"))
 	{
-		rs = expr(&node, tokens);
+		rs = expr(pp, &node, tokens);
 		if (!rs)
 		{
-			Item* t1Node = NULL;
-			Item* t2Node = NULL;
+			void* t1Node = NULL;
+			void* t2Node = NULL;
 
 			Token* bTok = tokensQueue_front(tokens);
 			if (accept_tok(bTok, OPERATOR, L";"))
@@ -651,7 +650,7 @@ static int func(Item** pItems, TokensQueue* tokens)
 				bTok = tokensQueue_dequeue(tokens);
 				token_free(bTok);
 
-				rs = list(&t1Node, tokens);
+				rs = list(pp, &t1Node, tokens);
 
 				if (!rs)
 				{
@@ -661,27 +660,27 @@ static int func(Item** pItems, TokensQueue* tokens)
 						tTok = tokensQueue_dequeue(tokens);
 						token_free(tTok);
 
-						rs = expr(&t2Node, tokens);
+						rs = expr(pp, &t2Node, tokens);
 					}
 				}
 			}
 
-			node = (Item*)ItemLimit_init(node, t1Node, t2Node);
+			node = pp->_limitFunc(node, t1Node, t2Node);
 		}
 
 		*pItems = node;
 	}
 	else if (accept_tok(tok_func_name, LITERAL, L"Sqrt"))
 	{
-		rs = expr(&node, tokens);
-		node = (Item*)ItemSqrt_init(node);
+		rs = expr(pp, &node, tokens);
+		node = pp->_sqrtFunc(node);
 		*pItems = node;
 	}
 	else
 	{
-		Item* rNode = NULL;
+		void* rNode = NULL;
 
-		rs = expr(&node, tokens);
+		rs = expr(pp, &node, tokens);
 		if (!rs)
 		{
 			Token* rTok = tokensQueue_front(tokens);
@@ -690,11 +689,11 @@ static int func(Item** pItems, TokensQueue* tokens)
 				rTok = tokensQueue_dequeue(tokens);
 				token_free(rTok);
 
-				rs = expr(&rNode, tokens);
+				rs = expr(pp, &rNode, tokens);
 			}
 		}
 
-		node = (Item*)ItemCommFunc_init(node, rNode, tok_func_name->_str);
+		node = pp->_commonFunc(node, rNode, tok_func_name->_str);
 		*pItems = node;
 	}
 
@@ -724,13 +723,13 @@ static int func(Item** pItems, TokensQueue* tokens)
 }
 
 //    number .
-static int number(Item** pItems, TokensQueue* tokens)
+static int number(Parser* pp, void** pItems, TokensQueue* tokens)
 {
-	Item* node = NULL;
+	void* node = NULL;
 	int rs = -1;
 
 	Token* tok = tokensQueue_dequeue(tokens);
-	node = (Item*)ItemNumber_init(tok->_str, 0);
+	node = pp->_numberFunc(tok->_str);
 	token_free(tok);
 
 	*pItems = node;
@@ -738,13 +737,13 @@ static int number(Item** pItems, TokensQueue* tokens)
 }
 
 //    symbol .
-static int symbol(Item** pItems, TokensQueue* tokens)
+static int symbol(Parser* pp, void** pItems, TokensQueue* tokens)
 {
-	Item* node = NULL;
+	void* node = NULL;
 	int rs = -1;
 
 	Token* tok = tokensQueue_dequeue(tokens);
-	node = (Item*)ItemSymbol_init(tok->_str[0]);
+	node = pp->_symbolFunc(tok->_str[0]);
 	token_free(tok);
 
 	*pItems = node;
@@ -752,13 +751,13 @@ static int symbol(Item** pItems, TokensQueue* tokens)
 }
 
 //    literal .
-static int literal(Item** pItems, TokensQueue* tokens)
+static int literal(Parser* pp, void** pItems, TokensQueue* tokens)
 {
-	Item* node = NULL;
+	void* node = NULL;
 	int rs = -1;
 
 	Token* tok = tokensQueue_dequeue(tokens);
-	node = (Item*)ItemLiteral_init(tok->_str);
+	node = pp->_literalFunc(tok->_str);
 	token_free(tok);
 
 	*pItems = node;
