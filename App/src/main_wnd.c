@@ -5,6 +5,8 @@
 #include <ribbon.h>
 #include <panel.h>
 #include <editor.h>
+#include <math_parser.h>
+#include <simplify.h>
 
 #define SCROLLBAR_WIDE 20
 #define INITIAL_FONTSIZE 16
@@ -707,8 +709,13 @@ LRESULT OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam)
     case VK_RETURN:
         if (GetKeyState(VK_SHIFT) < 0)
         {
+            String* inStr = String_init();
+            GList_toString(mw->_selected_panel->_in_gitems_list, inStr);
+
+            const wchar_t* outStr = do_simplify(inStr->_str);
+
             GList* gl = NULL;
-            parse_test(&gl, L"Cos(pi/2)^2+Sin(pi/2)^2");
+            parse_test(&gl, outStr);
             if (gl)
             {
                 GList_free(mw->_selected_panel->_out_gitems_list);
@@ -719,6 +726,8 @@ LRESULT OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam)
                 InvalidateRect(mw->_hWnd, NULL, TRUE);
                 Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
             }
+
+            String_free(inStr);
         }
         else
         {

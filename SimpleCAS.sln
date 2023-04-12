@@ -5,10 +5,13 @@ VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App", "App\App.vcxproj", "{CC63C4E1-2857-4B1B-848A-1FB3390469D6}"
 	ProjectSection(ProjectDependencies) = postProject
+		{5DD03C0A-A1D2-4472-8BFE-C4279488AC8D} = {5DD03C0A-A1D2-4472-8BFE-C4279488AC8D}
 		{84E8F67A-AA08-438D-879D-6FC52A92BB31} = {84E8F67A-AA08-438D-879D-6FC52A92BB31}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Util", "Util\Util.vcxproj", "{84E8F67A-AA08-438D-879D-6FC52A92BB31}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Simplify", "Simplify\Simplify.vcxproj", "{5DD03C0A-A1D2-4472-8BFE-C4279488AC8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +33,14 @@ Global
 		{84E8F67A-AA08-438D-879D-6FC52A92BB31}.Release|x64.ActiveCfg = Release|x64
 		{84E8F67A-AA08-438D-879D-6FC52A92BB31}.Release|x64.Build.0 = Release|x64
 		{84E8F67A-AA08-438D-879D-6FC52A92BB31}.Release|x86.ActiveCfg = Release|x64
+		{5DD03C0A-A1D2-4472-8BFE-C4279488AC8D}.Debug|x64.ActiveCfg = Debug|x64
+		{5DD03C0A-A1D2-4472-8BFE-C4279488AC8D}.Debug|x64.Build.0 = Debug|x64
+		{5DD03C0A-A1D2-4472-8BFE-C4279488AC8D}.Debug|x86.ActiveCfg = Debug|Win32
+		{5DD03C0A-A1D2-4472-8BFE-C4279488AC8D}.Debug|x86.Build.0 = Debug|Win32
+		{5DD03C0A-A1D2-4472-8BFE-C4279488AC8D}.Release|x64.ActiveCfg = Release|x64
+		{5DD03C0A-A1D2-4472-8BFE-C4279488AC8D}.Release|x64.Build.0 = Release|x64
+		{5DD03C0A-A1D2-4472-8BFE-C4279488AC8D}.Release|x86.ActiveCfg = Release|Win32
+		{5DD03C0A-A1D2-4472-8BFE-C4279488AC8D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

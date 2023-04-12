@@ -1,8 +1,6 @@
 #ifndef _MATH_PARSER_H_
 #define _MATH_PARSER_H_
 
-#include <wchar.h>
-
 typedef struct _Parser Parser;
 
 typedef void* (*PListFunc) (void* v, void* v1);

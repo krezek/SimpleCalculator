@@ -153,7 +153,7 @@ static void* common (void* v, void* v1, const wchar_t* s)
 	return r;
 }
 
-static void* sqrt (void* v)
+static void* _sqrt (void* v)
 {
 	GList* gl = (GList*)v;
 
@@ -229,7 +229,7 @@ void parse_test(GList** ppGl, const wchar_t* s)
 	mp->_subscriptFunc = subscript;
 	mp->_parenthesesFunc = parentheses;
 	mp->_commonFunc = common;
-	mp->_sqrtFunc = sqrt;
+	mp->_sqrtFunc = _sqrt;
 	mp->_limitFunc = limit;
 	mp->_derivativeFunc = derivative;
 	mp->_integrateFunc = integrate;
