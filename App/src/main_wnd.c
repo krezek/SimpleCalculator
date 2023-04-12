@@ -380,6 +380,7 @@ LRESULT OnSetFontSize(MainWindow* mw, int fsize)
 
     SetScrollbarInfo(mw);
     InvalidateRect(mw->_hWnd, NULL, TRUE);
+    Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
 
     return 0;
 }
