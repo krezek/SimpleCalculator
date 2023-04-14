@@ -5,6 +5,32 @@
 
 // Item
 
+void Item_writeRegel(Item* _this, String* ins, int level, const wchar_t* opStr)
+{
+	if (level > 0)
+	{
+		String* ls = String_init();
+		String* rs = String_init();
+
+		_this->_left->_writeRegelFunc(_this->_left, ls, level - 1);
+		_this->_right->_writeRegelFunc(_this->_right, rs, level - 1);
+
+		String_cat(ins, opStr);
+		String_cat(ins, L"(");
+		String_cat(ins, ls->_str);
+		String_cat(ins, L",");
+		String_cat(ins, rs->_str);
+		String_cat(ins, L")");
+
+		String_free(rs);
+		String_free(ls);
+	}
+	else
+	{
+		String_cat(ins, L"expr");
+	}
+}
+
 void Item_destroy(Item* i)
 {
 
@@ -94,6 +120,13 @@ void ItemNumber_toString(Item* _this, String* s)
 	String_cpy(s, i->_str->_str);
 }
 
+void ItemNumber_writeRegel (Item* _this, String* ins, int level)
+{
+	ItemNumber* i = (ItemNumber*)_this;
+
+	String_cpy(ins, L"N");
+}
+
 ItemNumber* ItemNumber_init(const wchar_t* s, int sign)
 {
 	ItemNumber* i = (ItemNumber*)malloc(sizeof(ItemNumber));
@@ -104,6 +137,7 @@ ItemNumber* ItemNumber_init(const wchar_t* s, int sign)
 
 	i->_item._destroyFunc = ItemNumber_destroy;
 	i->_item._toStringFunc = ItemNumber_toString;
+	i->_item._writeRegelFunc = ItemNumber_writeRegel;
 
 	i->_item._objectType = OBJ_Number;
 	i->_item._procLevel = PROC_L_11;
@@ -265,6 +299,11 @@ void ItemAdd_toString(Item* _this, String* s)
 	String_free(s2);
 }
 
+void ItemAdd_writeRegel(Item* _this, String* ins, int level)
+{
+	Item_writeRegel(_this, ins, level, L"+");
+}
+
 ItemAdd* ItemAdd_init(Item* l, Item* r)
 {
 	ItemAdd* i = (ItemAdd*)malloc(sizeof(ItemAdd));
@@ -275,6 +314,7 @@ ItemAdd* ItemAdd_init(Item* l, Item* r)
 
 	i->_item._destroyFunc = Item_destroy; 
 	i->_item._toStringFunc = ItemAdd_toString;
+	i->_item._writeRegelFunc = ItemAdd_writeRegel;
 
 	i->_item._objectType = OBJ_Add;
 	i->_item._procLevel = PROC_L_3;
@@ -335,6 +375,11 @@ void ItemMult_toString(Item* _this, String* s)
 	String_free(s2);
 }
 
+void ItemMult_writeRegel(Item* _this, String* ins, int level)
+{
+	Item_writeRegel(_this, ins, level, L"*");
+}
+
 ItemMult* ItemMult_init(Item* l, Item* r)
 {
 	ItemMult* i = (ItemMult*)malloc(sizeof(ItemMult));
@@ -345,6 +390,7 @@ ItemMult* ItemMult_init(Item* l, Item* r)
 
 	i->_item._destroyFunc = Item_destroy; 
 	i->_item._toStringFunc = ItemMult_toString;
+	i->_item._writeRegelFunc = ItemMult_writeRegel;
 
 	i->_item._objectType = OBJ_Mult;
 	i->_item._procLevel = PROC_L_4;

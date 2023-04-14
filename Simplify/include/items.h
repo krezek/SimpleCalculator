@@ -12,9 +12,8 @@ typedef enum { PROC_L_0 = 0, PROC_L_1, PROC_L_2, PROC_L_3, PROC_L_4, PROC_L_5, P
 typedef struct _Item Item;
 
 typedef void (*destroyFunc) (Item* _this);
-typedef int (*isLeafFunc) (Item* _this);
 typedef void (*toStringFunc) (Item* _this, String* s);
-typedef Item* (*cloneFunc) (Item* _this);
+typedef void (*writeRegelFunc) (Item* _this, String* ins, int level);
 
 typedef struct _Item
 {
@@ -23,6 +22,7 @@ typedef struct _Item
 
 	destroyFunc _destroyFunc;
 	toStringFunc _toStringFunc;
+	writeRegelFunc _writeRegelFunc;
 
 	ObjectType _objectType;
 	ProcLevel _procLevel;
