@@ -209,6 +209,7 @@ ItemLimit* ItemLimit_init(Item* l, Item* t1, Item* t2);
 
 void ItemTree_free(Item** Item);
 Item* Item_getParent(Item* items, Item* i);
+void Item_getLevelCount(Item* item, int* pi);
 
 #endif /* ItemS_H_ */
 

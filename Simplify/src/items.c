@@ -1417,3 +1417,22 @@ Item* Item_getParent(Item* items, Item* i)
 
 	return NULL;
 }
+
+void Item_getLevelCount(Item* item, int* pi)
+{
+	Item* left = item->_left;
+	Item* right = item->_right;
+
+	if (left)
+	{
+		Item_getLevelCount(left, pi);
+	}
+
+	if (right)
+	{
+		Item_getLevelCount(right, pi);
+	}
+
+	if (left || right)
+		++(*pi);
+}
