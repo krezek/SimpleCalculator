@@ -8,7 +8,7 @@ extern void parse_items(Item** pItems, const wchar_t* s);
 wchar_t* do_simplify(const wchar_t* exp)
 {
 	Item* items = NULL;
-	parse_items(&items, L"1+2*3+4");
+	parse_items(&items, L"-(11+2)");
 
 	if (items)
 	{

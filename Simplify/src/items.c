@@ -356,6 +356,11 @@ void ItemSub_toString(Item* _this, String* s)
 	String_free(s2);
 }
 
+void ItemSub_writeRegel(Item* _this, String* ins, int level)
+{
+	Item_writeRegel(_this, ins, level, L"-");
+}
+
 ItemSub* ItemSub_init(Item* l, Item* r)
 {
 	ItemSub* i = (ItemSub*)malloc(sizeof(ItemSub));
@@ -366,6 +371,7 @@ ItemSub* ItemSub_init(Item* l, Item* r)
 
 	i->_item._destroyFunc = Item_destroy; 
 	i->_item._toStringFunc = ItemSub_toString;
+	i->_item._writeRegelFunc = ItemSub_writeRegel;
 
 	i->_item._objectType = OBJ_Sub;
 	i->_item._procLevel = PROC_L_3;
@@ -442,6 +448,11 @@ void ItemFrac_toString(Item* _this, String* s)
 	String_free(s2);
 }
 
+void ItemFrac_writeRegel(Item* _this, String* ins, int level)
+{
+	Item_writeRegel(_this, ins, level, L"/");
+}
+
 ItemFrac* ItemFrac_init(Item* l, Item* r)
 {
 	ItemFrac* i = (ItemFrac*)malloc(sizeof(ItemFrac));
@@ -452,6 +463,7 @@ ItemFrac* ItemFrac_init(Item* l, Item* r)
 
 	i->_item._destroyFunc = Item_destroy; 
 	i->_item._toStringFunc = ItemFrac_toString;
+	i->_item._writeRegelFunc = ItemFrac_writeRegel;
 
 	i->_item._objectType = OBJ_Frac;
 	i->_item._procLevel = PROC_L_4;
@@ -482,6 +494,11 @@ void ItemSign_toString(Item* _this, String* s)
 	String_free(s1);
 }
 
+void ItemSign_writeRegel(Item* _this, String* ins, int level)
+{
+	Item_writeRegel(_this, ins, level, L"S");
+}
+
 ItemSign* ItemSign_init(Item* l, const wchar_t sgn)
 {
 	ItemSign* i = (ItemSign*)malloc(sizeof(ItemSign));
@@ -492,6 +509,7 @@ ItemSign* ItemSign_init(Item* l, const wchar_t sgn)
 
 	i->_item._destroyFunc = Item_destroy; 
 	i->_item._toStringFunc = ItemSign_toString;
+	i->_item._writeRegelFunc = ItemSign_writeRegel;
 
 	i->_item._objectType = OBJ_Sign;
 	i->_item._procLevel = PROC_L_5;
@@ -569,6 +587,11 @@ void ItemPow_toString(Item* _this, String* s)
 	String_free(s2);
 }
 
+void ItemPow_writeRegel(Item* _this, String* ins, int level)
+{
+	Item_writeRegel(_this, ins, level, L"^");
+}
+
 ItemPow* ItemPow_init(Item* l, Item* r)
 {
 	ItemPow* i = (ItemPow*)malloc(sizeof(ItemPow));
@@ -579,6 +602,7 @@ ItemPow* ItemPow_init(Item* l, Item* r)
 
 	i->_item._destroyFunc = Item_destroy; 
 	i->_item._toStringFunc = ItemPow_toString;
+	i->_item._writeRegelFunc = ItemPow_writeRegel;
 
 	i->_item._objectType = OBJ_Pow;
 	i->_item._procLevel = PROC_R_7;
@@ -609,6 +633,11 @@ void ItemSubscript_toString(Item* _this, String* s)
 	String_free(s2);
 }
 
+void ItemSubscript_writeRegel(Item* _this, String* ins, int level)
+{
+	Item_writeRegel(_this, ins, level, L"_");
+}
+
 ItemSubscript* ItemSubscript_init(Item* l, Item* r)
 {
 	ItemSubscript* i = (ItemSubscript*)malloc(sizeof(ItemSubscript));
@@ -619,6 +648,7 @@ ItemSubscript* ItemSubscript_init(Item* l, Item* r)
 
 	i->_item._destroyFunc = Item_destroy;
 	i->_item._toStringFunc = ItemSubscript_toString;
+	i->_item._writeRegelFunc = ItemSubscript_writeRegel;
 
 	i->_item._objectType = OBJ_Subscript;
 	i->_item._procLevel = PROC_R_8;
@@ -649,6 +679,11 @@ void ItemCommFunc_destroy(Item* _this)
 	free(i->_str);
 }
 
+void ItemCommFunc_writeRegel(Item* _this, String* ins, int level)
+{
+	Item_writeRegel(_this, ins, level, L"fn");
+}
+
 ItemCommFunc* ItemCommFunc_init(Item* l, Item* r, const wchar_t* s)
 {
 	ItemCommFunc* i = (ItemCommFunc*)malloc(sizeof(ItemCommFunc));
@@ -659,6 +694,7 @@ ItemCommFunc* ItemCommFunc_init(Item* l, Item* r, const wchar_t* s)
 
 	i->_item._destroyFunc = ItemCommFunc_destroy;
 	i->_item._toStringFunc = ItemCommFunc_toString;
+	i->_item._writeRegelFunc = ItemCommFunc_writeRegel;
 
 	i->_item._objectType = OBJ_CommFunc;
 	i->_item._procLevel = PROC_L_9;
@@ -737,6 +773,11 @@ void ItemFactorial_toString(Item* _this, String* s)
 	String_free(s1);
 }
 
+void ItemFactorial_writeRegel(Item* _this, String* ins, int level)
+{
+	Item_writeRegel(_this, ins, level, L"!");
+}
+
 ItemFactorial* ItemFactorial_init(Item* l)
 {
 	ItemFactorial* i = (ItemFactorial*)malloc(sizeof(ItemFactorial));
@@ -747,6 +788,7 @@ ItemFactorial* ItemFactorial_init(Item* l)
 
 	i->_item._destroyFunc = Item_destroy; 
 	i->_item._toStringFunc = ItemFactorial_toString;
+	i->_item._writeRegelFunc = ItemFactorial_writeRegel;
 
 	i->_item._objectType = OBJ_Factorial;
 	i->_item._procLevel = PROC_L_6;
@@ -769,6 +811,11 @@ void ItemParentheses_toString(Item* _this, String* s)
 	String_free(s1);
 }
 
+void ItemParentheses_writeRegel(Item* _this, String* ins, int level)
+{
+	Item_writeRegel(_this, ins, level, L"()");
+}
+
 ItemParentheses* ItemParentheses_init(Item* l)
 {
 	ItemParentheses* i = (ItemParentheses*)malloc(sizeof(ItemParentheses));
@@ -779,6 +826,7 @@ ItemParentheses* ItemParentheses_init(Item* l)
 
 	i->_item._destroyFunc = Item_destroy;
 	i->_item._toStringFunc = ItemParentheses_toString;
+	i->_item._writeRegelFunc = ItemParentheses_writeRegel;
 
 	i->_item._objectType = OBJ_Parentheses;
 	i->_item._procLevel = PROC_L_10;
