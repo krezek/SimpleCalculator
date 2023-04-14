@@ -711,7 +711,7 @@ LRESULT OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam)
             String* inStr = String_init();
             GList_toString(mw->_selected_panel->_in_gitems_list, inStr);
 
-            const wchar_t* outStr = do_simplify(inStr->_str);
+            wchar_t* outStr = do_simplify(inStr->_str);
 
             if (outStr)
             {

@@ -186,16 +186,6 @@ ItemPow* ItemPow_init(Item* l, Item* r);
 ItemSubscript* ItemSubscript_init(Item* l, Item* r);
 ItemCommFunc* ItemCommFunc_init(Item* l, Item* r, const wchar_t* s);
 
-ItemCommFunc* ItemSinFunc_init(Item* l);
-ItemCommFunc* ItemCosFunc_init(Item* l);
-ItemCommFunc* ItemTanFunc_init(Item* l);
-ItemCommFunc* ItemLogFunc_init(Item* l);
-ItemCommFunc* ItemExpFunc_init(Item* l);
-ItemCommFunc* ItemAsinFunc_init(Item* l);
-ItemCommFunc* ItemAcosFunc_init(Item* l);
-ItemCommFunc* ItemAtanFunc_init(Item* l);
-ItemCommFunc* ItemLnFunc_init(Item* l);
-
 ItemFactorial* ItemFactorial_init(Item* l);
 
 ItemParentheses* ItemParentheses_init(Item* l);
@@ -205,6 +195,7 @@ ItemIntegrate* ItemIntegrate_init(Item* l, Item* r, Item* b, Item* t);
 ItemDerivative* ItemDerivative_init(Item* l, Item* r);
 ItemLimit* ItemLimit_init(Item* l, Item* t1, Item* t2);
 
+int Item_isLeaf(Item* i);
 void ItemTree_free(Item** Item);
 Item* Item_getParent(Item* items, Item* i);
 void Item_getLevelCount(Item* item, int* pi);
