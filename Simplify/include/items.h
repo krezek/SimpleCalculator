@@ -22,9 +22,7 @@ typedef struct _Item
 	struct _Item* _right;
 
 	destroyFunc _destroyFunc;
-	isLeafFunc _isLeafFunc;
 	toStringFunc _toStringFunc;
-	cloneFunc _cloneFunc;
 
 	ObjectType _objectType;
 	ProcLevel _procLevel;

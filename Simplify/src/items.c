@@ -24,37 +24,6 @@ void Item_toString(Item* __this, String* s)
 	String_cpy(s, L"");
 }
 
-void copy_item(Item* a, Item* b)
-{
-	a->_left = (b->_left != NULL) ? b->_left->_cloneFunc(b->_left) : NULL;
-	a->_right = (b->_right != NULL) ? b->_right->_cloneFunc(b->_right) : NULL;
-	
-	a->_destroyFunc = b->_destroyFunc;
-	a->_isLeafFunc = b->_isLeafFunc;
-	a->_toStringFunc = b->_toStringFunc;
-	a->_cloneFunc = b->_cloneFunc;
-	
-	a->_objectType = b->_objectType;
-	a->_procLevel = b->_procLevel;
-}
-
-Item* Item_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	Item* c = (Item*)malloc(sizeof(Item));
-
-	copy_item(c, _this);
-	
-	return c;
-}
-
-int Item_simplify(Item* _this, Item* parent)
-{
-	return 0;
-}
-
 Item* Item_init(Item* l, Item* r)
 {
 	Item* i = (Item*)malloc(sizeof(Item));
@@ -64,9 +33,7 @@ Item* Item_init(Item* l, Item* r)
 	i->_right = r;
 
 	i->_destroyFunc = Item_destroy;
-	i->_isLeafFunc = Item_isLeaf;
 	i->_toStringFunc = Item_toString;
-	i->_cloneFunc = Item_clone;
 
 	i->_objectType = OBJ_Base;
 	i->_procLevel = PROC_L_0;
@@ -90,23 +57,6 @@ void ItemLiteral_toString(Item* _this, String* s)
 	String_cpy(s, i->_str->_str);
 }
 
-Item* ItemLiteral_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemLiteral* i = (ItemLiteral*)_this;
-
-	ItemLiteral* c = (ItemLiteral*)malloc(sizeof(ItemLiteral));
-
-	copy_item((Item*)c, _this);
-
-	c->_str = String_init();
-	String_cpy(c->_str, i->_str->_str);
-
-	return (Item*)c;
-}
-
 ItemLiteral* ItemLiteral_init(const wchar_t* s)
 {
 	ItemLiteral* i = (ItemLiteral*)malloc(sizeof(ItemLiteral));
@@ -116,9 +66,7 @@ ItemLiteral* ItemLiteral_init(const wchar_t* s)
 	i->_item._right = NULL;
 
 	i->_item._destroyFunc = ItemLiteral_destroy;
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemLiteral_toString;
-	i->_item._cloneFunc = ItemLiteral_clone;
 
 	i->_item._objectType = OBJ_Literal;
 	i->_item._procLevel = PROC_L_11;
@@ -146,23 +94,6 @@ void ItemNumber_toString(Item* _this, String* s)
 	String_cpy(s, i->_str->_str);
 }
 
-Item* ItemNumber_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-	
-	ItemNumber* i = (ItemNumber*)_this;
-
-	ItemNumber* c = (ItemNumber*)malloc(sizeof(ItemNumber));
-
-	copy_item((Item*)c, _this);
-
-	c->_str = String_init();
-	String_cpy(c->_str, i->_str->_str);
-
-	return (Item*)c;
-}
-
 ItemNumber* ItemNumber_init(const wchar_t* s, int sign)
 {
 	ItemNumber* i = (ItemNumber*)malloc(sizeof(ItemNumber));
@@ -172,9 +103,7 @@ ItemNumber* ItemNumber_init(const wchar_t* s, int sign)
 	i->_item._right = NULL;
 
 	i->_item._destroyFunc = ItemNumber_destroy;
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemNumber_toString;
-	i->_item._cloneFunc = ItemNumber_clone;
 
 	i->_item._objectType = OBJ_Number;
 	i->_item._procLevel = PROC_L_11;
@@ -198,22 +127,6 @@ void ItemSymbol_toString(Item* _this, String* s)
 	String_cpy(s, str);
 }
 
-Item* ItemSymbol_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemSymbol* i = (ItemSymbol*)_this;
-
-	ItemSymbol* c = (ItemSymbol*)malloc(sizeof(ItemSymbol));
-
-	copy_item((Item*)c, _this);
-
-	c->_ch = i->_ch;
-
-	return (Item*)c;
-}
-
 ItemSymbol* ItemSymbol_init(const wchar_t ch)
 {
 	ItemSymbol* i = (ItemSymbol*)malloc(sizeof(ItemSymbol));
@@ -223,9 +136,7 @@ ItemSymbol* ItemSymbol_init(const wchar_t ch)
 	i->_item._right = NULL;
 
 	i->_item._destroyFunc = Item_destroy;
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemSymbol_toString;
-	i->_item._cloneFunc = ItemSymbol_clone;
 
 	i->_item._objectType = OBJ_Symbol;
 	i->_item._procLevel = PROC_L_11;
@@ -252,20 +163,6 @@ void ItemList_toString(Item* _this, String* s)
 	String_free(s2);
 }
 
-Item* ItemList_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemList* i = (ItemList*)_this;
-
-	ItemList* c = (ItemList*)malloc(sizeof(ItemList));
-
-	copy_item((Item*)c, _this);
-
-	return (Item*)c;
-}
-
 ItemList* ItemList_init(Item* l, Item* r)
 {
 	ItemList* i = (ItemList*)malloc(sizeof(ItemList));
@@ -275,9 +172,7 @@ ItemList* ItemList_init(Item* l, Item* r)
 	i->_item._right = (r != NULL) ? r : Item_init(NULL, NULL);
 
 	i->_item._destroyFunc = Item_destroy;
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemList_toString;
-	i->_item._cloneFunc = ItemList_clone;
 
 	i->_item._objectType = OBJ_List;
 	i->_item._procLevel = PROC_L_1;
@@ -303,20 +198,6 @@ void ItemEqu_toString(Item* _this, String* s)
 	String_free(s2);
 }
 
-Item* ItemEqu_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemEqu* i = (ItemEqu*)_this;
-
-	ItemEqu* c = (ItemEqu*)malloc(sizeof(ItemEqu));
-
-	copy_item((Item*)c, _this);
-
-	return (Item*)c;
-}
-
 ItemEqu* ItemEqu_init(Item* l, Item* r, wchar_t sy)
 {
 	ItemEqu* i = (ItemEqu*)malloc(sizeof(ItemEqu));
@@ -326,9 +207,7 @@ ItemEqu* ItemEqu_init(Item* l, Item* r, wchar_t sy)
 	i->_item._right = (r != NULL) ? r : Item_init(NULL, NULL);
 
 	i->_item._destroyFunc = Item_destroy;
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemEqu_toString;
-	i->_item._cloneFunc = ItemEqu_clone;
 
 	i->_item._objectType = OBJ_Equ;
 	i->_item._procLevel = PROC_L_2;
@@ -386,20 +265,6 @@ void ItemAdd_toString(Item* _this, String* s)
 	String_free(s2);
 }
 
-Item* ItemAdd_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemAdd* i = (ItemAdd*)_this;
-
-	ItemAdd* c = (ItemAdd*)malloc(sizeof(ItemAdd));
-
-	copy_item((Item*)c, _this);
-
-	return (Item*)c;
-}
-
 ItemAdd* ItemAdd_init(Item* l, Item* r)
 {
 	ItemAdd* i = (ItemAdd*)malloc(sizeof(ItemAdd));
@@ -409,9 +274,7 @@ ItemAdd* ItemAdd_init(Item* l, Item* r)
 	i->_item._right = (r != NULL) ? r : Item_init(NULL, NULL);
 
 	i->_item._destroyFunc = Item_destroy; 
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemAdd_toString;
-	i->_item._cloneFunc = ItemAdd_clone;
 
 	i->_item._objectType = OBJ_Add;
 	i->_item._procLevel = PROC_L_3;
@@ -437,20 +300,6 @@ void ItemSub_toString(Item* _this, String* s)
 	String_free(s2);
 }
 
-Item* ItemSub_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemSub* i = (ItemSub*)_this;
-
-	ItemSub* c = (ItemSub*)malloc(sizeof(ItemSub));
-
-	copy_item((Item*)c, _this);
-
-	return (Item*)c;
-}
-
 ItemSub* ItemSub_init(Item* l, Item* r)
 {
 	ItemSub* i = (ItemSub*)malloc(sizeof(ItemSub));
@@ -460,9 +309,7 @@ ItemSub* ItemSub_init(Item* l, Item* r)
 	i->_item._right = (r != NULL) ? r : Item_init(NULL, NULL);
 
 	i->_item._destroyFunc = Item_destroy; 
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemSub_toString;
-	i->_item._cloneFunc = ItemSub_clone;
 
 	i->_item._objectType = OBJ_Sub;
 	i->_item._procLevel = PROC_L_3;
@@ -488,20 +335,6 @@ void ItemMult_toString(Item* _this, String* s)
 	String_free(s2);
 }
 
-Item* ItemMult_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemMult* i = (ItemMult*)_this;
-
-	ItemMult* c = (ItemMult*)malloc(sizeof(ItemMult));
-
-	copy_item((Item*)c, _this);
-
-	return (Item*)c;
-}
-
 ItemMult* ItemMult_init(Item* l, Item* r)
 {
 	ItemMult* i = (ItemMult*)malloc(sizeof(ItemMult));
@@ -511,9 +344,7 @@ ItemMult* ItemMult_init(Item* l, Item* r)
 	i->_item._right = (r != NULL) ? r : Item_init(NULL, NULL);
 
 	i->_item._destroyFunc = Item_destroy; 
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemMult_toString;
-	i->_item._cloneFunc = ItemMult_clone;
 
 	i->_item._objectType = OBJ_Mult;
 	i->_item._procLevel = PROC_L_4;
@@ -531,38 +362,22 @@ void ItemFrac_toString(Item* _this, String* s)
 	_this->_left->_toStringFunc(_this->_left, s1);
 	_this->_right->_toStringFunc(_this->_right, s2);
 
-	if(!_this->_left->_isLeafFunc(_this->_left))
+	if(!Item_isLeaf(_this->_left))
 		String_cat(s, L"(");
 	String_cat(s, s1->_str);
-	if (!_this->_left->_isLeafFunc(_this->_left))
+	if (!Item_isLeaf(_this->_left))
 		String_cat(s, L")");
 
 	String_cat(s, L"/");
 
-	if (!_this->_right->_isLeafFunc(_this->_right))
+	if (!Item_isLeaf(_this->_right))
 		String_cat(s, L"(");
 	String_cat(s, s2->_str);
-	if (!_this->_right->_isLeafFunc(_this->_right))
+	if (!Item_isLeaf(_this->_right))
 		String_cat(s, L")");
 
 	String_free(s1);
 	String_free(s2);
-}
-
-Item* ItemFrac_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemFrac* i = (ItemFrac*)_this;
-
-	ItemFrac* c = (ItemFrac*)malloc(sizeof(ItemFrac));
-
-	copy_item((Item*)c, _this);
-
-	c->_fHeight = i->_fHeight;
-
-	return (Item*)c;
 }
 
 ItemFrac* ItemFrac_init(Item* l, Item* r)
@@ -574,9 +389,7 @@ ItemFrac* ItemFrac_init(Item* l, Item* r)
 	i->_item._right = (r != NULL) ? r : Item_init(NULL, NULL);
 
 	i->_item._destroyFunc = Item_destroy; 
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemFrac_toString;
-	i->_item._cloneFunc = ItemFrac_clone;
 
 	i->_item._objectType = OBJ_Frac;
 	i->_item._procLevel = PROC_L_4;
@@ -607,22 +420,6 @@ void ItemSign_toString(Item* _this, String* s)
 	String_free(s1);
 }
 
-Item* ItemSign_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemSign* i = (ItemSign*)_this;
-
-	ItemSign* c = (ItemSign*)malloc(sizeof(ItemSign));
-
-	copy_item((Item*)c, _this);
-
-	c->_sgn = i->_sgn;
-
-	return (Item*)c;
-}
-
 ItemSign* ItemSign_init(Item* l, const wchar_t sgn)
 {
 	ItemSign* i = (ItemSign*)malloc(sizeof(ItemSign));
@@ -632,9 +429,7 @@ ItemSign* ItemSign_init(Item* l, const wchar_t sgn)
 	i->_item._right = NULL;
 
 	i->_item._destroyFunc = Item_destroy; 
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemSign_toString;
-	i->_item._cloneFunc = ItemSign_clone;
 
 	i->_item._objectType = OBJ_Sign;
 	i->_item._procLevel = PROC_L_5;
@@ -669,23 +464,6 @@ void ItemSqrt_toString(Item* _this, String* s)
 	String_free(s1);
 }
 
-Item* ItemSqrt_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemSqrt* i = (ItemSqrt*)_this;
-
-	ItemSqrt* c = (ItemSqrt*)malloc(sizeof(ItemSqrt));
-
-	copy_item((Item*)c, _this);
-
-	c->_sHeight = i->_sHeight;
-	c->_sPadding = i->_sPadding;
-
-	return (Item*)c;
-}
-
 ItemSqrt* ItemSqrt_init(Item* l)
 {
 	ItemSqrt* i = (ItemSqrt*)malloc(sizeof(ItemSqrt));
@@ -695,9 +473,7 @@ ItemSqrt* ItemSqrt_init(Item* l)
 	i->_item._right = NULL;
 
 	i->_item._destroyFunc = Item_destroy; 
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemSqrt_toString;
-	i->_item._cloneFunc = ItemSqrt_clone;
 
 	i->_item._objectType = OBJ_Sqrt;
 	i->_item._procLevel = PROC_L_9;
@@ -721,28 +497,14 @@ void ItemPow_toString(Item* _this, String* s)
 	String_cpy(s, s1->_str);
 	String_cat(s, L"^");
 
-	if (!_this->_right->_isLeafFunc(_this->_right))
+	if (!Item_isLeaf(_this->_right))
 		String_cat(s, L"(");
 	String_cat(s, s2->_str);
-	if (!_this->_right->_isLeafFunc(_this->_right))
+	if (!Item_isLeaf(_this->_right))
 		String_cat(s, L")");
 
 	String_free(s1);
 	String_free(s2);
-}
-
-Item* ItemPow_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemPow* i = (ItemPow*)_this;
-
-	ItemPow* c = (ItemPow*)malloc(sizeof(ItemPow));
-
-	copy_item((Item*)c, _this);
-
-	return (Item*)c;
 }
 
 ItemPow* ItemPow_init(Item* l, Item* r)
@@ -754,9 +516,7 @@ ItemPow* ItemPow_init(Item* l, Item* r)
 	i->_item._right = (r != NULL) ? r : Item_init(NULL, NULL);
 
 	i->_item._destroyFunc = Item_destroy; 
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemPow_toString;
-	i->_item._cloneFunc = ItemPow_clone;
 
 	i->_item._objectType = OBJ_Pow;
 	i->_item._procLevel = PROC_R_7;
@@ -777,28 +537,14 @@ void ItemSubscript_toString(Item* _this, String* s)
 	String_cpy(s, s1->_str);
 	String_cat(s, L"_");
 
-	if (!_this->_right->_isLeafFunc(_this->_right))
+	if (!Item_isLeaf(_this->_right))
 		String_cat(s, L"(");
 	String_cat(s, s2->_str);
-	if (!_this->_right->_isLeafFunc(_this->_right))
+	if (!Item_isLeaf(_this->_right))
 		String_cat(s, L")");
 
 	String_free(s1);
 	String_free(s2);
-}
-
-Item* ItemSubscript_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemSubscript* i = (ItemSubscript*)_this;
-
-	ItemSubscript* c = (ItemSubscript*)malloc(sizeof(ItemSubscript));
-
-	copy_item((Item*)c, _this);
-
-	return (Item*)c;
 }
 
 ItemSubscript* ItemSubscript_init(Item* l, Item* r)
@@ -810,9 +556,7 @@ ItemSubscript* ItemSubscript_init(Item* l, Item* r)
 	i->_item._right = (r != NULL) ? r : Item_init(NULL, NULL);
 
 	i->_item._destroyFunc = Item_destroy;
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemSubscript_toString;
-	i->_item._cloneFunc = ItemSubscript_clone;
 
 	i->_item._objectType = OBJ_Subscript;
 	i->_item._procLevel = PROC_R_8;
@@ -837,25 +581,6 @@ void ItemCommFunc_toString(Item* _this, String* s)
 	String_free(s1);
 }
 
-Item* ItemCommFunc_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemCommFunc* i = (ItemCommFunc*)_this;
-
-	ItemCommFunc* c = (ItemCommFunc*)malloc(sizeof(ItemCommFunc));
-
-	copy_item((Item*)c, _this);
-
-	c->_len = i->_len;
-	c->_str = (wchar_t*)malloc(sizeof(wchar_t) * (c->_len + 1));
-	assert(c->_str != NULL);
-	wcscpy_s(c->_str, c->_len + 1, i->_str);
-
-	return (Item*)c;
-}
-
 void ItemCommFunc_destroy(Item* _this)
 {
 	ItemCommFunc* i = (ItemCommFunc*)_this;
@@ -871,9 +596,7 @@ ItemCommFunc* ItemCommFunc_init(Item* l, Item* r, const wchar_t* s)
 	i->_item._right = r;
 
 	i->_item._destroyFunc = ItemCommFunc_destroy;
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemCommFunc_toString;
-	i->_item._cloneFunc = ItemCommFunc_clone;
 
 	i->_item._objectType = OBJ_CommFunc;
 	i->_item._procLevel = PROC_L_9;
@@ -952,20 +675,6 @@ void ItemFactorial_toString(Item* _this, String* s)
 	String_free(s1);
 }
 
-Item* ItemFactorial_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemFactorial* i = (ItemFactorial*)_this;
-
-	ItemFactorial* c = (ItemFactorial*)malloc(sizeof(ItemFactorial));
-
-	copy_item((Item*)c, _this);
-
-	return (Item*)c;
-}
-
 ItemFactorial* ItemFactorial_init(Item* l)
 {
 	ItemFactorial* i = (ItemFactorial*)malloc(sizeof(ItemFactorial));
@@ -975,9 +684,7 @@ ItemFactorial* ItemFactorial_init(Item* l)
 	i->_item._right = NULL;
 
 	i->_item._destroyFunc = Item_destroy; 
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemFactorial_toString;
-	i->_item._cloneFunc = ItemFactorial_clone;
 
 	i->_item._objectType = OBJ_Factorial;
 	i->_item._procLevel = PROC_L_6;
@@ -1000,20 +707,6 @@ void ItemParentheses_toString(Item* _this, String* s)
 	String_free(s1);
 }
 
-Item* ItemParentheses_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemParentheses* i = (ItemParentheses*)_this;
-
-	ItemParentheses* c = (ItemParentheses*)malloc(sizeof(ItemFactorial));
-
-	copy_item((Item*)c, _this);
-
-	return (Item*)c;
-}
-
 ItemParentheses* ItemParentheses_init(Item* l)
 {
 	ItemParentheses* i = (ItemParentheses*)malloc(sizeof(ItemParentheses));
@@ -1023,9 +716,7 @@ ItemParentheses* ItemParentheses_init(Item* l)
 	i->_item._right = NULL;
 
 	i->_item._destroyFunc = Item_destroy;
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemParentheses_toString;
-	i->_item._cloneFunc = ItemParentheses_clone;
 
 	i->_item._objectType = OBJ_Parentheses;
 	i->_item._procLevel = PROC_L_10;
@@ -1084,23 +775,6 @@ void ItemSigma_toString(Item* _this, String* s)
 	String_free(s3);
 }
 
-Item* ItemSigma_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemSigma* i = (ItemSigma*)_this;
-
-	ItemSigma* c = (ItemSigma*)malloc(sizeof(ItemSigma));
-
-	copy_item((Item*)c, _this);
-
-	c->_bottom = (i->_bottom != NULL) ? i->_bottom->_cloneFunc(i->_bottom) : NULL;
-	c->_top = (i->_top != NULL) ? i->_top->_cloneFunc(i->_top) : NULL;
-
-	return (Item*)c;
-}
-
 ItemSigma* ItemSigma_init(Item* l, Item* b, Item* t)
 {
 	ItemSigma* i = (ItemSigma*)malloc(sizeof(ItemSigma));
@@ -1113,9 +787,7 @@ ItemSigma* ItemSigma_init(Item* l, Item* b, Item* t)
 	i->_top = t;
 
 	i->_item._destroyFunc = ItemSigma_destroy;
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemSigma_toString;
-	i->_item._cloneFunc = ItemSigma_clone;
 
 	i->_item._objectType = OBJ_Sigma;
 	i->_item._procLevel = PROC_L_9;
@@ -1183,23 +855,6 @@ void ItemIntegrate_toString(Item* _this, String* s)
 	String_free(s4);
 }
 
-Item* ItemIntegrate_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemIntegrate* i = (ItemIntegrate*)_this;
-
-	ItemIntegrate* c = (ItemIntegrate*)malloc(sizeof(ItemIntegrate));
-
-	copy_item((Item*)c, _this);
-
-	c->_bottom = (i->_bottom != NULL) ? i->_bottom->_cloneFunc(i->_bottom) : NULL;
-	c->_top = (i->_top != NULL) ? i->_top->_cloneFunc(i->_top) : NULL;
-
-	return (Item*)c;
-}
-
 ItemIntegrate* ItemIntegrate_init(Item* l, Item* r, Item* b, Item* t)
 {
 	ItemIntegrate* i = (ItemIntegrate*)malloc(sizeof(ItemIntegrate));
@@ -1212,9 +867,7 @@ ItemIntegrate* ItemIntegrate_init(Item* l, Item* r, Item* b, Item* t)
 	i->_top = t;
 
 	i->_item._destroyFunc = ItemIntegrate_destroy;
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemIntegrate_toString;
-	i->_item._cloneFunc = ItemIntegrate_clone;
 
 	i->_item._objectType = OBJ_Integrate;
 	i->_item._procLevel = PROC_L_9;
@@ -1237,20 +890,6 @@ void ItemDerivative_toString(Item* _this, String* s)
 	String_free(s1);
 }
 
-Item* ItemDerivative_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemDerivative* i = (ItemDerivative*)_this;
-
-	ItemDerivative* c = (ItemDerivative*)malloc(sizeof(ItemDerivative));
-
-	copy_item((Item*)c, _this);
-
-	return (Item*)c;
-}
-
 ItemDerivative* ItemDerivative_init(Item* l, Item* r)
 {
 	ItemDerivative* i = (ItemDerivative*)malloc(sizeof(ItemDerivative));
@@ -1260,9 +899,7 @@ ItemDerivative* ItemDerivative_init(Item* l, Item* r)
 	i->_item._right = (r != NULL) ? r : Item_init(NULL, NULL);
 
 	i->_item._destroyFunc = Item_destroy;
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemDerivative_toString;
-	i->_item._cloneFunc = ItemDerivative_clone;
 
 	i->_item._objectType = OBJ_Derivative;
 	i->_item._procLevel = PROC_L_9;
@@ -1321,23 +958,6 @@ void ItemLimit_toString(Item* _this, String* s)
 	String_free(s3);
 }
 
-Item* ItemLimit_clone(Item* _this)
-{
-	if (!_this)
-		return NULL;
-
-	ItemLimit* i = (ItemLimit*)_this;
-
-	ItemLimit* c = (ItemLimit*)malloc(sizeof(ItemSigma));
-
-	copy_item((Item*)c, _this);
-
-	c->_t1 = (i->_t1 != NULL) ? i->_t1->_cloneFunc(i->_t1) : NULL;
-	c->_t2 = (i->_t2 != NULL) ? i->_t2->_cloneFunc(i->_t2) : NULL;
-
-	return (Item*)c;
-}
-
 ItemLimit* ItemLimit_init(Item* l, Item* t1, Item* t2)
 {
 	ItemLimit* i = (ItemLimit*)malloc(sizeof(ItemLimit));
@@ -1350,9 +970,7 @@ ItemLimit* ItemLimit_init(Item* l, Item* t1, Item* t2)
 	i->_t2 = t2;
 
 	i->_item._destroyFunc = ItemLimit_destroy;
-	i->_item._isLeafFunc = Item_isLeaf;
 	i->_item._toStringFunc = ItemLimit_toString;
-	i->_item._cloneFunc = ItemLimit_clone;
 
 	i->_item._objectType = OBJ_Sigma;
 	i->_item._procLevel = PROC_L_9;
