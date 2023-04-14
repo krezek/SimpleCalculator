@@ -7,28 +7,44 @@
 
 void Item_writeRegel(Item* _this, String* ins, int level, const wchar_t* opStr)
 {
-	if (level > 0)
+	if (!level)
 	{
-		String* ls = String_init();
-		String* rs = String_init();
+		String_cat(ins, L"expr");
+		return;
+	}
 
+	String* ls = String_init();
+	String* rs = String_init();
+
+	String_cat(ins, opStr);
+	String_cat(ins, L"(");
+	
+	if (_this->_left)
+	{
 		_this->_left->_writeRegelFunc(_this->_left, ls, level - 1);
-		_this->_right->_writeRegelFunc(_this->_right, rs, level - 1);
-
-		String_cat(ins, opStr);
-		String_cat(ins, L"(");
 		String_cat(ins, ls->_str);
-		String_cat(ins, L",");
-		String_cat(ins, rs->_str);
-		String_cat(ins, L")");
-
-		String_free(rs);
-		String_free(ls);
 	}
 	else
 	{
-		String_cat(ins, L"expr");
+		String_cat(ins, L"NULL");
 	}
+
+	String_cat(ins, L",");
+
+	if (_this->_right)
+	{
+		_this->_right->_writeRegelFunc(_this->_right, rs, level - 1);
+		String_cat(ins, rs->_str);
+	}
+	else
+	{
+		String_cat(ins, L"NULL");
+	}
+
+	String_cat(ins, L")");
+
+	String_free(rs);
+	String_free(ls);
 }
 
 void Item_destroy(Item* i)

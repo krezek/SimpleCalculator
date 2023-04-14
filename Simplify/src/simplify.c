@@ -8,17 +8,14 @@ extern void parse_items(Item** pItems, const wchar_t* s);
 wchar_t* do_simplify(const wchar_t* exp)
 {
 	Item* items = NULL;
-	parse_items(&items, L"2*3+4");
+	parse_items(&items, L"1+2*3+4");
 
 	if (items)
 	{
-		int level = 0;
-		Item_getLevelCount(items, &level);
-		for (int ix = 1; ix <= level; ++ix)
 		{
 			String* s = String_init();
-			items->_writeRegelFunc(items, s, ix);
-			printf("Regel(%d):%S\n", ix, s->_str);
+			items->_writeRegelFunc(items, s, 20);
+			printf("Regel(%d):%S\n", 0, s->_str);
 
 			String_free(s);
 		}
