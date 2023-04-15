@@ -4,10 +4,12 @@
 #include <regel.h>
 
 void rgl_0(Item** item);
+void rgl_1(Item** item);
 
 struct Regels g_regles[REGEL_COUNT] =
 {
-	{ L"N", rgl_0 }
+	{ L"N", rgl_0 },
+	{ L"+(I,I)", rgl_1 }
 };
 
 // Rgl: N
@@ -39,6 +41,20 @@ void rgl_0(Item** item)
 	{
 		*item = (Item*)ItemInteger_init(_wtoi64(i->_str->_str));
 	}
+
+	ItemTree_free(&tmp);
+}
+
+// Rgl: +(I,I)
+void rgl_1(Item** item)
+{
+	printf("apply: rgl_1\n");
+	assert((*item)->_objectType == OBJ_Add);
+
+	Item* tmp = *item;
+	ItemAdd* i = (ItemAdd*)*item;
+	*item = (Item*)ItemInteger_init(((ItemInteger*)i->_item._left)->_value +
+		((ItemInteger*)i->_item._right)->_value);
 
 	ItemTree_free(&tmp);
 }

@@ -1,7 +1,7 @@
 #ifndef _REGEL_H_
 #define _REGEL_H_
 
-#define REGEL_COUNT 1
+#define REGEL_COUNT 2
 
 typedef void (*rglFunc) (Item** item);
 
