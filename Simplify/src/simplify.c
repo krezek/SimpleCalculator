@@ -12,7 +12,7 @@ static void Simplify_applyRegel(Item** item, const wchar_t* rgl);
 wchar_t* do_simplify(const wchar_t* exp)
 {
 	Item* item = NULL;
-	parse_items(&item, L"10+20+30");
+	parse_items(&item, exp);
 
 	if (item)
 	{
