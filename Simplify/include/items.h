@@ -156,16 +156,6 @@ ItemLiteral* ItemLiteral_init(const wchar_t* s);
 ItemNumber* ItemNumber_init(const wchar_t* s, int sign);
 ItemSymbol* ItemSymbol_init(const wchar_t ch);
 
-ItemList* ItemList_init(Item* l, Item* r);
-ItemEqu* ItemEqu_init(Item* l, Item* r, wchar_t sy);
-ItemEqu* ItemEqu_init_eq(Item* l, Item* r);
-ItemEqu* ItemEqu_init_nq(Item* l, Item* r);
-ItemEqu* ItemEqu_init_g(Item* l, Item* r);
-ItemEqu* ItemEqu_init_l(Item* l, Item* r);
-ItemEqu* ItemEqu_init_eg(Item* l, Item* r);
-ItemEqu* ItemEqu_init_el(Item* l, Item* r);
-
-
 ItemAdd* ItemAdd_init(Item* l, Item* r);
 ItemSub* ItemSub_init(Item* l, Item* r);
 
@@ -173,8 +163,6 @@ ItemMult* ItemMult_init(Item* l, Item* r);
 ItemFrac* ItemFrac_init(Item* l, Item* r);
 
 ItemSign* ItemSign_init(Item* l, const wchar_t sgn);
-ItemSign* ItemSignMinus_init(Item* l);
-ItemSign* ItemSignPlus_init(Item* l);
 
 ItemSqrt* ItemSqrt_init(Item* l);
 ItemPow* ItemPow_init(Item* l, Item* r);
