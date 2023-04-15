@@ -1,7 +1,7 @@
-#ifndef ItemS_H_
-#define ItemS_H_
+#ifndef _ITEM_H_
+#define _ITEM_H_
 
-#include "strg.h"
+#include <strg.h>
 
 typedef enum {OBJ_Base = 0, OBJ_Literal, OBJ_Number, OBJ_Symbol, OBJ_List, OBJ_Equ, OBJ_Add, OBJ_Sub, OBJ_Mult, OBJ_Frac,
 				OBJ_Sign, OBJ_Sqrt, OBJ_CommFunc, OBJ_Pow, OBJ_Subscript, OBJ_Factorial, OBJ_Parentheses, OBJ_Sigma,
@@ -150,8 +150,6 @@ typedef struct _ItemLimit
 	struct _Item* _t2;
 } ItemLimit;
 
-Item* Item_init(Item* l, Item* r);
-
 ItemLiteral* ItemLiteral_init(const wchar_t* s);
 ItemNumber* ItemNumber_init(const wchar_t* s, int sign);
 ItemSymbol* ItemSymbol_init(const wchar_t ch);
@@ -181,5 +179,5 @@ void ItemTree_free(Item** Item);
 Item* Item_getParent(Item* items, Item* i);
 void Item_getLevelCount(Item* item, int* pi);
 
-#endif /* ItemS_H_ */
+#endif /* _ITEM_H_ */
 
