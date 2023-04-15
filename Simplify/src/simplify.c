@@ -6,8 +6,8 @@
 
 extern void parse_items(Item** pItems, const wchar_t* s);
 
-static void Simplify_findRegel(Item** item);
-static void Simplify_applyRegel(Item** item, const wchar_t* rgl);
+static void Simplify_findRegel(Item** item, int* pctr);
+static void Simplify_applyRegel(Item** item, const wchar_t* rgl, int* pctr);
 
 wchar_t* do_simplify(const wchar_t* exp)
 {
@@ -16,7 +16,12 @@ wchar_t* do_simplify(const wchar_t* exp)
 
 	if (item)
 	{
-		Simplify_findRegel(&item);
+		int counter = 1;
+		while (counter)
+		{
+			counter = 0;
+			Simplify_findRegel(&item, &counter);
+		}
 
 		String* str = String_init();
 
@@ -35,7 +40,7 @@ wchar_t* do_simplify(const wchar_t* exp)
 	return NULL;
 }
 
-static void Simplify_findRegel(Item** item)
+static void Simplify_findRegel(Item** item, int* pctr)
 {
 	int level = 0;
 	Item_getLevelCount(*item, &level);
@@ -43,7 +48,7 @@ static void Simplify_findRegel(Item** item)
 	{
 		String* s = String_init();
 		(*item)->_writeRegelFunc(*item, s, ix);
-		Simplify_applyRegel(item, s->_str);
+		Simplify_applyRegel(item, s->_str, pctr);
 		String_free(s);
 	}
 	
@@ -52,16 +57,16 @@ static void Simplify_findRegel(Item** item)
 
 	if (*left)
 	{
-		Simplify_findRegel(left);
+		Simplify_findRegel(left, pctr);
 	}
 
 	if (*right)
 	{
-		Simplify_findRegel(right);
+		Simplify_findRegel(right, pctr);
 	}
 }
 
-static void Simplify_applyRegel(Item** item, const wchar_t* rgl)
+static void Simplify_applyRegel(Item** item, const wchar_t* rgl, int* pctr)
 {
 	printf("Regel:%S\n", rgl);
 
@@ -70,6 +75,7 @@ static void Simplify_applyRegel(Item** item, const wchar_t* rgl)
 		if (wcscmp(g_regles[ix]._rgl_str, rgl) == 0)
 		{
 			g_regles[ix]._rglFunc(item);
+			*pctr = 1;
 		}
 	}
 }
