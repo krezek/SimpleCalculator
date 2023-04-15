@@ -223,7 +223,7 @@ void GItemChar_free(GItem* _this)
 void GItemChar_toString(GItem* _this, String* str)
 {
 	GItemChar* g = (GItemChar*)_this;
-	wchar_t gstr[] = {g->_ch, 0};
+	wchar_t gstr[] = {g->_ch == L'\u00D7' ? L'*' : g->_ch, 0};
 
 	if(g->_ch)
 		String_cat(str, gstr);

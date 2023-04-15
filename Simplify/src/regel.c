@@ -5,11 +5,15 @@
 
 void rgl_0(Item** item);
 void rgl_1(Item** item);
+void rgl_2(Item** item);
+void rgl_3(Item** item);
 
 struct Regels g_regles[REGEL_COUNT] =
 {
 	{ L"N", rgl_0 },
-	{ L"+(I,I)", rgl_1 }
+	{ L"+(I,I)", rgl_1 },
+	{ L"-(I,I)", rgl_2 },
+	{ L"*(I,I)", rgl_3 }
 };
 
 // Rgl: N
@@ -54,6 +58,34 @@ void rgl_1(Item** item)
 	Item* tmp = *item;
 	ItemAdd* i = (ItemAdd*)*item;
 	*item = (Item*)ItemInteger_init(((ItemInteger*)i->_item._left)->_value +
+		((ItemInteger*)i->_item._right)->_value);
+
+	ItemTree_free(&tmp);
+}
+
+// Rgl: -(I,I)
+void rgl_2(Item** item)
+{
+	printf("apply: rgl_2\n");
+	assert((*item)->_objectType == OBJ_Sub);
+
+	Item* tmp = *item;
+	ItemSub* i = (ItemSub*)*item;
+	*item = (Item*)ItemInteger_init(((ItemInteger*)i->_item._left)->_value -
+		((ItemInteger*)i->_item._right)->_value);
+
+	ItemTree_free(&tmp);
+}
+
+// Rgl: *(I,I)
+void rgl_3(Item** item)
+{
+	printf("apply: rgl_3\n");
+	assert((*item)->_objectType == OBJ_Mult);
+
+	Item* tmp = *item;
+	ItemMult* i = (ItemMult*)*item;
+	*item = (Item*)ItemInteger_init(((ItemInteger*)i->_item._left)->_value *
 		((ItemInteger*)i->_item._right)->_value);
 
 	ItemTree_free(&tmp);
