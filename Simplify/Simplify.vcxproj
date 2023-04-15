@@ -20,12 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\items.c" />
+    <ClCompile Include="src\items_ext.c" />
     <ClCompile Include="src\parse_helper.c" />
     <ClCompile Include="src\regel.c" />
     <ClCompile Include="src\simplify.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\items.h" />
+    <ClInclude Include="include\items_ext.h" />
     <ClInclude Include="include\regel.h" />
     <ClInclude Include="include\simplify.h" />
     <ClInclude Include="src\platform.h" />

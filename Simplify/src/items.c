@@ -151,7 +151,7 @@ void ItemNumber_writeRegel (Item* _this, String* ins, int level)
 	String_cpy(ins, L"N");
 }
 
-ItemNumber* ItemNumber_init(const wchar_t* s, int sign)
+ItemNumber* ItemNumber_init(const wchar_t* s)
 {
 	ItemNumber* i = (ItemNumber*)malloc(sizeof(ItemNumber));
 	assert(i != 0);

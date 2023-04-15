@@ -1,11 +1,13 @@
-#ifndef _ITEM_H_
-#define _ITEM_H_
+#ifndef _ITEMS_H_
+#define _ITEMS_H_
 
 #include <strg.h>
 
 typedef enum {OBJ_Base = 0, OBJ_Literal, OBJ_Number, OBJ_Symbol, OBJ_List, OBJ_Equ, OBJ_Add, OBJ_Sub, OBJ_Mult, OBJ_Frac,
 				OBJ_Sign, OBJ_Sqrt, OBJ_CommFunc, OBJ_Pow, OBJ_Subscript, OBJ_Factorial, OBJ_Parentheses, OBJ_Sigma,
-				OBJ_Integrate, OBJ_Derivative} ObjectType;
+				OBJ_Integrate, OBJ_Derivative,
+				// Extended Objects
+				OBJ_Integer} ObjectType;
 typedef enum { PROC_L_0 = 0, PROC_L_1, PROC_L_2, PROC_L_3, PROC_L_4, PROC_L_5, PROC_L_6
 				, PROC_R_7, PROC_R_8, PROC_L_9, PROC_L_10, PROC_L_11 } ProcLevel;
 
@@ -151,7 +153,7 @@ typedef struct _ItemLimit
 } ItemLimit;
 
 ItemLiteral* ItemLiteral_init(const wchar_t* s);
-ItemNumber* ItemNumber_init(const wchar_t* s, int sign);
+ItemNumber* ItemNumber_init(const wchar_t* s);
 ItemSymbol* ItemSymbol_init(const wchar_t ch);
 
 ItemAdd* ItemAdd_init(Item* l, Item* r);
@@ -179,5 +181,5 @@ void ItemTree_free(Item** Item);
 Item* Item_getParent(Item* items, Item* i);
 void Item_getLevelCount(Item* item, int* pi);
 
-#endif /* _ITEM_H_ */
+#endif /* _ITEMS_H_ */
 

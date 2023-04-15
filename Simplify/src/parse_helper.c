@@ -90,7 +90,7 @@ static void* sigma (void* v, void* v1, void* v2)
 
 static void* number (const wchar_t* s)
 {
-	return ItemNumber_init(s, 0);
+	return ItemNumber_init(s);
 }
 
 static void* symbol (const wchar_t c)
