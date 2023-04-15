@@ -796,44 +796,6 @@ ItemFactorial* ItemFactorial_init(Item* l)
 	return i;
 }
 
-// Parentheses
-
-void ItemParentheses_toString(Item* _this, String* s)
-{
-	String* s1 = String_init();
-
-	_this->_left->_toStringFunc(_this->_left, s1);
-
-	String_cpy(s, L"(");
-	String_cat(s, s1->_str);
-	String_cat(s, L")");
-
-	String_free(s1);
-}
-
-void ItemParentheses_writeRegel(Item* _this, String* ins, int level)
-{
-	Item_writeRegel(_this, ins, level, L"()");
-}
-
-ItemParentheses* ItemParentheses_init(Item* l)
-{
-	ItemParentheses* i = (ItemParentheses*)malloc(sizeof(ItemParentheses));
-	assert(i != 0);
-
-	i->_item._left = (l != NULL) ? l : Item_init(NULL, NULL);
-	i->_item._right = NULL;
-
-	i->_item._destroyFunc = Item_destroy;
-	i->_item._toStringFunc = ItemParentheses_toString;
-	i->_item._writeRegelFunc = ItemParentheses_writeRegel;
-
-	i->_item._objectType = OBJ_Parentheses;
-	i->_item._procLevel = PROC_L_10;
-
-	return i;
-}
-
 // Sigma
 
 void ItemSigma_destroy(Item* _this)

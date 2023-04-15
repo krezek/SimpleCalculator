@@ -55,7 +55,7 @@ static void* subscript (void* v, void* v1)
 
 static void* parentheses (void* v)
 {
-	return ItemParentheses_init(v);
+	return v;
 }
 
 static void* common (void* v, void* v1, const wchar_t* s)

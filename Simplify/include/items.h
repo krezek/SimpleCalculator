@@ -121,11 +121,6 @@ typedef struct
 	Item _item;
 } ItemFactorial;
 
-typedef struct
-{
-	Item _item;
-} ItemParentheses;
-
 typedef struct _ItemSigma
 {
 	Item _item;
@@ -187,8 +182,6 @@ ItemSubscript* ItemSubscript_init(Item* l, Item* r);
 ItemCommFunc* ItemCommFunc_init(Item* l, Item* r, const wchar_t* s);
 
 ItemFactorial* ItemFactorial_init(Item* l);
-
-ItemParentheses* ItemParentheses_init(Item* l);
 
 ItemSigma* ItemSigma_init(Item* l, Item* b, Item* t);
 ItemIntegrate* ItemIntegrate_init(Item* l, Item* r, Item* b, Item* t);
