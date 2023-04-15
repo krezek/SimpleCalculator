@@ -24,6 +24,9 @@
     <ClCompile Include="src\parse_helper.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\regel.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\simplify.h">
@@ -33,6 +36,9 @@
       <Filter>Quelldateien</Filter>
     </ClInclude>
     <ClInclude Include="include\items.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="include\regel.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
