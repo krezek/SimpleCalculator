@@ -99,6 +99,13 @@ void ItemLiteral_toString(Item* _this, String* s)
 	String_cpy(s, i->_str->_str);
 }
 
+void ItemLiteral_writeRegel(Item* _this, String* ins, int level)
+{
+	ItemLiteral* i = (ItemLiteral*)_this;
+
+	String_cpy(ins, L"L");
+}
+
 ItemLiteral* ItemLiteral_init(const wchar_t* s)
 {
 	ItemLiteral* i = (ItemLiteral*)malloc(sizeof(ItemLiteral));
@@ -109,6 +116,7 @@ ItemLiteral* ItemLiteral_init(const wchar_t* s)
 
 	i->_item._destroyFunc = ItemLiteral_destroy;
 	i->_item._toStringFunc = ItemLiteral_toString;
+	i->_item._writeRegelFunc = ItemLiteral_writeRegel;
 
 	i->_item._objectType = OBJ_Literal;
 	i->_item._procLevel = PROC_L_11;
@@ -177,6 +185,13 @@ void ItemSymbol_toString(Item* _this, String* s)
 	String_cpy(s, str);
 }
 
+void ItemSymbol_writeRegel(Item* _this, String* ins, int level)
+{
+	ItemSymbol* i = (ItemSymbol*)_this;
+
+	String_cpy(ins, L"S");
+}
+
 ItemSymbol* ItemSymbol_init(const wchar_t ch)
 {
 	ItemSymbol* i = (ItemSymbol*)malloc(sizeof(ItemSymbol));
@@ -187,6 +202,7 @@ ItemSymbol* ItemSymbol_init(const wchar_t ch)
 
 	i->_item._destroyFunc = Item_destroy;
 	i->_item._toStringFunc = ItemSymbol_toString;
+	i->_item._writeRegelFunc = ItemSymbol_writeRegel;
 
 	i->_item._objectType = OBJ_Symbol;
 	i->_item._procLevel = PROC_L_11;
@@ -213,6 +229,10 @@ void ItemList_toString(Item* _this, String* s)
 	String_free(s2);
 }
 
+void ItemList_writeRegel(Item* _this, String* ins, int level)
+{
+}
+
 ItemList* ItemList_init(Item* l, Item* r)
 {
 	ItemList* i = (ItemList*)malloc(sizeof(ItemList));
@@ -223,6 +243,7 @@ ItemList* ItemList_init(Item* l, Item* r)
 
 	i->_item._destroyFunc = Item_destroy;
 	i->_item._toStringFunc = ItemList_toString;
+	i->_item._writeRegelFunc = ItemList_writeRegel;
 
 	i->_item._objectType = OBJ_List;
 	i->_item._procLevel = PROC_L_1;
@@ -248,6 +269,10 @@ void ItemEqu_toString(Item* _this, String* s)
 	String_free(s2);
 }
 
+void ItemEqu_writeRegel(Item* _this, String* ins, int level)
+{
+}
+
 ItemEqu* ItemEqu_init(Item* l, Item* r, wchar_t sy)
 {
 	ItemEqu* i = (ItemEqu*)malloc(sizeof(ItemEqu));
@@ -258,6 +283,7 @@ ItemEqu* ItemEqu_init(Item* l, Item* r, wchar_t sy)
 
 	i->_item._destroyFunc = Item_destroy;
 	i->_item._toStringFunc = ItemEqu_toString;
+	i->_item._writeRegelFunc = ItemEqu_writeRegel;
 
 	i->_item._objectType = OBJ_Equ;
 	i->_item._procLevel = PROC_L_2;
@@ -496,7 +522,7 @@ void ItemSign_toString(Item* _this, String* s)
 
 void ItemSign_writeRegel(Item* _this, String* ins, int level)
 {
-	Item_writeRegel(_this, ins, level, L"S");
+	Item_writeRegel(_this, ins, level, L"Sign");
 }
 
 ItemSign* ItemSign_init(Item* l, const wchar_t sgn)
@@ -544,6 +570,10 @@ void ItemSqrt_toString(Item* _this, String* s)
 	String_free(s1);
 }
 
+void ItemSqrt_writeRegel(Item* _this, String* ins, int level)
+{
+}
+
 ItemSqrt* ItemSqrt_init(Item* l)
 {
 	ItemSqrt* i = (ItemSqrt*)malloc(sizeof(ItemSqrt));
@@ -554,6 +584,7 @@ ItemSqrt* ItemSqrt_init(Item* l)
 
 	i->_item._destroyFunc = Item_destroy; 
 	i->_item._toStringFunc = ItemSqrt_toString;
+	i->_item._writeRegelFunc = ItemSqrt_writeRegel;
 
 	i->_item._objectType = OBJ_Sqrt;
 	i->_item._procLevel = PROC_L_9;
@@ -847,6 +878,10 @@ void ItemSigma_toString(Item* _this, String* s)
 	String_free(s3);
 }
 
+void ItemSigma_writeRegel(Item* _this, String* ins, int level)
+{
+}
+
 ItemSigma* ItemSigma_init(Item* l, Item* b, Item* t)
 {
 	ItemSigma* i = (ItemSigma*)malloc(sizeof(ItemSigma));
@@ -860,6 +895,7 @@ ItemSigma* ItemSigma_init(Item* l, Item* b, Item* t)
 
 	i->_item._destroyFunc = ItemSigma_destroy;
 	i->_item._toStringFunc = ItemSigma_toString;
+	i->_item._writeRegelFunc = ItemSigma_writeRegel;
 
 	i->_item._objectType = OBJ_Sigma;
 	i->_item._procLevel = PROC_L_9;
@@ -927,6 +963,10 @@ void ItemIntegrate_toString(Item* _this, String* s)
 	String_free(s4);
 }
 
+void ItemIntegrate_writeRegel(Item* _this, String* ins, int level)
+{
+}
+
 ItemIntegrate* ItemIntegrate_init(Item* l, Item* r, Item* b, Item* t)
 {
 	ItemIntegrate* i = (ItemIntegrate*)malloc(sizeof(ItemIntegrate));
@@ -940,6 +980,8 @@ ItemIntegrate* ItemIntegrate_init(Item* l, Item* r, Item* b, Item* t)
 
 	i->_item._destroyFunc = ItemIntegrate_destroy;
 	i->_item._toStringFunc = ItemIntegrate_toString;
+	i->_item._writeRegelFunc = ItemIntegrate_writeRegel;
+
 
 	i->_item._objectType = OBJ_Integrate;
 	i->_item._procLevel = PROC_L_9;
@@ -962,6 +1004,10 @@ void ItemDerivative_toString(Item* _this, String* s)
 	String_free(s1);
 }
 
+void ItemDerivative_writeRegel(Item* _this, String* ins, int level)
+{
+}
+
 ItemDerivative* ItemDerivative_init(Item* l, Item* r)
 {
 	ItemDerivative* i = (ItemDerivative*)malloc(sizeof(ItemDerivative));
@@ -972,6 +1018,7 @@ ItemDerivative* ItemDerivative_init(Item* l, Item* r)
 
 	i->_item._destroyFunc = Item_destroy;
 	i->_item._toStringFunc = ItemDerivative_toString;
+	i->_item._writeRegelFunc = ItemDerivative_writeRegel;
 
 	i->_item._objectType = OBJ_Derivative;
 	i->_item._procLevel = PROC_L_9;
@@ -1030,6 +1077,10 @@ void ItemLimit_toString(Item* _this, String* s)
 	String_free(s3);
 }
 
+void ItemLimit_writeRegel(Item* _this, String* ins, int level)
+{
+}
+
 ItemLimit* ItemLimit_init(Item* l, Item* t1, Item* t2)
 {
 	ItemLimit* i = (ItemLimit*)malloc(sizeof(ItemLimit));
@@ -1043,6 +1094,7 @@ ItemLimit* ItemLimit_init(Item* l, Item* t1, Item* t2)
 
 	i->_item._destroyFunc = ItemLimit_destroy;
 	i->_item._toStringFunc = ItemLimit_toString;
+	i->_item._writeRegelFunc = ItemLimit_writeRegel;
 
 	i->_item._objectType = OBJ_Sigma;
 	i->_item._procLevel = PROC_L_9;
