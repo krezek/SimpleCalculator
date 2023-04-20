@@ -30,6 +30,9 @@
     <ClCompile Include="src\items_ext.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\calc.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\simplify.h">
@@ -45,6 +48,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="include\items_ext.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="include\calc.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

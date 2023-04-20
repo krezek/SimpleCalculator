@@ -6,6 +6,7 @@
 #include <panel.h>
 #include <editor.h>
 #include <simplify.h>
+#include <calc.h>
 
 #define SCROLLBAR_WIDE 20
 #define INITIAL_FONTSIZE 16
@@ -36,6 +37,7 @@ LRESULT OnKillFocus(MainWindow* mw);
 LRESULT OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam);
 LRESULT OnChar(MainWindow* mw, WPARAM wParam, LPARAM lParam);
 void Simplify(MainWindow* mw);
+void Calculate(MainWindow* mw);
 
 void Graphics_fontList_init(HANDLE hFont);
 void Graphics_fontList_free();
@@ -709,6 +711,7 @@ LRESULT OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam)
     case VK_RETURN:
         if (GetKeyState(VK_SHIFT) < 0)
         {
+            Calculate(mw);
         }
         else
         {
@@ -816,6 +819,34 @@ void Simplify(MainWindow* mw)
     GList_toString(mw->_selected_panel->_in_gitems_list, inStr);
 
     wchar_t* outStr = do_simplify(inStr->_str);
+
+    if (outStr)
+    {
+        GList* gl = NULL;
+        parse_test(&gl, outStr);
+        if (gl)
+        {
+            GList_free(mw->_selected_panel->_out_gitems_list);
+            mw->_selected_panel->_out_gitems_list = gl;
+
+            PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
+                mw->_ribbon_height - mw->_y_current_pos);
+            InvalidateRect(mw->_hWnd, NULL, TRUE);
+            Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
+
+            free(outStr);
+        }
+    }
+
+    String_free(inStr);
+}
+
+void Calculate(MainWindow* mw)
+{
+    String* inStr = String_init();
+    GList_toString(mw->_selected_panel->_in_gitems_list, inStr);
+
+    wchar_t* outStr = do_calc(inStr->_str);
 
     if (outStr)
     {

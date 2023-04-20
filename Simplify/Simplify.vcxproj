@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\calc.c" />
     <ClCompile Include="src\items.c" />
     <ClCompile Include="src\items_ext.c" />
     <ClCompile Include="src\parse_helper.c" />
@@ -26,6 +27,7 @@
     <ClCompile Include="src\simplify.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\calc.h" />
     <ClInclude Include="include\items.h" />
     <ClInclude Include="include\items_ext.h" />
     <ClInclude Include="include\regel.h" />
