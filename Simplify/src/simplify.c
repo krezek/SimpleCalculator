@@ -74,8 +74,7 @@ static void Simplify_applyRegel(Item** item, const wchar_t* rgl, int* pctr)
 	{
 		if (wcscmp(g_regles[ix]._rgl_str, rgl) == 0)
 		{
-			g_regles[ix]._rglFunc(item);
-			*pctr = 1;
+			g_regles[ix]._rglFunc(item, pctr);
 		}
 	}
 }

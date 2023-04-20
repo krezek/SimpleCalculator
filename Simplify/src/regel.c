@@ -3,13 +3,13 @@
 #include <items_ext.h>
 #include <regel.h>
 
-void rgl_0(Item** item);
-void rgl_1(Item** item);
-void rgl_2(Item** item);
-void rgl_3(Item** item);
-void rgl_4(Item** item);
-void rgl_5(Item** item);
-void rgl_6(Item** item);
+void rgl_0(Item** item, int* pctr);
+void rgl_1(Item** item, int* pctr);
+void rgl_2(Item** item, int* pctr);
+void rgl_3(Item** item, int* pctr);
+void rgl_4(Item** item, int* pctr);
+void rgl_5(Item** item, int* pctr);
+void rgl_6(Item** item, int* pctr);
 
 struct Regels g_regles[REGEL_COUNT] =
 {
@@ -46,7 +46,7 @@ void Fraction_Simplify(ItemFrac* i)
 	((ItemInteger*)i->_item._right)->_value = ((ItemInteger*)i->_item._right)->_value / gcd;
 }
 // Rgl: N
-void rgl_0(Item** item)
+void rgl_0(Item** item, int* pctr)
 {
 	printf("apply: rgl_0\n");
 	assert((*item)->_objectType == OBJ_Number);
@@ -78,10 +78,12 @@ void rgl_0(Item** item)
 	}
 
 	ItemTree_free(&tmp);
+
+	*pctr += 1;
 }
 
 // Rgl: +(I,I)
-void rgl_1(Item** item)
+void rgl_1(Item** item, int* pctr)
 {
 	printf("apply: rgl_1\n");
 	assert((*item)->_objectType == OBJ_Add);
@@ -92,10 +94,12 @@ void rgl_1(Item** item)
 		((ItemInteger*)i->_item._right)->_value);
 
 	ItemTree_free(&tmp);
+
+	*pctr += 1;
 }
 
 // Rgl: -(I,I)
-void rgl_2(Item** item)
+void rgl_2(Item** item, int* pctr)
 {
 	printf("apply: rgl_2\n");
 	assert((*item)->_objectType == OBJ_Sub);
@@ -106,10 +110,12 @@ void rgl_2(Item** item)
 		((ItemInteger*)i->_item._right)->_value);
 
 	ItemTree_free(&tmp);
+
+	*pctr += 1;
 }
 
 // Rgl: *(I,I)
-void rgl_3(Item** item)
+void rgl_3(Item** item, int* pctr)
 {
 	printf("apply: rgl_3\n");
 	assert((*item)->_objectType == OBJ_Mult);
@@ -120,10 +126,12 @@ void rgl_3(Item** item)
 		((ItemInteger*)i->_item._right)->_value);
 
 	ItemTree_free(&tmp);
+
+	*pctr += 1;
 }
 
 // Rgl: +(/(I,I),I)
-void rgl_4(Item** item)
+void rgl_4(Item** item, int* pctr)
 {
 	printf("apply: rgl_4\n");
 	assert((*item)->_objectType == OBJ_Add);
@@ -140,10 +148,12 @@ void rgl_4(Item** item)
 	Fraction_Simplify(n);
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+
+	*pctr += 1;
 }
 
 // Rgl: +(I,/(I,I))
-void rgl_5(Item** item)
+void rgl_5(Item** item, int* pctr)
 {
 	printf("apply: rgl_5\n");
 	assert((*item)->_objectType == OBJ_Add);
@@ -160,10 +170,12 @@ void rgl_5(Item** item)
 	Fraction_Simplify(n);
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+
+	*pctr += 1;
 }
 
 // Rgl: +(/(I,I),/(I,I))
-void rgl_6(Item** item)
+void rgl_6(Item** item, int* pctr)
 {
 	printf("apply: rgl_6\n");
 	assert((*item)->_objectType == OBJ_Add);
@@ -181,5 +193,7 @@ void rgl_6(Item** item)
 	Fraction_Simplify(n);
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+
+	*pctr += 1;
 }
 

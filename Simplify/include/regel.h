@@ -3,7 +3,7 @@
 
 #define REGEL_COUNT 7
 
-typedef void (*rglFunc) (Item** item);
+typedef void (*rglFunc) (Item** item, int* pctr);
 
 extern struct Regels
 {
