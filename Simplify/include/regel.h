@@ -1,7 +1,7 @@
 #ifndef _REGEL_H_
 #define _REGEL_H_
 
-#define REGEL_COUNT 9
+#define REGEL_COUNT 18
 
 typedef void (*rglFunc) (Item** item, int* pctr);
 

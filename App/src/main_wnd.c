@@ -822,6 +822,8 @@ void Simplify(MainWindow* mw)
 
     if (outStr)
     {
+        printf("In:%S\nOut:%S\n", inStr->_str, outStr);
+
         GList* gl = NULL;
         parse_test(&gl, outStr);
         if (gl)
