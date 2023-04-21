@@ -22,6 +22,7 @@ void rgl_15(Item** item, int* pctr);
 void rgl_16(Item** item, int* pctr);
 void rgl_17(Item** item, int* pctr);
 void rgl_18(Item** item, int* pctr);
+void rgl_100(Item** item, int* pctr);
 
 struct Regels g_regles[REGEL_COUNT] =
 {
@@ -45,7 +46,9 @@ struct Regels g_regles[REGEL_COUNT] =
 	{ L"/(/(I,I),I)", rgl_15 },
 	{ L"/(I,/(I,I))", rgl_16 },
 	{ L"/(/(I,I),/(I,I))", rgl_17 },
-	{ L"Sign(/(I,I),NULL)", rgl_18 }
+	{ L"Sign(/(I,I),NULL)", rgl_18 },
+
+	{ L"^(I,I)", rgl_100 }
 };
 
 __int64 _gcd(__int64 a, __int64 b)
@@ -517,6 +520,51 @@ void rgl_18(Item** item, int* pctr)
 			(Item*)ItemInteger_init(i2->_value));
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+
+	*pctr += 1;
+}
+
+__int64 pow64(__int64 base, __int64 exponent)
+{
+	__int64 rt = 1;
+	for (__int64 ix = exponent; ix > 0; --ix)
+	{
+		rt *= base;
+	}
+
+	return rt;
+}
+
+// Rgl: ^(I,I)
+void rgl_100(Item** item, int* pctr)
+{
+	printf("apply: rgl_100\n");
+	assert((*item)->_objectType == OBJ_Pow);
+	assert((*item)->_left->_objectType == OBJ_Integer);
+	assert((*item)->_right->_objectType == OBJ_Integer);
+	
+	ItemInteger* i = (ItemInteger*)(*item)->_left;
+	ItemInteger* p = (ItemInteger*)(*item)->_right;
+
+	if (p->_value > 0)
+	{
+		Item* tmp = *item;
+		*item = (Item*)ItemInteger_init(pow64(i->_value, p->_value));
+		ItemTree_free(&tmp);
+	}
+	else if (p->_value < 0)
+	{
+		Item* tmp = *item;
+		*item = (Item*)ItemFrac_init((Item*)ItemInteger_init(1),
+			(Item*)ItemInteger_init(pow64(i->_value, -1 * p->_value)));
+		ItemTree_free(&tmp);
+	}
+	else
+	{
+		Item* tmp = *item;
+		*item = (Item*)ItemInteger_init(1);
+		ItemTree_free(&tmp);
+	}
 
 	*pctr += 1;
 }
