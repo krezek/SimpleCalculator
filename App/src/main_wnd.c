@@ -1,6 +1,7 @@
 #include "platform.h"
 
 #include <main_wnd.h>
+#include <resource.h>
 #include <winutil.h>
 #include <ribbon.h>
 #include <panel.h>
@@ -54,12 +55,12 @@ ATOM MainWindow_RegisterClass()
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = GetModuleHandle(NULL);
-    wcex.hIcon = LoadIcon(wcex.hInstance, IDI_APPLICATION);
+    wcex.hIcon = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SIMPLECAS));
     wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName = NULL;
     wcex.lpszClassName = szWindowClass;
-    wcex.hIconSm = NULL;
+    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SIMPLECAS));
 
     return RegisterClassEx(&wcex);
 }
