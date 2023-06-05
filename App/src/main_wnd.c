@@ -882,15 +882,13 @@ LRESULT OnRibbonCommand(MainWindow* mw, int cmd)
     if (cmd == cmdButtonNew)
     {
         PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
-        PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
-            mw->_ribbon_height - mw->_y_current_pos);
+        
+        mw->_selected_panel = mw->_panelList->_rear->_panel;
 
-        mw->_selected_panel = mw->_panelList->_front->_panel;
-
-        SetScrollbarInfo(mw);
         PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
             mw->_ribbon_height - mw->_y_current_pos);
         Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
+        SetScrollbarInfo(mw);
         InvalidateRect(mw->_hWnd, NULL, TRUE);
     }
     else if (cmd == cmdButtonCalc)
