@@ -15,7 +15,7 @@
 #define WM_SETFONTSIZE WM_USER + 1
 
 static TCHAR szWindowClass[] = _T("DesktopApp");
-static TCHAR szTitle[] = _T("Simple Computer Algebra System");
+static TCHAR szTitle[] = _T("Simplify Calculator");
 
 HFONT g_math_font;
 HFONT g_fontList[5];
