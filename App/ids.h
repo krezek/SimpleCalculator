@@ -47,8 +47,10 @@
 #define cmdButtonCalc_LabelTitle_RESID 24100
 #define cmdButtonNew 21 
 #define cmdButtonNew_LabelTitle_RESID 24101
-#define cmdQat 22 
-#define cmdFileMenu 23 
-#define IDC_CMD_EXIT 24 
+#define cmdButtonSimplify 22 
+#define cmdButtonSimplify_LabelTitle_RESID 24102
+#define cmdQat 23 
+#define cmdFileMenu 24 
+#define IDC_CMD_EXIT 25 
 #define IDC_CMD_EXIT_LabelTitle_RESID 100
 #define IDC_CMD_EXIT_LargeImages_RESID 102

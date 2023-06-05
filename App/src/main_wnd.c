@@ -2,6 +2,7 @@
 
 #include <main_wnd.h>
 #include <resource.h>
+#include "ids.h"
 #include <winutil.h>
 #include <ribbon.h>
 #include <panel.h>
@@ -29,6 +30,7 @@ LRESULT OnSetFontSize(MainWindow* mw, int fsize);
 LRESULT OnSize(MainWindow* mw);
 LRESULT OnPaint(MainWindow* mw);
 LRESULT OnRibbonHeightChanged(MainWindow* mw);
+LRESULT OnRibbonCommand(MainWindow* mw, int cmd);
 void SetScrollbarInfo(MainWindow* mw);
 LRESULT OnVScroll(MainWindow* mw, WPARAM wParam);
 LRESULT OnHScroll(MainWindow* mw, WPARAM wParam);
@@ -153,6 +155,9 @@ static LRESULT HandleMessage(MainWindow* _this, UINT uMsg, WPARAM wParam, LPARAM
     case WM_RIBBON_HEIGHT_CHANGED:
         _this->_ribbon_height = (int)wParam;
         return OnRibbonHeightChanged(_this);
+
+    case WM_RIBBON_COMMAND:
+        return OnRibbonCommand(_this, (int)wParam);
 
     case WM_PAINT:
         return OnPaint(_this);
@@ -700,7 +705,7 @@ LRESULT OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam)
     {
     case VK_F1:
     {
-        HINSTANCE r = ShellExecute(NULL, L"open", L"https://krezek.github.io/SimpleCalculator/index.html", NULL, NULL, SW_SHOWNORMAL);
+        HINSTANCE r = ShellExecute(NULL, L"open", L"https://krezek.github.io/SimpleCAS/index.html", NULL, NULL, SW_SHOWNORMAL);
 
         if (r <= (HINSTANCE)32)
         {
@@ -712,11 +717,11 @@ LRESULT OnKeyDown(MainWindow* mw, WPARAM wParam, LPARAM lParam)
     case VK_RETURN:
         if (GetKeyState(VK_SHIFT) < 0)
         {
-            Calculate(mw);
+            Simplify(mw); 
         }
         else
         {
-            Simplify(mw);
+            Calculate(mw);
         }
 
         break;
@@ -870,4 +875,40 @@ void Calculate(MainWindow* mw)
     }
 
     String_free(inStr);
+}
+
+LRESULT OnRibbonCommand(MainWindow* mw, int cmd)
+{
+    if (cmd == cmdButtonNew)
+    {
+        PanelList_AddNewPanel(mw->_panelList, L"In:", L"Out:");
+        PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
+            mw->_ribbon_height - mw->_y_current_pos);
+
+        mw->_selected_panel = mw->_panelList->_front->_panel;
+
+        SetScrollbarInfo(mw);
+        PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
+            mw->_ribbon_height - mw->_y_current_pos);
+        Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
+        InvalidateRect(mw->_hWnd, NULL, TRUE);
+    }
+    else if (cmd == cmdButtonCalc)
+    {
+        Calculate(mw);
+    }
+    else if (cmd == cmdButtonSimplify)
+    {
+        Simplify(mw);
+    }
+    else
+    {
+        Editor_OnCmd(mw->_selected_panel->_editor, cmd, mw->_hWnd);
+        PanelList_PropertyChangedEvent(mw->_panelList, mw->_hWnd, -mw->_x_current_pos,
+            mw->_ribbon_height - mw->_y_current_pos);
+        InvalidateRect(mw->_hWnd, NULL, TRUE);
+        Editor_UpdateCaret(mw->_selected_panel->_editor, mw->_hWnd);
+    }
+
+    return 0;
 }

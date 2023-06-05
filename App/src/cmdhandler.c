@@ -52,7 +52,7 @@ static HRESULT STDMETHODCALLTYPE Execute(IUICommandHandler* This,
 {
     if (_hFrameWnd)
     {
-        //PostMessage(_hFrameWnd, WM_RIBBON_COMMAND, commandId, 0);
+        PostMessage(_hFrameWnd, WM_RIBBON_COMMAND, commandId, 0);
     }
 
     return S_OK;

@@ -116,6 +116,11 @@
 			  <String Id ="24101">New</String>
 		  </Command.LabelTitle>
 	  </Command>
+	  <Command Name="cmdButtonSimplify">
+		  <Command.LabelTitle>
+			  <String Id ="24102">Simplify</String>
+		  </Command.LabelTitle>
+	  </Command>
 
     <Command Name="cmdQat"/>
     <Command Name="cmdFileMenu" />
@@ -172,9 +177,10 @@
 				<Button CommandName="cmdButtonLn" />
 			</Group>
 			<Group CommandName="cmdGroupActions"
-					SizeDefinition="TwoButtons">
+					SizeDefinition="ThreeButtons">
 				<Button CommandName="cmdButtonCalc" />
 				<Button CommandName="cmdButtonNew" />
+				<Button CommandName="cmdButtonSimplify" />
 			</Group>
         </Tab>
       </Ribbon.Tabs>
