@@ -3,7 +3,7 @@
 
 #include "float_lexer.h"
 
-Token* token_init(int i, TokenTyp t, const wchar_t* s, size_t len)
+static Token* token_init(int i, TokenTyp t, const wchar_t* s, size_t len)
 {
 	Token* tok = (Token*)malloc(sizeof(Token));
 	assert(tok != 0);
@@ -21,18 +21,18 @@ Token* token_init(int i, TokenTyp t, const wchar_t* s, size_t len)
 }
 
 
-void token_free(Token* tok)
+static void token_free(Token* tok)
 {
 	free(tok->_str);
 	free(tok);
 }
 
-void token_print(const Token* tok)
+static void token_print(const Token* tok)
 {
 	wprintf(L"(%d,%d,\"%s\")", tok->_index, tok->_typ, tok->_str);
 }
 
-TNode* tNode_init(Token* v)
+static TNode* tNode_init(Token* v)
 {
 	TNode* n = (TNode*)malloc(sizeof(TNode));
 	assert(n != 0);
@@ -43,12 +43,12 @@ TNode* tNode_init(Token* v)
 	return n;
 }
 
-void tNode_free(TNode* n)
+static void tNode_free(TNode* n)
 {
 	free(n);
 }
 
-TokensQueue* tokensQueue_init()
+static TokensQueue* tokensQueue_init()
 {
 	TokensQueue* q = (TokensQueue*)malloc(sizeof(TokensQueue));
 	assert(q != 0);
@@ -57,7 +57,7 @@ TokensQueue* tokensQueue_init()
 	return q;
 }
 
-void tokensQueue_enqueue(TokensQueue* q, Token* v)
+static void tokensQueue_enqueue(TokensQueue* q, Token* v)
 {
 	TNode* tmp = tNode_init(v);
 
@@ -70,7 +70,7 @@ void tokensQueue_enqueue(TokensQueue* q, Token* v)
 	q->_rear = tmp;
 }
 
-Token* tokensQueue_dequeue(TokensQueue* q)
+static Token* tokensQueue_dequeue(TokensQueue* q)
 {
 	if (q->_front == NULL)
 		return NULL;
@@ -89,12 +89,12 @@ Token* tokensQueue_dequeue(TokensQueue* q)
 	return v;
 }
 
-Token* tokensQueue_front(TokensQueue* q)
+static Token* tokensQueue_front(TokensQueue* q)
 {
 	return q->_front->_val;
 }
 
-Token* tokensQueue_next(TokensQueue* q)
+static Token* tokensQueue_next(TokensQueue* q)
 {
 	if (q->_front && q->_front->_next)
 	{
@@ -105,12 +105,12 @@ Token* tokensQueue_next(TokensQueue* q)
 }
 
 // Boolean return value
-int tokensQueue_empty(TokensQueue* q)
+static int tokensQueue_empty(TokensQueue* q)
 {
 	return (q->_front) ? 0 : 1;
 }
 
-void tokensQueue_print(TokensQueue* q)
+static void tokensQueue_print(TokensQueue* q)
 {
 	TNode* t = q->_front;
 	while (t)
@@ -120,7 +120,7 @@ void tokensQueue_print(TokensQueue* q)
 	}
 }
 
-void tokensQueue_free(TokensQueue* q)
+static void tokensQueue_free(TokensQueue* q)
 {
 	while (!tokensQueue_empty(q))
 	{
@@ -214,7 +214,7 @@ int float_lexer(const wchar_t* expr, TokensQueue* queue) {
 }
 
 // Boolean return value
-int accept_tok(Token* tok, TokenTyp typ, const wchar_t* str)
+static int accept_tok(Token* tok, TokenTyp typ, const wchar_t* str)
 {
 	if ((tok->_typ == typ) && (_wcsicmp(tok->_str, str) == 0))
 		return 1;

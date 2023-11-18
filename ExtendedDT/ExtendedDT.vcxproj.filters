@@ -24,8 +24,8 @@
     <ClInclude Include="include\rational.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="include\float_lexer.h">
-      <Filter>Headerdateien</Filter>
+    <ClInclude Include="src\float_lexer.h">
+      <Filter>Quelldateien</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,8 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\rational.h" />
-    <ClInclude Include="include\float_lexer.h" />
     <ClInclude Include="include\int1024.h" />
+    <ClInclude Include="src\float_lexer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\rational.c" />
