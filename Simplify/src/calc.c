@@ -1,14 +1,11 @@
 #include "platform.h"
 
+#include <items.h>
+#include <gmp.h>
 #include <calc.h>
 
-#define _USE_MATH_DEFINES
-#include <math.h>
-
-static int calc_code;
-
 extern void parse_items(Item** pItems, const wchar_t* s);
-int calculate(Item** nodes, double* result);
+mpf_t* calculate(Item** nodes, int* pCode);
 
 wchar_t* do_calc(const wchar_t* expr)
 {
@@ -18,33 +15,30 @@ wchar_t* do_calc(const wchar_t* expr)
 	if (item)
 	{
 		int rc;
-		double result;
-		wchar_t wst[255];
+		mpf_t* result = NULL;
+		char str[255];
 
-		rc = calculate(&item, &result);
+		result = calculate(&item, &rc);
 		if (rc == 0)
 		{
-			long long lrs = (long long)result;
-
-			if (result == (double)lrs)
-			{
-				swprintf_s(wst, 255, L"%lld", lrs);
-			}
-			else
-			{
-				swprintf_s(wst, 255, L"%e", result);
-			}
+			gmp_sprintf(str, "%.Ff", *result);
 		}
 		else
 		{
-			swprintf_s(wst, 255, L"Invalid value");
+			sprintf_s(str, 255, "Invalid value");
 		}
 
 		ItemTree_free(&item);
 
-		wchar_t* rt = (wchar_t*)malloc((wcslen(wst) + 1) * sizeof(wchar_t));
+		if (result)
+		{
+			mpf_clear(*result);
+			free(result);
+		}
+			
+		wchar_t* rt = (wchar_t*)malloc((strlen(str) + 1) * sizeof(wchar_t));
 		assert(rt != NULL);
-		wcscpy(rt, wst);
+		wsprintf(rt, L"%S", str);
 
 		return rt;
 	}
@@ -53,33 +47,120 @@ wchar_t* do_calc(const wchar_t* expr)
 	return NULL;
 }
 
-double calcWolker(Item* item)
+mpf_t* calcWolker(Item* item, int* pCode)
 {
-	if (item->_objectType == OBJ_Add)
+	if (item->_objectType == OBJ_Number)
 	{
-		return calcWolker(item->_left) + calcWolker(item->_right);
+		ItemNumber* i = (ItemNumber*)item;
+
+		char* str = (char*)malloc(wcslen(i->_str->_str) + 1);
+		assert(str != NULL);
+
+		sprintf(str, "%S", i->_str->_str);
+
+		mpf_t* r = (mpf_t*)malloc(sizeof(mpf_t));
+		assert(r != NULL);
+
+		mpf_init_set_str(*r, str, 10);
+
+		free(str);
+
+		return r;
+	}
+	else if (item->_objectType == OBJ_Add)
+	{
+		mpf_t* a1 = calcWolker(item->_left, pCode);
+		mpf_t* a2 = calcWolker(item->_right, pCode);
+
+		mpf_t* r = (mpf_t*)malloc(sizeof(mpf_t));
+		assert(r != NULL);
+
+		mpf_init(*r);
+		mpf_add(*r, *a1, *a2);
+
+		mpf_clear(*a1);
+		mpf_clear(*a2);
+		free(a1);
+		free(a2);
+
+		return r;
 	}
 	else if (item->_objectType == OBJ_Sub)
 	{
-		return calcWolker(item->_left) - calcWolker(item->_right);
+		mpf_t* a1 = calcWolker(item->_left, pCode);
+		mpf_t* a2 = calcWolker(item->_right, pCode);
+
+		mpf_t* r = (mpf_t*)malloc(sizeof(mpf_t));
+		assert(r != NULL);
+
+		mpf_init(*r);
+		mpf_sub(*r, *a1, *a2);
+
+		mpf_clear(*a1);
+		mpf_clear(*a2);
+		free(a1);
+		free(a2);
+
+		return r;
+	}
+	else if (item->_objectType == OBJ_Mult)
+	{
+		mpf_t* a1 = calcWolker(item->_left, pCode);
+		mpf_t* a2 = calcWolker(item->_right, pCode);
+
+		mpf_t* r = (mpf_t*)malloc(sizeof(mpf_t));
+		assert(r != NULL);
+
+		mpf_init(*r);
+		mpf_mul(*r, *a1, *a2);
+
+		mpf_clear(*a1);
+		mpf_clear(*a2);
+		free(a1);
+		free(a2);
+
+		return r;
+	}
+	else if (item->_objectType == OBJ_Frac)
+	{
+		mpf_t* a1 = calcWolker(item->_left, pCode);
+		mpf_t* a2 = calcWolker(item->_right, pCode);
+
+		mpf_t* r = (mpf_t*)malloc(sizeof(mpf_t));
+		assert(r != NULL);
+
+		mpf_init(*r);
+		mpf_div(*r, *a1, *a2);
+
+		mpf_clear(*a1);
+		mpf_clear(*a2);
+		free(a1);
+		free(a2);
+
+		return r;
 	}
 	else if (item->_objectType == OBJ_Sign)
 	{
 		ItemSign* i = (ItemSign*)item;
 		if (i->_sgn == L'-')
-			return -1 * calcWolker(item->_left);
+		{
+			mpf_t* a = calcWolker(item->_left, pCode);
+
+			mpf_t* r = (mpf_t*)malloc(sizeof(mpf_t));
+			assert(r != NULL);
+
+			mpf_init(*r);
+			mpf_neg(*r, *a);
+
+			mpf_clear(*a);
+			free(a);
+
+			return r;
+		}
 		else
-			return calcWolker(item->_left);
+			return calcWolker(item->_left, pCode);
 	}
-	else if (item->_objectType == OBJ_Mult)
-	{
-		return calcWolker(item->_left) * calcWolker(item->_right);
-	}
-	else if (item->_objectType == OBJ_Frac)
-	{
-		return calcWolker(item->_left) / calcWolker(item->_right);
-	}
-	else if (item->_objectType == OBJ_Pow)
+	/*else if (item->_objectType == OBJ_Pow)
 	{
 		return powl(calcWolker(item->_left), calcWolker(item->_right));
 	}
@@ -150,12 +231,6 @@ double calcWolker(Item* item)
 	{
 		return calcWolker(item->_left);
 	}
-	else if (item->_objectType == OBJ_Number)
-	{
-		ItemNumber* i = (ItemNumber*)item;
-		double r = wcstod(i->_str->_str, NULL);
-		return r;
-	}
 	else if (item->_objectType == OBJ_Literal)
 	{
 		ItemLiteral* i = (ItemLiteral*)item;
@@ -171,22 +246,19 @@ double calcWolker(Item* item)
 		}
 		else
 		{
-			calc_code = -1;
+			*pCode = -1;
 		}
-	}
+	}*/
 	else
 	{
-		calc_code = -1;
+		*pCode = -1;
 	}
 
-	return 0;
+	return NULL;
 }
 
-int calculate(Item** nodes, double* result)
+mpf_t* calculate(Item** nodes, int* pCode)
 {
-	calc_code = 0;
-
-	*result = calcWolker(*nodes);
-
-	return calc_code;
+	*pCode = 0;
+	return calcWolker(*nodes, pCode);
 }
