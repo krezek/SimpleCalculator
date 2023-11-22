@@ -51,30 +51,34 @@ struct Regels g_regles[REGEL_COUNT] =
 	{ L"^(I,I)", rgl_100 }
 };
 
-__int64 _gcd(__int64 a, __int64 b)
-{
-	__int64 temp;
-	while (b != 0)
-	{
-		temp = a % b;
-
-		a = b;
-		b = temp;
-	}
-	return a;
-}
-
-__int64 Fraction_Simplify(ItemFrac* i)
+int Fraction_Simplify(ItemFrac* i)
 {
 	assert(i->_item._left->_objectType == OBJ_Integer);
 	assert(i->_item._right->_objectType == OBJ_Integer);
 
-	__int64 gcd = _gcd(((ItemInteger*)i->_item._left)->_value,
-		((ItemInteger*)i->_item._right)->_value);
-	((ItemInteger*)i->_item._left)->_value = ((ItemInteger*)i->_item._left)->_value / gcd;
-	((ItemInteger*)i->_item._right)->_value = ((ItemInteger*)i->_item._right)->_value / gcd;
+	mpz_t gcd, div1, div2;
 
-	return gcd;
+	mpz_init(gcd);
+	mpz_init(div1);
+	mpz_init(div2);
+
+	mpz_gcd(gcd, 
+		((ItemInteger*)i->_item._left)->_value, 
+		((ItemInteger*)i->_item._right)->_value);
+
+	int rt = mpz_cmp_ui(gcd, 1);
+
+	mpz_div(div1, ((ItemInteger*)i->_item._left)->_value, gcd);
+	mpz_div(div2, ((ItemInteger*)i->_item._right)->_value, gcd);
+
+	mpz_set(((ItemInteger*)i->_item._left)->_value, div1);
+	mpz_set(((ItemInteger*)i->_item._right)->_value, div2);
+
+	mpz_clear(gcd);
+	mpz_clear(div1);
+	mpz_clear(div2);
+
+	return rt;
 }
 
 // Rgl: N
@@ -97,8 +101,9 @@ void rgl_0(Item** item, int* pctr)
 		String_cpy(s2, L"1");
 		while (z--)
 			String_cat(s2, L"0");
-		ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(_wtoi64(s1->_str)),
-			(Item*)ItemInteger_init(_wtoi64(s2->_str)));
+
+		ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init_str(s1->_str),
+			(Item*)ItemInteger_init_str(s2->_str));
 		Fraction_Simplify(n);
 		*item = (Item*)n;
 		String_free(s1);
@@ -106,7 +111,7 @@ void rgl_0(Item** item, int* pctr)
 	}
 	else
 	{
-		*item = (Item*)ItemInteger_init(_wtoi64(i->_str->_str));
+		*item = (Item*)ItemInteger_init_str(i->_str->_str);
 	}
 
 	ItemTree_free(&tmp);
@@ -124,8 +129,15 @@ void rgl_1(Item** item, int* pctr)
 
 	Item* tmp = *item;
 	ItemSign* i = (ItemSign*)*item;
-	if(i->_sgn == L'-')
-		*item = (Item*)ItemInteger_init(-1 * ((ItemInteger*)i->_item._left)->_value);
+	if (i->_sgn == L'-')
+	{
+		mpz_t a;
+		mpz_init(a);
+
+		mpz_neg(a, ((ItemInteger*)i->_item._left)->_value);
+		*item = (Item*)ItemInteger_init(a);
+		mpz_clear(a);
+	}
 	else
 		*item = (Item*)ItemInteger_init(((ItemInteger*)i->_item._left)->_value);
 
@@ -142,10 +154,18 @@ void rgl_2(Item** item, int* pctr)
 
 	Item* tmp = *item;
 	ItemAdd* i = (ItemAdd*)*item;
-	*item = (Item*)ItemInteger_init(((ItemInteger*)i->_item._left)->_value +
+
+	mpz_t a;
+	mpz_init(a);
+
+	mpz_add(a,
+		((ItemInteger*)i->_item._left)->_value,
 		((ItemInteger*)i->_item._right)->_value);
 
+	*item = (Item*)ItemInteger_init(a);
+
 	ItemTree_free(&tmp);
+	mpz_clear(a);
 
 	*pctr += 1;
 }
@@ -158,10 +178,18 @@ void rgl_3(Item** item, int* pctr)
 
 	Item* tmp = *item;
 	ItemSub* i = (ItemSub*)*item;
-	*item = (Item*)ItemInteger_init(((ItemInteger*)i->_item._left)->_value -
+	
+	mpz_t a;
+	mpz_init(a);
+
+	mpz_sub(a,
+		((ItemInteger*)i->_item._left)->_value,
 		((ItemInteger*)i->_item._right)->_value);
 
+	*item = (Item*)ItemInteger_init(a);
+
 	ItemTree_free(&tmp);
+	mpz_clear(a);
 
 	*pctr += 1;
 }
@@ -174,10 +202,18 @@ void rgl_4(Item** item, int* pctr)
 
 	Item* tmp = *item;
 	ItemMult* i = (ItemMult*)*item;
-	*item = (Item*)ItemInteger_init(((ItemInteger*)i->_item._left)->_value *
+	
+	mpz_t a;
+	mpz_init(a);
+
+	mpz_mul(a,
+		((ItemInteger*)i->_item._left)->_value,
 		((ItemInteger*)i->_item._right)->_value);
 
+	*item = (Item*)ItemInteger_init(a);
+
 	ItemTree_free(&tmp);
+	mpz_clear(a);
 
 	*pctr += 1;
 }
@@ -190,8 +226,8 @@ void rgl_5(Item** item, int* pctr)
 	assert((*item)->_left->_objectType == OBJ_Integer);
 	assert((*item)->_right->_objectType == OBJ_Integer);
 
-	__int64 gcd = Fraction_Simplify((ItemFrac*)*item);
-	if (((ItemInteger*)(*item)->_right)->_value == 1)
+	int gcd = Fraction_Simplify((ItemFrac*)*item);
+	if (mpz_cmp_ui(((ItemInteger*)(*item)->_right)->_value, 1) == 0)
 	{
 		Item* tmp = *item;
 		ItemInteger* n = ItemInteger_init(((ItemInteger*)(*item)->_left)->_value);
@@ -200,7 +236,7 @@ void rgl_5(Item** item, int* pctr)
 		*pctr += 1;
 	}
 
-	if (gcd != 1)
+	if (gcd)
 		*pctr += 1;
 }
 
@@ -217,12 +253,19 @@ void rgl_6(Item** item, int* pctr)
 	ItemInteger* i1 = (ItemInteger*)(*item)->_left->_left;
 	ItemInteger* i2 = (ItemInteger*)(*item)->_left->_right;
 	ItemInteger* i3 = (ItemInteger*)((*item)->_right);
+
+	mpz_t a;
+	mpz_init(a);
+
+	mpz_mul(a, i2->_value, i3->_value);
+	mpz_add(a, a, i1->_value);
 	
 	Item* tmp = *item;
-	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(i2->_value * i3->_value + i1->_value),
+	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(a),
 		(Item*)ItemInteger_init(i2->_value));
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+	mpz_clear(a);
 
 	*pctr += 1;
 }
@@ -242,11 +285,18 @@ void rgl_7(Item** item, int* pctr)
 	ItemInteger* i2 = (ItemInteger*)(*item)->_right->_right;
 	ItemInteger* i3 = (ItemInteger*)((*item)->_left);
 
+	mpz_t a;
+	mpz_init(a);
+
+	mpz_mul(a, i2->_value, i3->_value);
+	mpz_add(a, a, i1->_value);
+
 	Item* tmp = *item;
-	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(i2->_value * i3->_value + i1->_value),
+	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(a),
 		(Item*)ItemInteger_init(i2->_value));
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+	mpz_clear(a);
 
 	*pctr += 1;
 }
@@ -268,12 +318,27 @@ void rgl_8(Item** item, int* pctr)
 	ItemInteger* i3 = (ItemInteger*)((*item)->_left->_left);
 	ItemInteger* i4 = (ItemInteger*)((*item)->_left->_right);
 
+	mpz_t a, a1, a2, b;
+	mpz_init(a);
+	mpz_init(a1);
+	mpz_init(a2);
+	mpz_init(b);
+
+	mpz_mul(a1, i2->_value, i3->_value);
+	mpz_mul(a2, i1->_value, i4->_value);
+	mpz_add(a, a1, a2);
+	mpz_mul(b, i2->_value, i4->_value);
+
 	Item* tmp = *item;
-	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(i2->_value * i3->_value + i1->_value * i4->_value),
-		(Item*)ItemInteger_init(i2->_value * i4->_value));
+	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(a),
+		(Item*)ItemInteger_init(b));
 	Fraction_Simplify(n);
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+	mpz_clear(a);
+	mpz_clear(a1);
+	mpz_clear(a2);
+	mpz_clear(b);
 
 	*pctr += 1;
 }
@@ -292,11 +357,18 @@ void rgl_9(Item** item, int* pctr)
 	ItemInteger* i2 = (ItemInteger*)(*item)->_left->_right;
 	ItemInteger* i3 = (ItemInteger*)((*item)->_right);
 
+	mpz_t a;
+	mpz_init(a);
+
+	mpz_mul(a, i2->_value, i3->_value);
+	mpz_sub(a, i1->_value, a);
+
 	Item* tmp = *item;
-	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(i1->_value - i2->_value * i3->_value),
+	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(a),
 		(Item*)ItemInteger_init(i2->_value));
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+	mpz_clear(a);
 
 	*pctr += 1;
 }
@@ -316,11 +388,18 @@ void rgl_10(Item** item, int* pctr)
 	ItemInteger* i2 = (ItemInteger*)(*item)->_right->_right;
 	ItemInteger* i3 = (ItemInteger*)((*item)->_left);
 
+	mpz_t a;
+	mpz_init(a);
+
+	mpz_mul(a, i2->_value, i3->_value);
+	mpz_sub(a, a, i1->_value);
+
 	Item* tmp = *item;
-	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(i2->_value * i3->_value - i1->_value),
+	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(a),
 		(Item*)ItemInteger_init(i2->_value));
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+	mpz_clear(a);
 
 	*pctr += 1;
 }
@@ -342,11 +421,26 @@ void rgl_11(Item** item, int* pctr)
 	ItemInteger* i3 = (ItemInteger*)((*item)->_left->_left);
 	ItemInteger* i4 = (ItemInteger*)((*item)->_left->_right);
 
+	mpz_t a, a1, a2, b;
+	mpz_init(a);
+	mpz_init(a1);
+	mpz_init(a2);
+	mpz_init(b);
+
+	mpz_mul(a1, i2->_value, i3->_value);
+	mpz_mul(a2, i1->_value, i4->_value);
+	mpz_sub(a, a1, a2);
+	mpz_mul(b, i2->_value, i4->_value);
+
 	Item* tmp = *item;
-	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(i2->_value * i3->_value - i1->_value * i4->_value),
-		(Item*)ItemInteger_init(i2->_value * i4->_value));
+	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(a),
+		(Item*)ItemInteger_init(b));
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+	mpz_clear(a);
+	mpz_clear(a1);
+	mpz_clear(a2);
+	mpz_clear(b);
 
 	*pctr += 1;
 }
@@ -365,11 +459,17 @@ void rgl_12(Item** item, int* pctr)
 	ItemInteger* i2 = (ItemInteger*)(*item)->_left->_right;
 	ItemInteger* i3 = (ItemInteger*)((*item)->_right);
 
+	mpz_t a;
+	mpz_init(a);
+
+	mpz_mul(a, i1->_value, i3->_value); 
+	
 	Item* tmp = *item;
-	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(i1->_value * i3->_value),
+	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(a),
 		(Item*)ItemInteger_init(i2->_value));
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+	mpz_clear(a);
 
 	*pctr += 1;
 }
@@ -389,11 +489,17 @@ void rgl_13(Item** item, int* pctr)
 	ItemInteger* i2 = (ItemInteger*)(*item)->_right->_right;
 	ItemInteger* i3 = (ItemInteger*)((*item)->_left);
 
+	mpz_t a;
+	mpz_init(a);
+
+	mpz_mul(a, i1->_value, i3->_value); 
+	
 	Item* tmp = *item;
-	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(i3->_value * i1->_value),
+	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(a),
 		(Item*)ItemInteger_init(i2->_value));
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+	mpz_clear(a);
 
 	*pctr += 1;
 }
@@ -415,12 +521,21 @@ void rgl_14(Item** item, int* pctr)
 	ItemInteger* i3 = (ItemInteger*)((*item)->_left->_left);
 	ItemInteger* i4 = (ItemInteger*)((*item)->_left->_right);
 
+	mpz_t a, b;
+	mpz_init(a);
+	mpz_init(b);
+
+	mpz_mul(a, i1->_value, i3->_value);
+	mpz_mul(b, i2->_value, i4->_value);
+	
 	Item* tmp = *item;
-	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(i3->_value * i1->_value),
-		(Item*)ItemInteger_init(i2->_value * i4->_value));
+	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(a),
+		(Item*)ItemInteger_init(b));
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
-
+	mpz_clear(a);
+	mpz_clear(b); 
+	
 	*pctr += 1;
 }
 
@@ -438,11 +553,17 @@ void rgl_15(Item** item, int* pctr)
 	ItemInteger* i2 = (ItemInteger*)(*item)->_left->_right;
 	ItemInteger* i3 = (ItemInteger*)((*item)->_right);
 
+	mpz_t b;
+	mpz_init(b);
+
+	mpz_mul(b, i2->_value, i3->_value); 
+	
 	Item* tmp = *item;
 	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(i1->_value),
-		(Item*)ItemInteger_init(i2->_value * i3->_value));
+		(Item*)ItemInteger_init(b));
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+	mpz_clear(b);
 
 	*pctr += 1;
 }
@@ -462,11 +583,17 @@ void rgl_16(Item** item, int* pctr)
 	ItemInteger* i2 = (ItemInteger*)(*item)->_right->_right;
 	ItemInteger* i3 = (ItemInteger*)((*item)->_left);
 
+	mpz_t a;
+	mpz_init(a);
+
+	mpz_mul(a, i2->_value, i3->_value);
+
 	Item* tmp = *item;
-	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(i3->_value * i2->_value),
+	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(a),
 		(Item*)ItemInteger_init(i1->_value));
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+	mpz_clear(a);
 
 	*pctr += 1;
 }
@@ -488,11 +615,20 @@ void rgl_17(Item** item, int* pctr)
 	ItemInteger* i3 = (ItemInteger*)((*item)->_left->_left);
 	ItemInteger* i4 = (ItemInteger*)((*item)->_left->_right);
 
+	mpz_t a, b;
+	mpz_init(a);
+	mpz_init(b);
+
+	mpz_mul(a, i2->_value, i3->_value);
+	mpz_mul(b, i1->_value, i4->_value);
+
 	Item* tmp = *item;
-	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(i3->_value * i2->_value),
-		(Item*)ItemInteger_init(i1->_value * i4->_value));
+	ItemFrac* n = ItemFrac_init((Item*)ItemInteger_init(a),
+		(Item*)ItemInteger_init(b));
 	*item = (Item*)n;
 	ItemTree_free(&tmp);
+	mpz_clear(a);
+	mpz_clear(b);
 
 	*pctr += 1;
 }
@@ -512,9 +648,18 @@ void rgl_18(Item** item, int* pctr)
 
 	Item* tmp = *item;
 	ItemFrac* n;
-	if(((ItemSign*)(*item))->_sgn == L'-')
-		n = ItemFrac_init((Item*)ItemInteger_init(-1 * i1->_value),
+	if (((ItemSign*)(*item))->_sgn == L'-')
+	{
+		mpz_t a;
+		mpz_init(a);
+
+		mpz_neg(a, i1->_value);
+
+		n = ItemFrac_init((Item*)ItemInteger_init(a),
 			(Item*)ItemInteger_init(i2->_value));
+
+		mpz_clear(a);
+	}
 	else
 		n = ItemFrac_init((Item*)ItemInteger_init(i1->_value),
 			(Item*)ItemInteger_init(i2->_value));
@@ -524,7 +669,7 @@ void rgl_18(Item** item, int* pctr)
 	*pctr += 1;
 }
 
-__int64 pow64(__int64 base, __int64 exponent)
+/*__int64 pow64(__int64 base, __int64 exponent)
 {
 	__int64 rt = 1;
 	for (__int64 ix = exponent; ix > 0; --ix)
@@ -533,12 +678,12 @@ __int64 pow64(__int64 base, __int64 exponent)
 	}
 
 	return rt;
-}
+}*/
 
 // Rgl: ^(I,I)
 void rgl_100(Item** item, int* pctr)
 {
-	printf("apply: rgl_100\n");
+	/*printf("apply: rgl_100\n");
 	assert((*item)->_objectType == OBJ_Pow);
 	assert((*item)->_left->_objectType == OBJ_Integer);
 	assert((*item)->_right->_objectType == OBJ_Integer);
@@ -566,5 +711,5 @@ void rgl_100(Item** item, int* pctr)
 		ItemTree_free(&tmp);
 	}
 
-	*pctr += 1;
+	*pctr += 1;*/
 }
