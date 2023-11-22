@@ -1,7 +1,6 @@
 #include "platform.h"
 
 #include <calc.h>
-#include <rational.h>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -10,56 +9,6 @@ static int calc_code;
 
 extern void parse_items(Item** pItems, const wchar_t* s);
 int calculate(Item** nodes, double* result);
-int calculate_1024(Item** nodes, Rational* pResult);
-
-wchar_t* do_calc_1024(const wchar_t* expr)
-{
-	Item* item = NULL;
-	parse_items(&item, expr);
-
-	if (item)
-	{
-		int rc;
-		Rational result;
-
-		rc = calculate_1024(&item, &result);
-		if (rc == 0)
-		{
-
-		}
-
-		ItemTree_free(&item);
-	}
-
-	return NULL;
-}
-
-Rational calcWolker_1024(Item* item)
-{
-	Rational r = { 0 };
-
-	if (item->_objectType == OBJ_Number)
-	{
-		ItemNumber* i = (ItemNumber*)item;
-		Rational r = Rational_init(i->_str->_str);
-		return r;
-	}
-	else
-	{
-		calc_code = -1;
-	}
-
-	return r;
-}
-
-int calculate_1024(Item** nodes, Rational* pResult)
-{
-	calc_code = 0;
-
-	*pResult = calcWolker_1024(*nodes);
-
-	return calc_code;
-}
 
 wchar_t* do_calc(const wchar_t* expr)
 {
